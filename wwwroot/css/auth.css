@@ -1,0 +1,974 @@
+/* =========================================================
+   APULMS AUTHENTICATION PAGES
+   REGISTER + LOGIN
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    background: #f4f8fd;
+    color: #172033;
+}
+
+/* =========================================================
+   MAIN AUTH PAGE
+   ========================================================= */
+
+.auth-page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+/* =========================================================
+   LEFT SIDE
+   ========================================================= */
+
+.auth-left {
+    width: 50%;
+    min-height: 100vh;
+    position: relative;
+
+    background-image:
+        linear-gradient(
+            rgba(8, 48, 105, 0.78),
+            rgba(4, 40, 92, 0.88)
+        ),
+        url("../images/banner_apu_iconic_campus.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 70px 78px;
+
+    overflow: hidden;
+}
+
+/* Decorative circles */
+
+.auth-left::before {
+    content: "";
+    position: absolute;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    top: -170px;
+    right: -100px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.auth-left::after {
+    content: "";
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    bottom: -180px;
+    left: -100px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Left content */
+
+.auth-overlay-content {
+    width: 100%;
+    max-width: 690px;
+    position: relative;
+    z-index: 2;
+}
+
+/* =========================================================
+   APU BADGE
+   ========================================================= */
+
+.apu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 12px 20px;
+
+    background: rgba(255, 255, 255, 0.18);
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+
+    border-radius: 50px;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    margin-bottom: 34px;
+}
+
+/* =========================================================
+   LEFT HEADING
+   ========================================================= */
+
+.auth-left h1 {
+    margin: 0 0 28px 0;
+
+    font-size: clamp(3rem, 4.3vw, 4.8rem);
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+
+    font-weight: 800;
+
+    color: white;
+}
+
+.auth-left h1 span {
+    display: block;
+    color: #ffffff;
+}
+
+/* Login blue highlight */
+
+.auth-left.login-page h1 span {
+    color: #71b7ff;
+}
+
+/* =========================================================
+   LEFT DESCRIPTION
+   ========================================================= */
+
+.auth-left p {
+    margin: 0;
+
+    max-width: 650px;
+
+    font-size: 18px;
+
+    line-height: 1.75;
+
+    color: rgba(255, 255, 255, 0.94);
+}
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.stats-cards {
+    width: 100%;
+
+    margin-top: 52px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+.stat-card {
+    min-height: 150px;
+
+    padding: 27px;
+
+    border-radius: 20px;
+
+    background: rgba(111, 137, 181, 0.45);
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+
+    background: rgba(127, 151, 192, 0.58);
+
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.16);
+}
+
+.stat-card h3 {
+    margin: 0 0 14px 0;
+
+    font-size: 34px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    color: white;
+}
+
+.stat-card p {
+    margin: 0;
+
+    font-size: 17px;
+
+    line-height: 1.4;
+
+    font-weight: 500;
+
+    color: rgba(255, 255, 255, 0.94);
+}
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.auth-right {
+    width: 50%;
+    min-height: 100vh;
+
+    background: #f6f9fd;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 55px;
+
+    overflow-y: auto;
+}
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.auth-form {
+    width: 100%;
+
+    max-width: 555px;
+
+    background: #ffffff;
+
+    border-radius: 28px;
+
+    padding: 50px 50px 42px 50px;
+
+    box-shadow:
+        0 20px 60px rgba(21, 52, 92, 0.10),
+        0 4px 15px rgba(21, 52, 92, 0.04);
+
+    border: 1px solid rgba(219, 228, 239, 0.7);
+}
+
+/* =========================================================
+   FORM HEADER
+   ========================================================= */
+
+.auth-header {
+    margin-bottom: 30px;
+}
+
+.auth-icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 25px;
+
+    border-radius: 17px;
+
+    background: #1769ee;
+
+    color: white;
+
+    font-size: 26px;
+
+    box-shadow: 0 12px 28px rgba(23, 105, 238, 0.25);
+}
+
+.auth-header h2 {
+    margin: 0 0 9px 0;
+
+    color: #111827;
+
+    font-size: 32px;
+
+    line-height: 1.2;
+
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+}
+
+.auth-header p {
+    margin: 0;
+
+    color: #61738f;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+}
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+.auth-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 15px;
+
+    border-radius: 11px;
+
+    margin-bottom: 22px;
+
+    font-size: 14px;
+}
+
+.auth-alert-error {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #be123c;
+}
+
+.auth-alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+/* =========================================================
+   ROLE SELECTION
+   ========================================================= */
+
+.role-select {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 16px;
+
+    margin-bottom: 31px;
+}
+
+.role-card {
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #e1e6ed;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.role-card:hover {
+    border-color: #1769ee;
+
+    background: #f5f9ff;
+
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   FORM GROUP
+   IMPORTANT: LABEL IS ABOVE INPUT
+   ========================================================= */
+
+.form-group {
+    width: 100%;
+
+    margin-bottom: 22px;
+
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+
+    width: 100%;
+
+    margin: 0 0 9px 0;
+
+    color: #344258;
+
+    font-size: 16px;
+
+    line-height: 1.4;
+
+    font-weight: 700;
+}
+
+/* =========================================================
+   INPUT WRAPPER
+   ========================================================= */
+
+.input-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+/* Input */
+
+.input-wrapper input {
+    display: block;
+
+    width: 100%;
+
+    height: 56px;
+
+    padding: 0 18px;
+
+    border: 1px solid #d7e0eb;
+
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    color: #172033;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    line-height: 56px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+/* Placeholder */
+
+.input-wrapper input::placeholder {
+    color: #9aabc0;
+
+    opacity: 1;
+}
+
+/* Focus */
+
+.input-wrapper input:focus {
+    border-color: #1769ee;
+
+    background: #ffffff;
+
+    box-shadow: 0 0 0 4px rgba(23, 105, 238, 0.10);
+}
+
+/* =========================================================
+   PASSWORD LABEL ROW
+   ========================================================= */
+
+.password-label-row {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 9px;
+}
+
+.password-label-row label {
+    margin: 0;
+}
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+.forgot-password {
+    flex-shrink: 0;
+
+    color: #1769ee;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    font-weight: 700;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   PASSWORD TOGGLE
+   ========================================================= */
+
+.password-toggle {
+    position: absolute;
+
+    top: 50%;
+
+    right: 15px;
+
+    transform: translateY(-50%);
+
+    width: 38px;
+    height: 38px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #718198;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+.password-toggle:hover {
+    color: #1769ee;
+}
+
+/* Give password input room for eye icon */
+
+.input-wrapper input#loginPassword {
+    padding-right: 55px;
+}
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+.text-danger {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #dc2626;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.checkbox-group {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 4px 0 25px 0;
+}
+
+.checkbox-group input {
+    width: 16px;
+    height: 16px;
+
+    margin: 0;
+
+    flex-shrink: 0;
+
+    accent-color: #1769ee;
+
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin: 0;
+
+    color: #303b4c;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   AUTH BUTTON
+   ========================================================= */
+
+.auth-btn {
+    width: 100%;
+
+    height: 58px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #1769ee;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    font-family: inherit;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 12px 25px rgba(23, 105, 238, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.auth-btn:hover {
+    background: #0f5bd8;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 16px 30px rgba(23, 105, 238, 0.28);
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   BOTTOM LINKS
+   ========================================================= */
+
+.auth-links {
+    margin-top: 25px;
+
+    text-align: center;
+
+    color: #66758c;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+.auth-links a {
+    color: #1769ee;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    margin-left: 4px;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   REGISTER PAGE - SLIGHTLY MORE COMPACT
+   ========================================================= */
+
+.register-form .auth-header {
+    margin-bottom: 25px;
+}
+
+.register-form .form-group {
+    margin-bottom: 18px;
+}
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+.login-form {
+    max-width: 555px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .auth-left {
+        padding: 55px 45px;
+    }
+
+    .auth-left h1 {
+        font-size: 3.3rem;
+    }
+
+    .auth-right {
+        padding: 30px;
+    }
+
+    .auth-form {
+        padding: 40px 35px;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .auth-page {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .auth-left {
+        width: 100%;
+        min-height: auto;
+
+        padding: 55px 30px;
+    }
+
+    .auth-left h1 {
+        font-size: 3rem;
+    }
+
+    .auth-left p {
+        font-size: 16px;
+    }
+
+    .stats-cards {
+        margin-top: 35px;
+    }
+
+    .auth-right {
+        width: 100%;
+        min-height: auto;
+
+        padding: 35px 20px;
+    }
+
+    .auth-form {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .auth-left {
+        padding: 40px 22px;
+    }
+
+    .auth-left h1 {
+        font-size: 2.35rem;
+
+        letter-spacing: -1px;
+    }
+
+    .auth-left p {
+        font-size: 15px;
+    }
+
+    .apu-badge {
+        font-size: 14px;
+
+        padding: 10px 16px;
+    }
+
+    .stats-cards {
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+    }
+
+    .stat-card {
+        min-height: auto;
+
+        padding: 22px;
+    }
+
+    .stat-card h3 {
+        font-size: 30px;
+    }
+
+    .auth-right {
+        padding: 25px 15px;
+    }
+
+    .auth-form {
+        padding: 32px 23px;
+        border-radius: 22px;
+    }
+
+    .auth-header h2 {
+        font-size: 28px;
+    }
+
+    .role-select {
+        gap: 10px;
+    }
+
+    .role-card {
+        font-size: 15px;
+    }
+
+    .password-label-row {
+        align-items: flex-start;
+    }
+
+    .forgot-password {
+        font-size: 13px;
+    }
+}
+/* ==========================================================
+   REGISTRATION ROLE SELECTION - FINAL
+   ========================================================== */
+
+.role-section {
+    margin-bottom: 24px;
+}
+
+.role-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #26364d;
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.role-select {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.role-card {
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 15px 18px;
+
+    background: #ffffff;
+
+    border: 1.5px solid #dce4ef;
+    border-radius: 14px;
+
+    color: #26364d;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.role-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.role-card:hover {
+    border-color: #9fc3ff;
+    background: #f8fbff;
+    transform: translateY(-1px);
+}
+
+.role-card.active {
+    color: #0d6efd;
+    background: #f1f7ff;
+
+    border-color: #0d6efd;
+
+    box-shadow:
+        0 0 0 3px rgba(13, 110, 253, 0.08);
+}
+
+.role-icon {
+    font-size: 1.15rem;
+}
+
+.role-text {
+    font-size: 0.96rem;
+}
+
+@media (max-width: 520px) {
+    .role-select {
+        grid-template-columns: 1fr;
+    }
+}
+

@@ -1,0 +1,536 @@
+@{
+    ViewData["Title"] = "My Courses";
+
+    var totalCourses = ViewBag.TotalCourses ?? 0;
+    var totalStudents = ViewBag.TotalStudents ?? 0;
+
+    var lecturerCourses =
+        ViewBag.LecturerCourses as List<APULMS.Models.Course>
+        ?? new List<APULMS.Models.Course>();
+
+    var databaseError =
+        ViewBag.DatabaseError?.ToString() ?? "";
+}
+
+<div class="portal-page">
+
+    <!-- BACK -->
+    <div class="portal-back-row">
+        <button type="button"
+                class="portal-back-button"
+                onclick="window.history.back();">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back</span>
+        </button>
+    </div>
+
+
+    <!-- PAGE HEADER -->
+    <section class="portal-page-heading">
+        <div>
+            <span class="page-eyebrow">ACADEMIC MANAGEMENT</span>
+
+            <h1>My Courses</h1>
+
+            <p>
+                Manage your teaching courses and monitor enrolled students.
+            </p>
+        </div>
+
+        <div class="page-heading-icon">
+            <i class="bi bi-book-half"></i>
+        </div>
+    </section>
+
+
+    <!-- STATISTICS -->
+    <section class="portal-stat-grid">
+
+        <!-- ACTIVE COURSES -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-blue">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Active Courses</span>
+
+                <strong>@totalCourses</strong>
+
+                <small>
+                    Assigned to you
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- TOTAL STUDENTS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-purple">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Total Students</span>
+
+                <strong>@totalStudents</strong>
+
+                <small>
+                    Across your courses
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- COURSE ENROLMENTS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-orange">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Course Enrolments</span>
+
+                <strong>@totalStudents</strong>
+
+                <small>
+                    Current enrolments
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- TEACHING STATUS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-yellow">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Teaching Status</span>
+
+                @if (Convert.ToInt32(totalCourses) > 0)
+                {
+                    <strong class="text-stat">
+                        Active
+                    </strong>
+
+                    <small>
+                        Courses assigned
+                    </small>
+                }
+                else
+                {
+                    <strong class="text-stat">
+                        No Courses
+                    </strong>
+
+                    <small>
+                        No current assignment
+                    </small>
+                }
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- COURSES -->
+    <section class="portal-main-card">
+
+        <div class="dashboard-card-header">
+
+            <div>
+
+                <span class="dashboard-small-label">
+                    COURSE MANAGEMENT
+                </span>
+
+                <h2>
+                    Your Teaching Courses
+                </h2>
+
+                <p>
+                    View your assigned courses and access enrolled students.
+                </p>
+
+            </div>
+
+
+            <div class="page-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="courseSearch"
+                       placeholder="Search courses..."
+                       aria-label="Search courses" />
+
+            </div>
+
+        </div>
+
+
+        <!-- DATABASE ERROR -->
+        @if (!string.IsNullOrWhiteSpace(databaseError))
+        {
+            <div class="alert alert-danger"
+                 role="alert">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                @databaseError
+
+            </div>
+        }
+
+
+        <div class="lecturer-course-list"
+             id="lecturerCourseList">
+
+            @if (lecturerCourses.Count > 0)
+            {
+                foreach (var course in lecturerCourses)
+                {
+                    var categoryText =
+                        string.IsNullOrWhiteSpace(course.Category)
+                            ? "COURSE"
+                            : course.Category.ToUpperInvariant();
+
+
+                    var iconClass =
+                        "course-row-blue";
+
+                    var icon =
+                        "bi-book-half";
+
+
+                    if (!string.IsNullOrWhiteSpace(course.Category))
+                    {
+                        var category =
+                            course.Category.ToLowerInvariant();
+
+
+                        if (category.Contains("web"))
+                        {
+                            iconClass =
+                                "course-row-purple";
+
+                            icon =
+                                "bi-code-slash";
+                        }
+                        else if (category.Contains("database"))
+                        {
+                            iconClass =
+                                "course-row-green";
+
+                            icon =
+                                "bi-database-fill";
+                        }
+                        else if (category.Contains("cyber") ||
+                                 category.Contains("security"))
+                        {
+                            iconClass =
+                                "course-row-blue";
+
+                            icon =
+                                "bi-shield-lock-fill";
+                        }
+                        else if (category.Contains("network"))
+                        {
+                            iconClass =
+                                "course-row-blue";
+
+                            icon =
+                                "bi-diagram-3-fill";
+                        }
+                    }
+
+
+                    <article class="lecturer-course-row"
+                             data-course-title="@course.Title.ToLowerInvariant()"
+                             data-course-category="@categoryText.ToLowerInvariant()">
+
+
+                        <!-- COURSE ICON -->
+                        <div class="course-row-icon @iconClass">
+
+                            <i class="bi @icon"></i>
+
+                        </div>
+
+
+                        <!-- COURSE INFORMATION -->
+                        <div class="course-row-main">
+
+                            <span class="course-category">
+                                @categoryText
+                            </span>
+
+                            <h3>
+                                @course.Title
+                            </h3>
+
+
+                            <div class="course-row-meta">
+
+                                <span>
+
+                                    <i class="bi bi-people-fill"></i>
+
+                                    @course.StudentCount
+                                    @(course.StudentCount == 1
+                                        ? "Student"
+                                        : "Students")
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="bi bi-calendar3"></i>
+
+                                    Added
+                                    @course.CreatedAt.ToString("dd MMM yyyy")
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- COURSE INFORMATION -->
+                        <div class="course-row-progress">
+
+                            <div class="course-row-progress-title">
+
+                                <span>
+                                    Enrolled Students
+                                </span>
+
+                                <strong>
+                                    @course.StudentCount
+                                </strong>
+
+                            </div>
+
+
+                            <div class="course-row-meta">
+
+                                <span>
+
+                                    <i class="bi bi-person-check-fill"></i>
+
+                                    @(course.StudentCount == 0
+                                        ? "No enrolments yet"
+                                        : "Students enrolled")
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <span class="course-row-status">
+
+                            <i></i>
+
+                            Active
+
+                        </span>
+
+
+                        <!-- VIEW STUDENTS -->
+                        <a asp-controller="Lecturer"
+                           asp-action="Students"
+                           asp-route-courseId="@course.Id"
+                           class="course-row-action"
+                           title="View students">
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </article>
+                }
+            }
+            else
+            {
+                <!-- NO COURSES -->
+                <article class="lecturer-course-row">
+
+                    <div class="course-row-icon course-row-blue">
+
+                        <i class="bi bi-book-half"></i>
+
+                    </div>
+
+
+                    <div class="course-row-main">
+
+                        <span class="course-category">
+                            COURSES
+                        </span>
+
+                        <h3>
+                            No courses assigned yet
+                        </h3>
+
+
+                        <div class="course-row-meta">
+
+                            <span>
+
+                                <i class="bi bi-info-circle"></i>
+
+                                Courses assigned to your lecturer account
+                                will appear here.
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="course-row-status">
+
+                        <i></i>
+
+                        No Courses
+
+                    </span>
+
+                </article>
+            }
+
+        </div>
+
+
+        <!-- SEARCH EMPTY RESULT -->
+        <div id="courseSearchEmpty"
+             style="display:none; padding:30px; text-align:center;">
+
+            <i class="bi bi-search"></i>
+
+            <h3>
+                No matching courses
+            </h3>
+
+            <p>
+                Try searching using another course title or category.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("courseSearch");
+
+        const courseList =
+            document.getElementById("lecturerCourseList");
+
+        const emptyMessage =
+            document.getElementById("courseSearchEmpty");
+
+
+        if (!searchInput || !courseList) {
+            return;
+        }
+
+
+        const courseRows =
+            courseList.querySelectorAll(
+                ".lecturer-course-row[data-course-title]"
+            );
+
+
+        searchInput.addEventListener("input", function () {
+
+            const searchValue =
+                this.value
+                    .toLowerCase()
+                    .trim();
+
+
+            let visibleCourses = 0;
+
+
+            courseRows.forEach(function (course) {
+
+                const title =
+                    course.dataset.courseTitle || "";
+
+                const category =
+                    course.dataset.courseCategory || "";
+
+
+                const matches =
+                    title.includes(searchValue) ||
+                    category.includes(searchValue);
+
+
+                if (matches) {
+
+                    course.style.display = "";
+
+                    visibleCourses++;
+
+                }
+                else {
+
+                    course.style.display = "none";
+
+                }
+
+            });
+
+
+            if (emptyMessage) {
+
+                if (visibleCourses === 0 &&
+                    courseRows.length > 0) {
+
+                    emptyMessage.style.display =
+                        "block";
+
+                }
+                else {
+
+                    emptyMessage.style.display =
+                        "none";
+
+                }
+
+            }
+
+        });
+
+    });
+</script>

@@ -1,0 +1,969 @@
+@model List<APULMS.Models.Course>
+
+@{
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+    ViewData["Title"] = "Available Courses";
+
+    var enrolledCourseIds =
+        ViewBag.EnrolledCourseIds as HashSet<int>
+        ?? new HashSet<int>();
+
+    string studentName = ViewBag.Name ?? "Student";
+    string firstName =
+        string.IsNullOrWhiteSpace(studentName)
+            ? "Student"
+            : studentName.Split(' ')[0];
+
+    int enrolledCount =
+        Model.Count(course => enrolledCourseIds.Contains(course.Id));
+
+    int availableCount =
+        Model.Count - enrolledCount;
+}
+
+<div class="student-courses-page">
+
+    <section class="courses-hero">
+        <div>
+            <span class="courses-eyebrow">APULMS LEARNING</span>
+
+            <h1>Explore Courses</h1>
+
+            <p>
+                Welcome, @firstName. Browse available courses and enrol
+                in the subjects you want to start learning.
+            </p>
+        </div>
+
+        <a asp-controller="Student"
+           asp-action="Dashboard"
+           class="dashboard-link">
+            <span>←</span>
+            Back to Dashboard
+        </a>
+    </section>
+
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="course-alert success-alert">
+            <span>✓</span>
+            <div>
+                <strong>Enrolment successful</strong>
+                <p>@TempData["Success"]</p>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="course-alert warning-alert">
+            <span>!</span>
+            <div>
+                <strong>Notice</strong>
+                <p>@TempData["Warning"]</p>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="course-alert error-alert">
+            <span>×</span>
+            <div>
+                <strong>Unable to enrol</strong>
+                <p>@TempData["Error"]</p>
+            </div>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="course-alert error-alert">
+            <span>×</span>
+            <div>
+                <strong>Unable to load courses</strong>
+                <p>@ViewBag.Error</p>
+            </div>
+        </div>
+    }
+
+
+    <section class="course-summary-grid">
+
+        <article class="summary-card">
+            <div class="summary-icon blue-summary">▣</div>
+            <div>
+                <strong>@Model.Count</strong>
+                <span>Total Courses</span>
+            </div>
+        </article>
+
+        <article class="summary-card">
+            <div class="summary-icon green-summary">✓</div>
+            <div>
+                <strong>@enrolledCount</strong>
+                <span>Enrolled</span>
+            </div>
+        </article>
+
+        <article class="summary-card">
+            <div class="summary-icon purple-summary">＋</div>
+            <div>
+                <strong>@availableCount</strong>
+                <span>Available to Enrol</span>
+            </div>
+        </article>
+
+    </section>
+
+
+    <section class="courses-toolbar">
+
+        <div class="course-search">
+            <span>⌕</span>
+
+            <input type="text"
+                   id="availableCourseSearch"
+                   placeholder="Search courses, categories, or lecturers..."
+                   autocomplete="off"
+                   oninput="filterAvailableCourses()" />
+        </div>
+
+        <div class="course-filter">
+            <button type="button"
+                    class="filter-button active"
+                    data-filter="all"
+                    onclick="filterByStatus('all', this)">
+                All Courses
+            </button>
+
+            <button type="button"
+                    class="filter-button"
+                    data-filter="available"
+                    onclick="filterByStatus('available', this)">
+                Available
+            </button>
+
+            <button type="button"
+                    class="filter-button"
+                    data-filter="enrolled"
+                    onclick="filterByStatus('enrolled', this)">
+                Enrolled
+            </button>
+        </div>
+
+    </section>
+
+
+    @if (Model.Count == 0)
+    {
+        <section class="empty-course-state">
+            <div class="empty-course-icon">🎓</div>
+
+            <h2>No courses are available yet</h2>
+
+            <p>
+                Courses created by the administrator will appear here
+                automatically.
+            </p>
+        </section>
+    }
+    else
+    {
+        <section id="availableCourseGrid"
+                 class="available-course-grid">
+
+            @foreach (var course in Model)
+            {
+                bool isEnrolled =
+                    enrolledCourseIds.Contains(course.Id);
+
+                string searchableText =
+                    $"{course.Title} {course.Category} {course.LecturerName}"
+                        .ToLowerInvariant();
+
+                <article class="available-course-card"
+                         data-search="@searchableText"
+                         data-status="@(isEnrolled ? "enrolled" : "available")">
+
+                    <div class="course-image">
+
+                        @{
+                            string thumbnailUrl = string.Empty;
+
+                            if (!string.IsNullOrWhiteSpace(course.Thumbnail))
+                            {
+                                thumbnailUrl = course.Thumbnail.Trim();
+
+                                if (!thumbnailUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+                                    !thumbnailUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    thumbnailUrl = "/" + thumbnailUrl.TrimStart('~', '/');
+                                }
+                            }
+                        }
+
+                        <div class="course-image-placeholder">
+                            <span>🎓</span>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(thumbnailUrl))
+                        {
+                            <img src="@thumbnailUrl"
+                                 alt=""
+                                 loading="lazy"
+                                 onerror="this.style.display='none';" />
+                        }
+
+                        <span class="category-badge">
+                            @(string.IsNullOrWhiteSpace(course.Category)
+                                ? "Course"
+                                : course.Category)
+                        </span>
+
+                        @if (isEnrolled)
+                        {
+                            <span class="enrolled-badge">
+                                ✓ Enrolled
+                            </span>
+                        }
+
+                    </div>
+
+
+                    <div class="course-content">
+
+                        <div class="course-meta">
+                            <span>▣ Course</span>
+
+                            @if (course.CreatedAt != DateTime.MinValue)
+                            {
+                                <span>
+                                    @course.CreatedAt.ToString("dd MMM yyyy")
+                                </span>
+                            }
+                        </div>
+
+                        <h2>@course.Title</h2>
+
+                        <p class="lecturer-name">
+                            <span>♙</span>
+                            Lecturer:
+                            <strong>@course.LecturerName</strong>
+                        </p>
+
+                        <p class="course-description">
+                            @(string.IsNullOrWhiteSpace(course.Description)
+                                ? "Course information will be available soon."
+                                : course.Description)
+                        </p>
+
+
+                        <div class="course-card-footer">
+
+                            @if (isEnrolled)
+                            {
+                                <div class="already-enrolled">
+                                    <span class="status-check">✓</span>
+
+                                    <div>
+                                        <strong>Already Enrolled</strong>
+                                        <small>
+                                            This course is available in your dashboard.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <a asp-controller="Student"
+                                   asp-action="Dashboard"
+                                   class="open-dashboard-button">
+                                    Open Dashboard
+                                    <span>→</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <form asp-controller="Student"
+                                      asp-action="Enroll"
+                                      method="post"
+                                      class="enrol-form"
+                                      onsubmit="return confirmCourseEnrolment(this);"
+                                      data-course-title="@course.Title">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="courseId"
+                                           value="@course.Id" />
+
+                                    <button type="submit"
+                                            class="enrol-button">
+                                        <span>＋</span>
+                                        Enrol Now
+                                        <span>→</span>
+                                    </button>
+
+                                </form>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+
+        </section>
+
+        <div id="noCourseSearchResults"
+             class="no-search-results"
+             hidden>
+
+            <span>⌕</span>
+
+            <h3>No matching courses found</h3>
+
+            <p>
+                Try another course title, category, or lecturer name.
+            </p>
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    .student-courses-page {
+        max-width: 1450px;
+        margin: 0 auto;
+        padding: 34px 36px 55px;
+        color: #1f2937;
+    }
+
+    .courses-hero {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 28px;
+        margin-bottom: 28px;
+    }
+
+    .courses-eyebrow {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #6366f1;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+    }
+
+    .courses-hero h1 {
+        margin: 0 0 8px;
+        color: #111827;
+        font-size: clamp(30px, 4vw, 42px);
+        font-weight: 800;
+        letter-spacing: -1.2px;
+    }
+
+    .courses-hero p {
+        max-width: 700px;
+        margin: 0;
+        color: #6b7280;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .dashboard-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 11px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #374151;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        transition: .2s ease;
+    }
+
+    .dashboard-link:hover {
+        border-color: #c7d2fe;
+        color: #4f46e5;
+        transform: translateY(-1px);
+    }
+
+    .course-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-bottom: 22px;
+        padding: 15px 17px;
+        border: 1px solid;
+        border-radius: 14px;
+        background: #ffffff;
+    }
+
+    .course-alert > span {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        font-weight: 900;
+    }
+
+    .course-alert strong {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 14px;
+    }
+
+    .course-alert p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .success-alert {
+        border-color: #bbf7d0;
+        color: #166534;
+    }
+
+    .success-alert > span {
+        background: #dcfce7;
+    }
+
+    .warning-alert {
+        border-color: #fde68a;
+        color: #92400e;
+    }
+
+    .warning-alert > span {
+        background: #fef3c7;
+    }
+
+    .error-alert {
+        border-color: #fecaca;
+        color: #991b1b;
+    }
+
+    .error-alert > span {
+        background: #fee2e2;
+    }
+
+    .course-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 92px;
+        padding: 18px 20px;
+        border: 1px solid #e8ecf2;
+        border-radius: 17px;
+        background: #ffffff;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, .05);
+    }
+
+    .summary-icon {
+        display: grid;
+        width: 48px;
+        height: 48px;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 14px;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .blue-summary {
+        background: #eaf2ff;
+        color: #2563eb;
+    }
+
+    .green-summary {
+        background: #eafaf1;
+        color: #16a34a;
+    }
+
+    .purple-summary {
+        background: #f3eefe;
+        color: #7c3aed;
+    }
+
+    .summary-card strong {
+        display: block;
+        color: #111827;
+        font-size: 25px;
+        line-height: 1;
+    }
+
+    .summary-card span:last-child {
+        display: block;
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .courses-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+        padding: 14px;
+        border: 1px solid #e8ecf2;
+        border-radius: 17px;
+        background: #ffffff;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, .04);
+    }
+
+    .course-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: min(520px, 100%);
+        padding: 0 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #f9fafb;
+    }
+
+    .course-search > span {
+        color: #9ca3af;
+        font-size: 20px;
+    }
+
+    .course-search input {
+        width: 100%;
+        padding: 12px 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #111827;
+        font: inherit;
+        font-size: 14px;
+    }
+
+    .course-filter {
+        display: flex;
+        gap: 7px;
+        padding: 4px;
+        border-radius: 12px;
+        background: #f3f4f6;
+    }
+
+    .filter-button {
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .filter-button.active {
+        background: #ffffff;
+        color: #4f46e5;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .08);
+    }
+
+    .available-course-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .available-course-card {
+        overflow: hidden;
+        border: 1px solid #e8ecf2;
+        border-radius: 19px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .available-course-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 38px rgba(15, 23, 42, .09);
+    }
+
+    .course-image {
+        position: relative;
+        height: 185px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    }
+
+    .course-image img {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .course-image-placeholder {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        display: grid;
+        width: 100%;
+        height: 100%;
+        place-items: center;
+        background:
+            radial-gradient(circle at 20% 25%, rgba(99, 102, 241, .18), transparent 35%),
+            radial-gradient(circle at 80% 75%, rgba(139, 92, 246, .14), transparent 35%),
+            #f4f6ff;
+    }
+
+    .course-image-placeholder span {
+        font-size: 52px;
+    }
+
+    .category-badge,
+    .enrolled-badge {
+        position: absolute;
+        z-index: 2;
+        top: 13px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, .08);
+    }
+
+    .category-badge {
+        left: 13px;
+        background: rgba(255, 255, 255, .94);
+        color: #4f46e5;
+    }
+
+    .enrolled-badge {
+        right: 13px;
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .course-content {
+        display: flex;
+        min-height: 300px;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+        color: #9ca3af;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .course-content h2 {
+        margin: 0 0 9px;
+        color: #111827;
+        font-size: 19px;
+        line-height: 1.35;
+    }
+
+    .lecturer-name {
+        margin: 0 0 13px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .lecturer-name strong {
+        color: #374151;
+    }
+
+    .course-description {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: 0;
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.65;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    .course-card-footer {
+        margin-top: auto;
+        padding-top: 20px;
+    }
+
+    .enrol-form {
+        margin: 0;
+    }
+
+    .enrol-button,
+    .open-dashboard-button {
+        display: flex;
+        width: 100%;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-sizing: border-box;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .enrol-button {
+        border: 0;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: #ffffff;
+        box-shadow: 0 7px 18px rgba(79, 70, 229, .20);
+    }
+
+    .enrol-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(79, 70, 229, .27);
+    }
+
+    .already-enrolled {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 11px;
+        background: #f0fdf4;
+    }
+
+    .status-check {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: #dcfce7;
+        color: #15803d;
+        font-weight: 900;
+    }
+
+    .already-enrolled strong,
+    .already-enrolled small {
+        display: block;
+    }
+
+    .already-enrolled strong {
+        color: #166534;
+        font-size: 12px;
+    }
+
+    .already-enrolled small {
+        margin-top: 2px;
+        color: #6b7280;
+        font-size: 10px;
+    }
+
+    .open-dashboard-button {
+        border: 1px solid #dbe3ef;
+        background: #ffffff;
+        color: #4f46e5;
+    }
+
+    .open-dashboard-button:hover {
+        border-color: #c7d2fe;
+        background: #f8faff;
+    }
+
+    .empty-course-state,
+    .no-search-results {
+        padding: 65px 25px;
+        border: 1px solid #e8ecf2;
+        border-radius: 19px;
+        background: #ffffff;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, .05);
+    }
+
+    .empty-course-icon,
+    .no-search-results > span {
+        display: block;
+        margin-bottom: 13px;
+        font-size: 45px;
+    }
+
+    .empty-course-state h2,
+    .no-search-results h3 {
+        margin: 0 0 8px;
+        color: #111827;
+    }
+
+    .empty-course-state p,
+    .no-search-results p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .no-search-results {
+        margin-top: 22px;
+    }
+
+    @@media (max-width: 1100px) {
+
+        .available-course-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+    @@media (max-width: 800px) {
+
+        .student-courses-page {
+            padding: 24px 18px 40px;
+        }
+
+        .courses-hero,
+        .courses-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .course-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .course-search {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .course-filter {
+            overflow-x: auto;
+        }
+
+    }
+
+    @@media (max-width: 620px) {
+
+        .available-course-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .courses-hero h1 {
+            font-size: 31px;
+        }
+
+    }
+
+</style>
+
+
+<script>
+
+    let activeCourseStatus = 'all';
+
+    function filterAvailableCourses() {
+
+        const input =
+            document.getElementById('availableCourseSearch');
+
+        const query =
+            input
+                ? input.value.toLowerCase().trim()
+                : '';
+
+        const cards =
+            document.querySelectorAll('.available-course-card');
+
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+
+            const searchText =
+                card.dataset.search || '';
+
+            const status =
+                card.dataset.status || '';
+
+            const matchesSearch =
+                searchText.includes(query);
+
+            const matchesStatus =
+                activeCourseStatus === 'all' ||
+                status === activeCourseStatus;
+
+            const visible =
+                matchesSearch && matchesStatus;
+
+            card.style.display =
+                visible ? '' : 'none';
+
+            if (visible) {
+                visibleCount++;
+            }
+
+        });
+
+        const noResults =
+            document.getElementById('noCourseSearchResults');
+
+        if (noResults) {
+            noResults.hidden = visibleCount !== 0;
+        }
+
+    }
+
+
+    function filterByStatus(status, button) {
+
+        activeCourseStatus = status;
+
+        document
+            .querySelectorAll('.filter-button')
+            .forEach(function (item) {
+                item.classList.remove('active');
+            });
+
+        if (button) {
+            button.classList.add('active');
+        }
+
+        filterAvailableCourses();
+
+    }
+
+
+    function confirmCourseEnrolment(form) {
+
+        const courseTitle =
+            form.dataset.courseTitle || 'this course';
+
+        return window.confirm(
+            'Enrol in "' +
+            courseTitle +
+            '"?'
+        );
+
+    }
+
+</script>

@@ -1,0 +1,862 @@
+/* ==========================================
+   APULMS - COURSES PAGE
+========================================== */
+
+.courses-page {
+    background: #f4f8fc;
+    min-height: 100vh;
+}
+
+
+/* ==========================================
+   COURSES HERO
+========================================== */
+
+.courses-hero {
+    min-height: 60vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: white;
+
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            rgba(5, 15, 30, 0.85),
+            rgba(13, 110, 253, 0.78)
+        ),
+        url("../images/banner_apu_iconic_campus.jpg");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.courses-hero-content {
+    max-width: 850px;
+    padding: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.courses-hero-content h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.courses-hero-content p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #f1f5f9;
+}
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+.course-search-section {
+    padding: 50px 8%;
+    background: white;
+}
+
+.course-search-box {
+    max-width: 700px;
+    margin: 0 auto;
+
+    position: relative;
+}
+
+.course-search-box i {
+    position: absolute;
+
+    left: 20px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #64748b;
+
+    font-size: 1.2rem;
+}
+
+.course-search-box input {
+    width: 100%;
+
+    padding: 18px 20px 18px 55px;
+
+    border: 1px solid #dbe4ef;
+    border-radius: 50px;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.06);
+
+    transition: 0.3s;
+}
+
+.course-search-box input:focus {
+    border-color: #0d6efd;
+
+    box-shadow:
+        0 8px 30px rgba(13, 110, 253, 0.15);
+}
+
+
+/* ==========================================
+   FILTERS
+========================================== */
+
+.course-filter-section {
+    padding: 20px 8% 50px;
+
+    background: white;
+
+    text-align: center;
+}
+
+.course-filters {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+.course-filter {
+    border: 1px solid #dbe4ef;
+
+    background: white;
+
+    color: #334155;
+
+    padding: 10px 20px;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.course-filter:hover,
+.course-filter.active {
+    background: #0d6efd;
+    color: white;
+
+    border-color: #0d6efd;
+}
+
+
+/* ==========================================
+   COURSE LIST
+========================================== */
+
+.courses-list-section {
+    padding: 70px 8%;
+}
+
+.courses-heading {
+    text-align: center;
+
+    max-width: 750px;
+
+    margin: 0 auto 50px;
+}
+
+.courses-heading span {
+    color: #0d6efd;
+}
+
+.courses-heading h2 {
+    font-size: 2.7rem;
+
+    color: #0f172a;
+
+    margin-bottom: 15px;
+}
+
+.courses-heading p {
+    color: #64748b;
+
+    line-height: 1.7;
+}
+
+
+/* ==========================================
+   COURSE GRID
+========================================== */
+
+.courses-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px, 1fr)
+        );
+
+    gap: 30px;
+
+    max-width: 1250px;
+
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   COURSE CARD
+========================================== */
+
+.course-item {
+    background: white;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.08);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.course-item:hover {
+    transform: translateY(-10px);
+
+    box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.14);
+}
+
+
+/* COURSE IMAGE */
+
+.course-image {
+    height: 190px;
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform 0.5s ease;
+}
+
+.course-item:hover .course-image img {
+    transform: scale(1.08);
+}
+
+
+/* COURSE CATEGORY */
+
+.course-category {
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+
+    background: rgba(13, 110, 253, 0.95);
+
+    color: white;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 0.75rem;
+
+    font-weight: 700;
+}
+
+
+/* COURSE CONTENT */
+
+.course-content {
+    padding: 25px;
+}
+
+.course-content h3 {
+    color: #0f172a;
+
+    font-size: 1.35rem;
+
+    margin-bottom: 12px;
+}
+
+.course-content p {
+    color: #64748b;
+
+    line-height: 1.7;
+
+    margin-bottom: 20px;
+}
+
+
+/* COURSE FOOTER */
+
+.course-footer {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.course-level {
+    color: #64748b;
+
+    font-size: 0.9rem;
+}
+
+.course-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 17px;
+
+    border-radius: 10px;
+
+    background: #0d6efd;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.course-btn:hover {
+    background: #0b5ed7;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==========================================
+   CTA
+========================================== */
+
+.courses-cta {
+    padding: 80px 8%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #081120,
+            #0d6efd
+        );
+
+    color: white;
+
+    text-align: center;
+}
+
+.courses-cta-content {
+    max-width: 750px;
+
+    margin: auto;
+}
+
+.courses-cta h2 {
+    color: white;
+
+    font-size: 2.8rem;
+
+    margin-bottom: 15px;
+}
+
+.courses-cta p {
+    color: #e2e8f0;
+
+    font-size: 1.1rem;
+
+    line-height: 1.7;
+
+    margin-bottom: 30px;
+}
+
+.courses-cta .btn {
+    padding: 13px 28px;
+
+    border-radius: 10px;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================
+   NO RESULTS
+========================================== */
+
+.course-no-results {
+    text-align: center;
+
+    grid-column: 1 / -1;
+
+    padding: 50px;
+
+    color: #64748b;
+}
+
+.course-no-results i {
+    font-size: 3rem;
+
+    margin-bottom: 15px;
+
+    color: #94a3b8;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 768px) {
+
+    .courses-hero {
+        min-height: 50vh;
+    }
+
+    .courses-hero-content h1 {
+        font-size: 2.6rem;
+    }
+
+    .courses-hero-content p {
+        font-size: 1rem;
+    }
+
+    .courses-heading h2 {
+        font-size: 2.1rem;
+    }
+
+    .courses-cta h2 {
+        font-size: 2.2rem;
+    }
+
+    .course-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .course-btn {
+        justify-content: center;
+    }
+}
+/* ==========================================================
+   APULMS PUBLIC COURSES - FINAL GUEST CATALOGUE
+   ========================================================== */
+
+/* Cleaner course area */
+.courses-list-section {
+    padding: 70px 7% 85px !important;
+}
+
+.courses-heading {
+    margin-bottom: 38px !important;
+}
+
+.courses-heading .section-mini-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #0d6efd;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+/* Stable 3-column desktop catalogue */
+.courses-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 26px !important;
+    max-width: 1280px !important;
+    align-items: stretch;
+}
+
+/* Equal-height card */
+.course-item {
+    min-width: 0;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    border: 1px solid #e6edf6;
+    border-radius: 18px !important;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(15, 35, 65, 0.06) !important;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease !important;
+}
+
+.course-item:hover {
+    transform: translateY(-5px) !important;
+    border-color: #cfdef7;
+    box-shadow: 0 17px 38px rgba(15, 35, 65, 0.10) !important;
+}
+
+/* Image */
+.course-image {
+    width: 100%;
+    height: 210px !important;
+    min-height: 210px;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, #eaf3ff, #f4f8fc);
+}
+
+.course-image img {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+.course-item:hover .course-image img {
+    transform: scale(1.035) !important;
+}
+
+/* Category badge */
+.course-category {
+    top: 16px !important;
+    left: 16px !important;
+    display: inline-flex;
+    align-items: center;
+    min-height: 31px;
+    padding: 6px 13px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.18);
+    font-size: 0.76rem;
+    font-weight: 750;
+}
+
+/* Content fills remaining card */
+.course-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 25px !important;
+}
+
+.course-content h3 {
+    min-height: 2.8rem;
+    margin: 0 0 10px !important;
+    color: #172033;
+    font-size: 1.22rem !important;
+    line-height: 1.35;
+}
+
+.course-content > p {
+    min-height: 3.4rem;
+    margin: 0 0 16px !important;
+    color: #66758a;
+    line-height: 1.65 !important;
+    font-size: 0.93rem;
+}
+
+/* Lecturer row */
+.course-content > div[style] {
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+    padding: 11px 13px;
+    color: #526176;
+    background: #f7f9fc;
+    border: 1px solid #e9eef5;
+    border-radius: 10px;
+    opacity: 1 !important;
+}
+
+.course-content > div[style] i {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d6efd;
+    background: #e9f2ff;
+    border-radius: 8px;
+}
+
+/* Footer always aligned at bottom */
+.course-footer {
+    margin-top: auto;
+    padding-top: 17px;
+    border-top: 1px solid #edf1f6;
+}
+
+.course-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #64748b !important;
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.course-level i {
+    color: #0d6efd;
+}
+
+/* Login action */
+.course-btn {
+    white-space: nowrap;
+    border-radius: 10px !important;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1050px) {
+    .courses-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .courses-list-section {
+        padding: 55px 6% 70px !important;
+    }
+
+    .courses-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .course-image {
+        height: 200px !important;
+        min-height: 200px;
+    }
+
+    .course-content h3,
+    .course-content > p {
+        min-height: 0;
+    }
+}
+
+
+/* ==========================================================
+   APULMS PUBLIC COURSES - FINAL GUEST CATALOGUE
+   ========================================================== */
+
+/* Cleaner course area */
+.courses-list-section {
+    padding: 70px 7% 85px !important;
+}
+
+.courses-heading {
+    margin-bottom: 38px !important;
+}
+
+.courses-heading .section-mini-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #0d6efd;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+/* Stable 3-column desktop catalogue */
+.courses-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 26px !important;
+    max-width: 1280px !important;
+    align-items: stretch;
+}
+
+/* Equal-height card */
+.course-item {
+    min-width: 0;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    border: 1px solid #e6edf6;
+    border-radius: 18px !important;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(15, 35, 65, 0.06) !important;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease !important;
+}
+
+.course-item:hover {
+    transform: translateY(-5px) !important;
+    border-color: #cfdef7;
+    box-shadow: 0 17px 38px rgba(15, 35, 65, 0.10) !important;
+}
+
+/* Image */
+.course-image {
+    width: 100%;
+    height: 210px !important;
+    min-height: 210px;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, #eaf3ff, #f4f8fc);
+}
+
+.course-image img {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+.course-item:hover .course-image img {
+    transform: scale(1.035) !important;
+}
+
+/* Category badge */
+.course-category {
+    top: 16px !important;
+    left: 16px !important;
+    display: inline-flex;
+    align-items: center;
+    min-height: 31px;
+    padding: 6px 13px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.18);
+    font-size: 0.76rem;
+    font-weight: 750;
+}
+
+/* Content fills remaining card */
+.course-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 25px !important;
+}
+
+.course-content h3 {
+    min-height: 2.8rem;
+    margin: 0 0 10px !important;
+    color: #172033;
+    font-size: 1.22rem !important;
+    line-height: 1.35;
+}
+
+.course-content > p {
+    min-height: 3.4rem;
+    margin: 0 0 16px !important;
+    color: #66758a;
+    line-height: 1.65 !important;
+    font-size: 0.93rem;
+}
+
+/* Lecturer row */
+.course-content > div[style] {
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+    padding: 11px 13px;
+    color: #526176;
+    background: #f7f9fc;
+    border: 1px solid #e9eef5;
+    border-radius: 10px;
+    opacity: 1 !important;
+}
+
+.course-content > div[style] i {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d6efd;
+    background: #e9f2ff;
+    border-radius: 8px;
+}
+
+/* Footer always aligned at bottom */
+.course-footer {
+    margin-top: auto;
+    padding-top: 17px;
+    border-top: 1px solid #edf1f6;
+}
+
+.course-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #64748b !important;
+    font-size: 0.82rem;
+    font-weight: 650;
+}
+
+.course-level i {
+    color: #0d6efd;
+}
+
+/* Login action */
+.course-btn {
+    white-space: nowrap;
+    border-radius: 10px !important;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1050px) {
+    .courses-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .courses-list-section {
+        padding: 55px 6% 70px !important;
+    }
+
+    .courses-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .course-image {
+        height: 200px !important;
+        min-height: 200px;
+    }
+
+    .course-content h3,
+    .course-content > p {
+        min-height: 0;
+    }
+}
+
+
+/* ==========================================================
+   PUBLIC COURSE EMPTY STATE FIX
+   ========================================================== */
+
+#courseNoResults {
+    display: none;
+}
+

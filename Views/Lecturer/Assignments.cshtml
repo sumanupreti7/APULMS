@@ -1,0 +1,304 @@
+@{
+    ViewData["Title"] = "Assignments";
+}
+
+<div class="portal-page">
+
+    <!-- BACK -->
+    <div class="portal-back-row">
+        <button type="button"
+                class="portal-back-button"
+                onclick="window.history.back();">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back</span>
+        </button>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <section class="portal-page-heading">
+        <div>
+            <span class="page-eyebrow">ACADEMIC WORK</span>
+            <h1>Assignments</h1>
+            <p>Manage coursework, deadlines and student submissions.</p>
+        </div>
+
+        <div class="page-heading-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+    </section>
+
+    <!-- STATISTICS -->
+    <section class="portal-stat-grid">
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-blue">
+                <i class="bi bi-file-earmark-text-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Total Assignments</span>
+                <strong>25</strong>
+                <small>Across your courses</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-orange">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Pending Review</span>
+                <strong>8</strong>
+                <small>Require attention</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-purple">
+                <i class="bi bi-inbox-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Submissions</span>
+                <strong>25</strong>
+                <small>Recently received</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-yellow">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Reviewed</span>
+                <strong>17</strong>
+                <small>Completed</small>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- ASSIGNMENT MANAGEMENT -->
+    <section class="portal-main-card">
+
+        <div class="dashboard-card-header">
+
+            <div>
+                <span class="dashboard-small-label">COURSEWORK</span>
+                <h2>Recent Assignments</h2>
+                <p>Review and manage current coursework.</p>
+            </div>
+
+            <button type="button"
+                    class="portal-primary-button assignment-create-button">
+                <i class="bi bi-plus-lg"></i>
+                <span>New Assignment</span>
+            </button>
+
+        </div>
+
+        <!-- ASSIGNMENT LIST -->
+        <div class="lecturer-assignment-list">
+
+            <!-- ASSIGNMENT 1 -->
+            <article class="lecturer-assignment-row">
+
+                <div class="assignment-row-icon assignment-blue">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+
+                <div class="assignment-row-main">
+                    <span class="course-category">
+                        CYBER SECURITY
+                    </span>
+
+                    <h3>Network Security Analysis</h3>
+
+                    <p>
+                        Analyse common network threats and document
+                        appropriate security controls.
+                    </p>
+                </div>
+
+                <div class="assignment-row-info">
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-calendar-event"></i>
+
+                        <div>
+                            <span>Due Date</span>
+                            <strong>30 Sep</strong>
+                        </div>
+                    </div>
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-file-earmark-check"></i>
+
+                        <div>
+                            <span>Submissions</span>
+                            <strong>18</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <span class="course-row-status">
+                    <i></i>
+                    Active
+                </span>
+
+                <div class="assignment-row-actions">
+
+                    <button type="button"
+                            class="assignment-icon-button"
+                            title="View assignment">
+                        <i class="bi bi-eye"></i>
+                    </button>
+
+                    <button type="button"
+                            class="assignment-review-button">
+                        <i class="bi bi-check2-square"></i>
+                        <span>Review</span>
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ASSIGNMENT 2 -->
+            <article class="lecturer-assignment-row">
+
+                <div class="assignment-row-icon assignment-purple">
+                    <i class="bi bi-code-slash"></i>
+                </div>
+
+                <div class="assignment-row-main">
+                    <span class="course-category">
+                        WEB DEVELOPMENT
+                    </span>
+
+                    <h3>Responsive Web Application</h3>
+
+                    <p>
+                        Design and implement a responsive web interface
+                        using modern development techniques.
+                    </p>
+                </div>
+
+                <div class="assignment-row-info">
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-calendar-event"></i>
+
+                        <div>
+                            <span>Due Date</span>
+                            <strong>05 Oct</strong>
+                        </div>
+                    </div>
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-file-earmark-check"></i>
+
+                        <div>
+                            <span>Submissions</span>
+                            <strong>22</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <span class="course-row-status">
+                    <i></i>
+                    Active
+                </span>
+
+                <div class="assignment-row-actions">
+
+                    <button type="button"
+                            class="assignment-icon-button"
+                            title="View assignment">
+                        <i class="bi bi-eye"></i>
+                    </button>
+
+                    <button type="button"
+                            class="assignment-review-button">
+                        <i class="bi bi-check2-square"></i>
+                        <span>Review</span>
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ASSIGNMENT 3 -->
+            <article class="lecturer-assignment-row">
+
+                <div class="assignment-row-icon assignment-green">
+                    <i class="bi bi-database-fill"></i>
+                </div>
+
+                <div class="assignment-row-main">
+                    <span class="course-category">
+                        DATABASE
+                    </span>
+
+                    <h3>Database Design Project</h3>
+
+                    <p>
+                        Create a relational database model and demonstrate
+                        appropriate SQL operations.
+                    </p>
+                </div>
+
+                <div class="assignment-row-info">
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-calendar-event"></i>
+
+                        <div>
+                            <span>Due Date</span>
+                            <strong>10 Oct</strong>
+                        </div>
+                    </div>
+
+                    <div class="assignment-info-item">
+                        <i class="bi bi-file-earmark-check"></i>
+
+                        <div>
+                            <span>Submissions</span>
+                            <strong>15</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <span class="assignment-review-status">
+                    <i></i>
+                    Reviewing
+                </span>
+
+                <div class="assignment-row-actions">
+
+                    <button type="button"
+                            class="assignment-icon-button"
+                            title="View assignment">
+                        <i class="bi bi-eye"></i>
+                    </button>
+
+                    <button type="button"
+                            class="assignment-review-button">
+                        <i class="bi bi-check2-square"></i>
+                        <span>Review</span>
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+</div>

@@ -1,0 +1,154 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Dashboard";
+
+    var lecturerName = ViewBag.Name?.ToString();
+
+    if (string.IsNullOrWhiteSpace(lecturerName))
+    {
+        lecturerName = Context.Session.GetString("UserName") ?? "Lecturer";
+    }
+
+    var lecturerEmail = ViewBag.Email?.ToString() ?? "";
+
+    string? profileImage =
+        ViewData["ProfileImage"]?.ToString()
+        ?? Context.Session.GetString("ProfileImage");
+}
+
+<aside class="lecturer-sidebar" id="lecturerSidebar">
+
+    <div class="lecturer-brand">
+        <div class="lecturer-brand-icon">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+
+        <div class="lecturer-brand-text">
+            <strong>APULMS</strong>
+            <small>Learning Management System</small>
+            <span>Lecturer Portal</span>
+        </div>
+    </div>
+
+    <div class="lecturer-user">
+
+        <div class="lecturer-avatar-wrap">
+
+            <div class="lecturer-avatar">
+
+                @if (!string.IsNullOrWhiteSpace(profileImage))
+                {
+                    <img src="@profileImage"
+                         alt="@lecturerName Profile Picture"
+                         style="width:100%;
+                                height:100%;
+                                display:block;
+                                object-fit:cover;
+                                object-position:center;
+                                border-radius:50%;" />
+                }
+                else
+                {
+                    <i class="bi bi-person-fill"></i>
+                }
+
+            </div>
+
+            <span class="online-dot"></span>
+
+        </div>
+
+        <strong>@lecturerName</strong>
+
+        <span class="lecturer-role">Lecturer</span>
+
+        <div class="online-status">
+            <span></span>
+            Online
+        </div>
+
+    </div>
+
+
+    <nav class="lecturer-nav">
+
+        <a asp-controller="Lecturer"
+           asp-action="Dashboard"
+           class="@(currentAction == "Dashboard" ? "active" : "")">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a asp-controller="Lecturer"
+           asp-action="Courses"
+           class="@(currentAction == "Courses" ? "active" : "")">
+            <i class="bi bi-book-half"></i>
+            <span>Courses</span>
+        </a>
+
+        <a asp-controller="Lecturer"
+           asp-action="Students"
+           class="@(currentAction == "Students" ? "active" : "")">
+            <i class="bi bi-people-fill"></i>
+            <span>Students</span>
+        </a>
+
+        <a asp-controller="Lecturer"
+           asp-action="Quizzes"
+           class="@(
+               currentAction == "Quizzes" ||
+               currentAction == "CreateQuiz" ||
+               currentAction == "DeleteQuiz"
+                   ? "active"
+                   : ""
+           )">
+            <i class="bi bi-ui-checks-grid"></i>
+            <span>Quizzes</span>
+        </a>
+
+        <a asp-controller="Lecturer"
+           asp-action="Grades"
+           class="@(currentAction == "Grades" ? "active" : "")">
+            <i class="bi bi-bar-chart-fill"></i>
+            <span>Grades</span>
+        </a>
+
+        <a asp-controller="Lecturer"
+           asp-action="Profile"
+           class="@(currentAction == "Profile" ? "active" : "")">
+            <i class="bi bi-person-fill"></i>
+            <span>Profile</span>
+        </a>
+
+    </nav>
+
+
+    <div class="lecturer-sidebar-bottom">
+
+        <div class="sidebar-divider"></div>
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="lecturer-logout">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
+        </a>
+
+        <div class="sidebar-campus">
+
+            <div class="campus-overlay"></div>
+
+            <div class="campus-message">
+                <span>Learn</span>
+                <span>Teach</span>
+                <span>Inspire</span>
+            </div>
+
+        </div>
+
+        <div class="lecturer-copyright">
+            © 2026 APULMS
+        </div>
+
+    </div>
+
+</aside>

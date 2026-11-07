@@ -1,0 +1,327 @@
+@model List<APULMS.Models.ContactInquiry>
+
+@{
+    ViewData["Title"] = "Guest Inquiries";
+
+    int total = ViewBag.TotalInquiries ?? 0;
+    int newCount = ViewBag.NewInquiries ?? 0;
+    int readCount = ViewBag.ReadInquiries ?? 0;
+    int repliedCount = ViewBag.RepliedInquiries ?? 0;
+}
+
+<style>
+    .inq-page {
+        padding: 30px;
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .inq-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .inq-eyebrow {
+        color: #1976d2;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+    .inq-header h1 {
+        margin: 7px 0 6px;
+        color: #102a43;
+        font-size: 32px;
+    }
+
+    .inq-header p {
+        margin: 0;
+        color: #71869a;
+    }
+
+    .inq-back {
+        padding: 11px 18px;
+        border-radius: 10px;
+        background: #fff;
+        border: 1px solid #dfe8f1;
+        color: #29445c;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .inq-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .inq-stat {
+        background: #fff;
+        border: 1px solid #e3ebf3;
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .inq-stat span {
+        display: block;
+        color: #7b8fa3;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .inq-stat strong {
+        color: #102a43;
+        font-size: 27px;
+    }
+
+    .inq-panel {
+        background: #fff;
+        border: 1px solid #e3ebf3;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .inq-panel-title {
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .inq-panel-title h2 {
+        margin: 0 0 5px;
+        color: #102a43;
+        font-size: 20px;
+    }
+
+    .inq-panel-title p {
+        margin: 0;
+        color: #8092a4;
+        font-size: 14px;
+    }
+
+    .inq-row {
+        display: grid;
+        grid-template-columns: 1.15fr 1.5fr 1fr 110px 120px;
+        align-items: center;
+        gap: 18px;
+        padding: 19px 22px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .inq-row:last-child {
+        border-bottom: none;
+    }
+
+    .inq-name {
+        color: #18344d;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .inq-email {
+        color: #7c8fa1;
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+    .inq-subject {
+        color: #29445c;
+        font-weight: 700;
+    }
+
+    .inq-date {
+        color: #71869a;
+        font-size: 13px;
+    }
+
+    .inq-status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .inq-status-new {
+        background: #e8f3ff;
+        color: #0969c3;
+    }
+
+    .inq-status-read {
+        background: #fff5dc;
+        color: #9a6800;
+    }
+
+    .inq-status-replied {
+        background: #e6f7ee;
+        color: #18794e;
+    }
+
+    .inq-view {
+        display: inline-block;
+        padding: 9px 13px;
+        background: #1976d2;
+        color: #fff;
+        border-radius: 9px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .inq-empty {
+        padding: 55px 20px;
+        text-align: center;
+        color: #7c8fa1;
+    }
+
+    @@media (max-width: 900px) {
+        .inq-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .inq-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .inq-page {
+            padding: 20px;
+        }
+
+        .inq-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .inq-stats {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<div class="inq-page">
+
+    <div class="inq-header">
+        <div>
+            <span class="inq-eyebrow">ADMIN PORTAL</span>
+            <h1>Guest Inquiries</h1>
+            <p>
+                Review and manage inquiries submitted through
+                the public APULMS contact form.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="inq-back">
+            ← Dashboard
+        </a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="inq-stats">
+
+        <div class="inq-stat">
+            <span>Total Inquiries</span>
+            <strong>@total</strong>
+        </div>
+
+        <div class="inq-stat">
+            <span>New</span>
+            <strong>@newCount</strong>
+        </div>
+
+        <div class="inq-stat">
+            <span>Read</span>
+            <strong>@readCount</strong>
+        </div>
+
+        <div class="inq-stat">
+            <span>Replied</span>
+            <strong>@repliedCount</strong>
+        </div>
+
+    </div>
+
+    <div class="inq-panel">
+
+        <div class="inq-panel-title">
+            <h2>Inquiry Inbox</h2>
+            <p>
+                Newest guest messages appear first.
+            </p>
+        </div>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="inq-empty">
+                No guest inquiries have been received yet.
+            </div>
+        }
+        else
+        {
+            @foreach (var inquiry in Model)
+            {
+                string statusClass =
+                    inquiry.Status.ToLowerInvariant() switch
+                    {
+                        "replied" => "inq-status-replied",
+                        "read" => "inq-status-read",
+                        _ => "inq-status-new"
+                    };
+
+                <div class="inq-row">
+
+                    <div>
+                        <div class="inq-name">
+                            @inquiry.Name
+                        </div>
+
+                        <div class="inq-email">
+                            @inquiry.Email
+                        </div>
+                    </div>
+
+                    <div class="inq-subject">
+                        @inquiry.Subject
+                    </div>
+
+                    <div class="inq-date">
+                        @inquiry.CreatedAt.ToString(
+                            "dd MMM yyyy, hh:mm tt")
+                    </div>
+
+                    <div>
+                        <span class="inq-status @statusClass">
+                            @inquiry.Status
+                        </span>
+                    </div>
+
+                    <a asp-controller="Admin"
+                       asp-action="InquiryDetails"
+                       asp-route-id="@inquiry.Id"
+                       class="inq-view">
+                        View
+                    </a>
+
+                </div>
+            }
+        }
+
+    </div>
+
+</div>

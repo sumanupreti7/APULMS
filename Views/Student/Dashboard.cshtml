@@ -1,0 +1,2935 @@
+@using APULMS.Models
+
+@using APULMS.Controllers
+
+
+
+@{
+
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+
+    ViewData["Title"] = "Student Dashboard";
+
+
+
+    var enrolledCourses =
+
+        ViewBag.EnrolledCourses as List<Course>
+
+        ?? new List<Course>();
+
+
+
+    var quizResults =
+
+        ViewBag.QuizResults as List<StudentQuizResult>
+
+        ?? new List<StudentQuizResult>();
+
+
+
+    int enrolledCourseCount = ViewBag.EnrolledCourseCount ?? 0;
+
+    int averageProgress = ViewBag.AverageProgress ?? 0;
+
+    int quizCount = ViewBag.QuizCount ?? 0;
+
+    int averageQuizScore = ViewBag.AverageQuizScore ?? 0;
+
+
+
+    string studentName = ViewBag.Name ?? "Student";
+
+    string studentEmail = ViewBag.Email ?? "";
+
+    string studentRole = ViewBag.Role ?? "student";
+
+    string profileImage =
+        ViewBag.ProfileImage as string
+        ?? "";
+
+
+
+    string firstName = studentName.Split(' ')[0];
+
+
+
+    if (averageProgress < 0) averageProgress = 0;
+
+    if (averageProgress > 100) averageProgress = 100;
+
+}
+
+
+
+<div class="student-portal">
+
+
+
+    <!-- MOBILE HEADER -->
+
+    <header class="mobile-header">
+
+        <button type="button"
+
+                class="mobile-menu-button"
+
+                onclick="toggleStudentSidebar()"
+
+                aria-label="Open menu">
+
+            ☰
+
+        </button>
+
+
+
+        <div class="mobile-brand">
+
+            <span class="brand-cap">🎓</span>
+
+            <strong>APULMS</strong>
+
+        </div>
+
+
+
+        <div class="mobile-header-actions">
+
+            <button type="button" class="mobile-icon-button">
+
+                🔔
+
+            </button>
+
+
+
+            <div class="mobile-avatar">
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@studentName"
+                                     style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" />
+                            }
+                            else
+                            {
+                                <span>👨‍🎓</span>
+                            }
+                        </div>
+
+        </div>
+
+    </header>
+
+
+
+
+
+    <!-- SIDEBAR OVERLAY -->
+
+    <div id="studentSidebarOverlay"
+
+         class="sidebar-overlay"
+
+         onclick="closeStudentSidebar()">
+
+    </div>
+
+
+
+
+
+    <!-- SIDEBAR -->
+
+    <aside id="studentSidebar"
+
+           class="student-sidebar">
+
+
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-brand-main">
+
+                <span class="brand-cap">🎓</span>
+
+
+
+                <div>
+
+                    <div class="brand-name">
+
+                        APULMS
+
+                    </div>
+
+
+
+                    <div class="brand-subtitle">
+
+                        Learning Management System
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="sidebar-profile">
+
+            <div class="sidebar-avatar">
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@studentName"
+                                     style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" />
+                            }
+                            else
+                            {
+                                <span>👨‍🎓</span>
+                            }
+                        </div>
+
+
+
+            <h3>@studentName</h3>
+
+
+
+            <p>Student</p>
+
+
+
+            <div class="online-status">
+
+                <span></span>
+
+                Online
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <nav class="student-nav">
+
+
+
+            <button type="button"
+
+                    class="student-nav-link active"
+
+                    data-section="dashboard"
+
+                    onclick="showStudentSection('dashboard', this)">
+
+                <span class="nav-icon">⌂</span>
+
+                <span>Dashboard</span>
+
+            </button>
+
+
+
+            <button type="button"
+
+                    class="student-nav-link"
+
+                    data-section="courses"
+
+                    onclick="showStudentSection('courses', this)">
+
+                <span class="nav-icon">▣</span>
+
+                <span>My Courses</span>
+
+            </button>
+
+
+
+            <a asp-controller="Student"
+
+               asp-action="Quizzes"
+
+               class="student-nav-link">
+
+                <span class="nav-icon">▤</span>
+
+                <span>Quizzes</span>
+
+            </a>
+
+
+
+            <button type="button"
+
+                    class="student-nav-link"
+
+                    data-section="results"
+
+                    onclick="showStudentSection('results', this)">
+
+                <span class="nav-icon">▥</span>
+
+                <span>Results</span>
+
+            </button>
+
+
+
+            <button type="button"
+
+                    class="student-nav-link"
+
+                    data-section="profile"
+
+                    onclick="showStudentSection('profile', this)">
+
+                <span class="nav-icon">♙</span>
+
+                <span>Profile</span>
+
+            </button>
+
+
+
+        </nav>
+
+
+
+
+
+        <div class="sidebar-divider"></div>
+
+
+
+
+
+        <a asp-controller="Account"
+
+           asp-action="Logout"
+
+           class="sidebar-logout">
+
+
+
+            <span>↪</span>
+
+            Logout
+
+
+
+        </a>
+
+
+
+
+
+        <div class="sidebar-motto">
+
+            <div class="motto-overlay"></div>
+
+
+
+            <div class="motto-content">
+
+                <span>Learn</span>
+
+                <span>Grow</span>
+
+                <span>Achieve</span>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="sidebar-footer">
+
+            © 2026 APULMS
+
+        </div>
+
+
+
+    </aside>
+
+
+
+
+
+    <!-- MAIN WORKSPACE -->
+
+    <main class="student-workspace">
+
+
+
+        <div class="workspace-inner">
+
+
+
+            <!-- TOP BAR -->
+
+            <header class="student-topbar">
+
+
+
+                <div class="student-search">
+
+                    <span class="search-icon">⌕</span>
+
+
+
+                    <input type="text"
+
+                           id="studentSearch"
+
+                           placeholder="Search courses, quizzes, or resources..."
+
+                           autocomplete="off" />
+
+                </div>
+
+
+
+
+
+                <div class="topbar-actions">
+
+
+
+                    <button type="button"
+
+                            class="notification-button"
+
+                            aria-label="Notifications">
+
+
+
+                        <span class="notification-icon">
+
+                            ♧
+
+                        </span>
+
+
+
+                        
+
+
+
+                    </button>
+
+
+
+
+
+                    <div class="topbar-user">
+
+
+
+                        <div class="topbar-avatar">
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@studentName"
+                                     style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" />
+                            }
+                            else
+                            {
+                                <span>👨‍🎓</span>
+                            }
+                        </div>
+
+
+
+                        <div class="topbar-user-text">
+
+                            <strong>@studentName</strong>
+
+                            <small>Student</small>
+
+                        </div>
+
+
+
+                        <span class="user-chevron">
+
+                           ⌄
+
+                        </span>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </header>
+
+
+
+
+
+            @if (TempData["ProfileSuccess"] != null)
+            {
+                <div class="student-alert"
+                     style="margin-bottom:16px;">
+                    @TempData["ProfileSuccess"]
+                </div>
+            }
+
+            @if (TempData["ProfileError"] != null)
+            {
+                <div class="student-alert"
+                     style="margin-bottom:16px;">
+                    @TempData["ProfileError"]
+                </div>
+            }
+
+            @if (ViewBag.Error != null)
+
+            {
+
+                <div class="student-alert">
+
+                    @ViewBag.Error
+
+                </div>
+
+            }
+
+
+
+
+
+            <!-- =================================================
+
+                 DASHBOARD
+
+            ================================================== -->
+
+            <section id="dashboard"
+
+                     class="student-section active-section">
+
+
+
+                <div class="dashboard-grid">
+
+
+
+                    <!-- WELCOME HERO -->
+
+                    <article class="dashboard-card welcome-hero">
+
+
+
+                        <div class="welcome-copy">
+
+
+
+                            <div class="welcome-eyebrow">
+
+                                GOOD MORNING,
+
+                            </div>
+
+
+
+                            <h1>
+
+                                Welcome back,
+
+                                @firstName!
+
+                                <span class="wave">👋</span>
+
+                            </h1>
+
+
+
+                            <p>
+
+                                Continue your learning journey and
+
+                                track your progress in APULMS.
+
+                            </p>
+
+
+
+                            <button type="button"
+
+                                    class="primary-action"
+
+                                    onclick="openStudentSection('courses')">
+
+                                Explore Courses
+
+                                <span>→</span>
+
+                            </button>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="welcome-visual"
+
+                             aria-hidden="true">
+
+
+
+                            <div class="visual-cloud"></div>
+
+
+
+                            <div class="visual-book">
+
+                                📖
+
+                            </div>
+
+
+
+                            <div class="visual-cap">
+
+                                🎓
+
+                            </div>
+
+
+
+                            <div class="visual-student">
+
+                                👩‍💻
+
+                            </div>
+
+
+
+                            <div class="visual-books">
+
+                                📚
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- OVERALL PROGRESS -->
+
+                    <article class="dashboard-card overall-progress-card">
+
+
+
+                        <div class="card-heading">
+
+                            <span class="heading-icon progress-heading-icon">
+
+                                ▥
+
+                            </span>
+
+
+
+                            <h2>Overall Progress</h2>
+
+                        </div>
+
+
+
+
+
+                        <div class="progress-ring"
+
+                             style="--progress:@averageProgress;">
+
+
+
+                            <div class="progress-ring-inner">
+
+                                <strong>
+
+                                    @averageProgress%
+
+                                </strong>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="progress-message">
+
+                            <strong>
+
+                                Keep going!
+
+                            </strong>
+
+
+
+                            <span>
+
+                                @(averageProgress == 0
+
+                                    ? "You're just getting started."
+
+                                    : "You're making good progress.")
+
+                            </span>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- STAT 1 -->
+
+                    <article class="dashboard-card stat-card stat-courses">
+
+
+
+                        <div class="stat-icon">
+
+                            ▣
+
+                        </div>
+
+
+
+                        <div class="stat-information">
+
+                            <strong>
+
+                                @enrolledCourseCount
+
+                            </strong>
+
+
+
+                            <h3>
+
+                                Enrolled Courses
+
+                            </h3>
+
+
+
+                            <p>
+
+                                Start learning today
+
+                            </p>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- STAT 2 -->
+
+                    <article class="dashboard-card stat-card stat-progress">
+
+
+
+                        <div class="stat-icon">
+
+                            ◎
+
+                        </div>
+
+
+
+                        <div class="stat-information">
+
+                            <strong>
+
+                                @averageProgress%
+
+                            </strong>
+
+
+
+                            <h3>
+
+                                Average Progress
+
+                            </h3>
+
+
+
+                            <p>
+
+                                Keep learning!
+
+                            </p>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- STAT 3 -->
+
+                    <article class="dashboard-card stat-card stat-quizzes">
+
+
+
+                        <div class="stat-icon">
+
+                            ▤
+
+                        </div>
+
+
+
+                        <div class="stat-information">
+
+                            <strong>
+
+                                @quizCount
+
+                            </strong>
+
+
+
+                            <h3>
+
+                                Quizzes Completed
+
+                            </h3>
+
+
+
+                            <p>
+
+                                Take your first quiz
+
+                            </p>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- STAT 4 -->
+
+                    <article class="dashboard-card stat-card stat-score">
+
+
+
+                        <div class="stat-icon">
+
+                            ★
+
+                        </div>
+
+
+
+                        <div class="stat-information">
+
+                            <strong>
+
+                                @averageQuizScore
+
+                            </strong>
+
+
+
+                            <h3>
+
+                                Average Quiz Score
+
+                            </h3>
+
+
+
+                            <p>
+
+                                Aim for higher!
+
+                            </p>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- MY COURSES PREVIEW -->
+
+                    <article class="dashboard-card courses-panel">
+
+
+
+                        <div class="panel-header">
+
+
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon blue-icon">
+
+                                    ▣
+
+                                </span>
+
+
+
+                                <h2>
+
+                                    My Courses
+
+                                </h2>
+
+                            </div>
+
+
+
+                            <button type="button"
+
+                                    class="text-action"
+
+                                    onclick="openStudentSection('courses')">
+
+                                View All →
+
+                            </button>
+
+
+
+                        </div>
+
+
+
+
+
+                        @if (enrolledCourses.Count == 0)
+
+                        {
+
+                            <div class="empty-state">
+
+
+
+                                <div class="empty-state-icon">
+
+                                    🎓
+
+                                </div>
+
+
+
+                                <h3>
+
+                                    You are not currently enrolled
+
+                                    in any courses.
+
+                                </h3>
+
+
+
+                                <p>
+
+                                    Explore available courses and
+
+                                    start your learning journey.
+
+                                </p>
+
+
+
+                                <button type="button"
+
+                                        class="primary-action compact-action"
+
+                                        onclick="openStudentSection('courses')">
+
+
+
+                                    <span>▣</span>
+
+                                    Browse Courses
+
+
+
+                                </button>
+
+
+
+                            </div>
+
+                        }
+
+                        else
+
+                        {
+
+                            <div class="dashboard-course-list">
+
+
+
+                                @foreach (var course in enrolledCourses.Take(3))
+
+                                {
+
+                                    int progress = course.StudentCount;
+
+
+
+                                    if (progress < 0) progress = 0;
+
+                                    if (progress > 100) progress = 100;
+
+
+
+                                    <div class="dashboard-course-item">
+
+
+
+                                        <div class="course-item-top">
+
+
+
+                                            <div>
+
+                                                <span class="course-category">
+
+                                                    @(string.IsNullOrWhiteSpace(course.Category)
+
+                                                        ? "Course"
+
+                                                        : course.Category)
+
+                                                </span>
+
+
+
+                                                <h3>
+
+                                                    @course.Title
+
+                                                </h3>
+
+                                            </div>
+
+
+
+                                            <strong>
+
+                                                @progress%
+
+                                            </strong>
+
+
+
+                                        </div>
+
+
+
+                                        <p>
+
+                                            Lecturer:
+
+                                            @course.LecturerName
+
+                                        </p>
+
+
+
+                                        <div class="course-progress-track">
+
+                                            <div style="width:@(progress)%"></div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                }
+
+
+
+                            </div>
+
+                        }
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- RECENT QUIZ -->
+
+                    <article class="dashboard-card activity-panel">
+
+
+
+                        <div class="panel-header">
+
+
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon purple-icon">
+
+                                    ◷
+
+                                </span>
+
+
+
+                                <h2>
+
+                                    Recent Quiz Activity
+
+                                </h2>
+
+                            </div>
+
+
+
+                            <button type="button"
+
+                                    class="text-action"
+
+                                    onclick="openStudentSection('results')">
+
+                                View All →
+
+                            </button>
+
+
+
+                        </div>
+
+
+
+
+
+                        @if (quizResults.Count == 0)
+
+                        {
+
+                            <div class="empty-state">
+
+
+
+                                <div class="empty-state-icon activity-empty-icon">
+
+                                    ▤
+
+                                </div>
+
+
+
+                                <h3>
+
+                                    No quiz results yet.
+
+                                </h3>
+
+
+
+                                <p>
+
+                                    Complete quizzes to see
+
+                                    your results here.
+
+                                </p>
+
+
+
+                                <button type="button"
+
+                                        class="secondary-action"
+
+                                        onclick="openStudentSection('results')">
+
+
+
+                                    <span>▥</span>
+
+                                    Go to Results
+
+
+
+                                </button>
+
+
+
+                            </div>
+
+                        }
+
+                        else
+
+                        {
+
+                            <div class="quiz-activity-list">
+
+
+
+                                @foreach (var result in quizResults.Take(4))
+
+                                {
+
+                                    <div class="quiz-activity-item">
+
+
+
+                                        <div class="quiz-activity-icon">
+
+                                            ✓
+
+                                        </div>
+
+
+
+                                        <div class="quiz-activity-info">
+
+
+
+                                            <strong>
+
+                                                @result.CourseTitle
+
+                                            </strong>
+
+
+
+                                            <span>
+
+                                                @if (result.TakenAt != DateTime.MinValue)
+
+                                                {
+
+                                                    @result.TakenAt.ToString("dd MMM yyyy")
+
+                                                }
+
+                                            </span>
+
+
+
+                                        </div>
+
+
+
+                                        <div class="quiz-score">
+
+                                            @result.Score
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                }
+
+
+
+                            </div>
+
+                        }
+
+
+
+                    </article>
+
+
+
+
+
+                    <!-- QUICK ACTIONS -->
+
+                    <article class="dashboard-card quick-actions-panel">
+
+
+
+                        <div class="quick-actions-heading">
+
+
+
+                            <h2>
+
+                                <span>⚡</span>
+
+                                Quick Actions
+
+                            </h2>
+
+
+
+                            <p>
+
+                                Everything you need to get started
+
+                            </p>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="quick-actions-grid">
+
+
+
+                            <button type="button"
+
+                                    class="quick-action quick-blue"
+
+                                    onclick="openStudentSection('courses')">
+
+
+
+                                <span class="quick-icon">
+
+                                    ▣
+
+                                </span>
+
+
+
+                                <span class="quick-copy">
+
+                                    <strong>Browse Courses</strong>
+
+                                    <small>Explore available courses</small>
+
+                                </span>
+
+
+
+                                <span class="quick-arrow">›</span>
+
+
+
+                            </button>
+
+
+
+
+
+                            <button type="button"
+
+                                    class="quick-action quick-green"
+
+                                    onclick="openStudentSection('results')">
+
+
+
+                                <span class="quick-icon">
+
+                                    ▥
+
+                                </span>
+
+
+
+                                <span class="quick-copy">
+
+                                    <strong>View Results</strong>
+
+                                    <small>Check your performance</small>
+
+                                </span>
+
+
+
+                                <span class="quick-arrow">›</span>
+
+
+
+                            </button>
+
+
+
+
+
+                            <button type="button"
+
+                                    class="quick-action quick-orange"
+
+                                    onclick="openStudentSection('profile')">
+
+
+
+                                <span class="quick-icon">
+
+                                    ♙
+
+                                </span>
+
+
+
+                                <span class="quick-copy">
+
+                                    <strong>Update Profile</strong>
+
+                                    <small>Manage your account</small>
+
+                                </span>
+
+
+
+                                <span class="quick-arrow">›</span>
+
+
+
+                            </button>
+
+
+
+
+
+                            <button type="button"
+
+                                    class="quick-action quick-purple">
+
+
+
+                                <span class="quick-icon">
+
+                                    ⓘ
+
+                                </span>
+
+
+
+                                <span class="quick-copy">
+
+                                    <strong>Need Help?</strong>
+
+                                    <small>Contact support</small>
+
+                                </span>
+
+
+
+                                <span class="quick-arrow">›</span>
+
+
+
+                            </button>
+
+
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+                </div>
+
+
+
+            </section>
+
+
+
+
+
+            <!-- =================================================
+
+                 MY COURSES
+
+            ================================================== -->
+
+            <section id="courses"
+
+                     class="student-section">
+
+
+
+                <div class="section-page-header">
+
+
+
+                    <div>
+
+                        <span class="page-eyebrow">
+
+                            LEARNING
+
+                        </span>
+
+
+
+                        <h1>
+
+                            My Courses
+
+                        </h1>
+
+
+
+                        <p>
+
+                            View your enrolled courses and
+
+                            continue your learning progress.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="page-header-icon">
+
+                        ▣
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <div class="section-toolbar">
+
+
+
+                    <div class="section-search">
+
+                        <span>⌕</span>
+
+
+
+                        <input type="text"
+
+                               id="courseSearch"
+
+                               placeholder="Search your courses..."
+
+                               oninput="filterStudentCourses()" />
+
+                    </div>
+
+
+
+                    <div class="toolbar-summary">
+
+                        <strong>@enrolledCourseCount</strong>
+
+                        <span>Enrolled Courses</span>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                @if (enrolledCourses.Count == 0)
+
+                {
+
+                    <div class="dashboard-card full-empty-state">
+
+
+
+                        <div class="large-empty-icon">
+
+                            🎓
+
+                        </div>
+
+
+
+                        <h2>
+
+                            No enrolled courses yet
+
+                        </h2>
+
+
+
+                        <p>
+
+                            You are not currently enrolled in any courses.
+
+                            Once you enroll, your courses and learning
+
+                            progress will appear here automatically.
+
+                        </p>
+
+
+
+                        <a asp-controller="Student"
+
+                           asp-action="Courses"
+
+                           class="primary-action">
+
+                            Browse Available Courses
+
+                            <span>→</span>
+
+                        </a>
+
+
+
+                    </div>
+
+                }
+
+                else
+
+                {
+
+                    <div id="studentCourseGrid"
+
+                         class="student-course-grid">
+
+
+
+                        @foreach (var course in enrolledCourses)
+
+                        {
+
+                            int progress = course.StudentCount;
+
+
+
+                            if (progress < 0) progress = 0;
+
+                            if (progress > 100) progress = 100;
+
+
+
+                            <article class="dashboard-card student-course-card"
+
+                                     data-course="@course.Title.ToLower() @course.Category.ToLower() @course.LecturerName.ToLower()">
+
+
+
+                                <div class="course-card-banner">
+
+
+
+                                    @if (!string.IsNullOrWhiteSpace(course.Thumbnail))
+
+                                    {
+
+                                        <img src="~/@course.Thumbnail"
+
+                                             alt="@course.Title" />
+
+                                    }
+
+                                    else
+
+                                    {
+
+                                        <div class="course-placeholder">
+
+                                            🎓
+
+                                        </div>
+
+                                    }
+
+
+
+                                    <span class="course-card-category">
+
+                                        @(string.IsNullOrWhiteSpace(course.Category)
+
+                                            ? "Course"
+
+                                            : course.Category)
+
+                                    </span>
+
+
+
+                                </div>
+
+
+
+
+
+                                <div class="course-card-body">
+
+
+
+                                    <h2>
+
+                                        @course.Title
+
+                                    </h2>
+
+
+
+                                    <p class="course-lecturer">
+
+                                        Lecturer:
+
+                                        <strong>
+
+                                            @course.LecturerName
+
+                                        </strong>
+
+                                    </p>
+
+
+
+                                    @if (!string.IsNullOrWhiteSpace(course.Description))
+
+                                    {
+
+                                        <p class="course-description">
+
+                                            @course.Description
+
+                                        </p>
+
+                                    }
+
+
+
+                                    <div class="course-progress-heading">
+
+                                        <span>Course Progress</span>
+
+                                        <strong>@progress%</strong>
+
+                                    </div>
+
+
+
+                                    <div class="course-progress-track">
+
+                                        <div style="width:@(progress)%"></div>
+
+                                    </div>
+
+
+
+
+
+                                    @if (!string.IsNullOrWhiteSpace(course.VideoUrl))
+
+                                    {
+
+                                        <a href="@course.VideoUrl"
+
+                                           target="_blank"
+
+                                           rel="noopener noreferrer"
+
+                                           class="course-continue-button">
+
+
+
+                                            Continue Learning
+
+                                            <span>→</span>
+
+
+
+                                        </a>
+
+                                    }
+
+                                    else
+
+                                    {
+
+                                        <button type="button"
+
+                                                class="course-continue-button"
+
+                                                disabled>
+
+                                            Course Content
+
+                                        </button>
+
+                                    }
+
+
+
+                                </div>
+
+
+
+                            </article>
+
+                        }
+
+
+
+                    </div>
+
+                }
+
+
+
+            </section>
+
+
+
+
+
+            <!-- =================================================
+
+                 RESULTS
+
+            ================================================== -->
+
+            <section id="results"
+
+                     class="student-section">
+
+
+
+                <div class="section-page-header">
+
+
+
+                    <div>
+
+                        <span class="page-eyebrow">
+
+                            PERFORMANCE
+
+                        </span>
+
+
+
+                        <h1>
+
+                            Quiz Results
+
+                        </h1>
+
+
+
+                        <p>
+
+                            Review your quiz activity and
+
+                            monitor your academic performance.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="page-header-icon results-header-icon">
+
+                        ▥
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <div class="results-summary-grid">
+
+
+
+                    <article class="dashboard-card result-summary-card">
+
+
+
+                        <div class="result-summary-icon result-purple">
+
+                            ▤
+
+                        </div>
+
+
+
+                        <div>
+
+                            <strong>@quizCount</strong>
+
+                            <span>Quizzes Completed</span>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <article class="dashboard-card result-summary-card">
+
+
+
+                        <div class="result-summary-icon result-green">
+
+                            ◎
+
+                        </div>
+
+
+
+                        <div>
+
+                            <strong>@averageQuizScore</strong>
+
+                            <span>Average Score</span>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <article class="dashboard-card result-summary-card">
+
+
+
+                        <div class="result-summary-icon result-blue">
+
+                            ◷
+
+                        </div>
+
+
+
+                        <div>
+
+                            <strong>
+
+                                @(quizResults.Count > 0
+
+                                    ? quizResults.First().Score
+
+                                    : 0)
+
+                            </strong>
+
+
+
+                            <span>Latest Score</span>
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+                </div>
+
+
+
+
+
+                <article class="dashboard-card results-panel">
+
+
+
+                    <div class="panel-header">
+
+
+
+                        <div class="panel-title">
+
+                            <span class="panel-icon blue-icon">
+
+                                ▥
+
+                            </span>
+
+
+
+                            <h2>
+
+                                Result History
+
+                            </h2>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    @if (quizResults.Count == 0)
+
+                    {
+
+                        <div class="full-empty-state result-empty-state">
+
+
+
+                            <div class="large-empty-icon">
+
+                                📋
+
+                            </div>
+
+
+
+                            <h2>
+
+                                No quiz results yet
+
+                            </h2>
+
+
+
+                            <p>
+
+                                You have not completed any quizzes.
+
+                                Your quiz scores and activity will
+
+                                appear here automatically.
+
+                            </p>
+
+
+
+                        </div>
+
+                    }
+
+                    else
+
+                    {
+
+                        <div class="results-table-wrapper">
+
+
+
+                            <table class="results-table">
+
+
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Course</th>
+
+                                        <th>Score</th>
+
+                                        <th>Date Taken</th>
+
+                                        <th>Status</th>
+
+                                    </tr>
+
+                                </thead>
+
+
+
+                                <tbody>
+
+
+
+                                    @foreach (var result in quizResults)
+
+                                    {
+
+                                        <tr>
+
+
+
+                                            <td>
+
+                                                <div class="result-course-name">
+
+                                                    <span>▣</span>
+
+                                                    <strong>
+
+                                                        @result.CourseTitle
+
+                                                    </strong>
+
+                                                </div>
+
+                                            </td>
+
+
+
+                                            <td>
+
+                                                <strong class="result-score-value">
+
+                                                    @result.Score
+
+                                                </strong>
+
+                                            </td>
+
+
+
+                                            <td>
+
+                                                @(result.TakenAt == DateTime.MinValue
+
+                                                    ? "-"
+
+                                                    : result.TakenAt.ToString("dd MMM yyyy"))
+
+                                            </td>
+
+
+
+                                            <td>
+
+                                                <span class="result-status">
+
+                                                    Completed
+
+                                                </span>
+
+                                            </td>
+
+
+
+                                        </tr>
+
+                                    }
+
+
+
+                                </tbody>
+
+
+
+                            </table>
+
+
+
+                        </div>
+
+                    }
+
+
+
+                </article>
+
+
+
+            </section>
+
+
+
+
+
+            <!-- =================================================
+
+                 PROFILE
+
+            ================================================== -->
+
+            <section id="profile"
+
+                     class="student-section">
+
+
+
+                <div class="section-page-header">
+
+
+
+                    <div>
+
+                        <span class="page-eyebrow">
+
+                            ACCOUNT
+
+                        </span>
+
+
+
+                        <h1>
+
+                            My Profile
+
+                        </h1>
+
+
+
+                        <p>
+
+                            View your APULMS account and
+
+                            learning information.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="page-header-icon profile-header-icon">
+
+                        ♙
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+                <div class="profile-page-grid">
+
+
+
+                    <article class="dashboard-card profile-summary-card">
+
+
+
+                        <div class="large-profile-avatar">
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@studentName"
+                                     style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" />
+                            }
+                            else
+                            {
+                                <span>👨‍🎓</span>
+                            }
+                        </div>
+
+                        <form asp-controller="Student"
+                              asp-action="UploadProfilePicture"
+                              method="post"
+                              enctype="multipart/form-data"
+                              style="margin-top:18px;width:100%;">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="file"
+                                   id="studentProfilePicture"
+                                   name="profilePicture"
+                                   accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                   required
+                                   style="display:none;" />
+
+                            <label for="studentProfilePicture"
+                                   style="
+                                       display:inline-flex;
+                                       align-items:center;
+                                       justify-content:center;
+                                       padding:10px 16px;
+                                       border-radius:10px;
+                                       cursor:pointer;
+                                       font-weight:600;
+                                       border:1px solid rgba(0,0,0,.12);
+                                       margin-top:4px;">
+                                Choose Picture
+                            </label>
+
+                            <button type="submit"
+                                    style="
+                                        padding:10px 16px;
+                                        border:0;
+                                        border-radius:10px;
+                                        cursor:pointer;
+                                        font-weight:600;
+                                        margin-left:6px;">
+                                Upload
+                            </button>
+
+                            <p style="
+                                margin-top:10px;
+                                margin-bottom:0;
+                                font-size:12px;
+                                opacity:.7;">
+                                JPG, JPEG, PNG or WebP · Maximum 5 MB
+                            </p>
+
+                        </form>
+
+
+
+                        <h2>
+
+                            @studentName
+
+                        </h2>
+
+
+
+                        <p>
+
+                            @studentEmail
+
+                        </p>
+
+
+
+                        <span class="profile-role-badge">
+
+                            Student
+
+                        </span>
+
+
+
+                        <div class="profile-online">
+
+                            <span></span>
+
+                            Active Account
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <article class="dashboard-card profile-information-card">
+
+
+
+                        <div class="panel-header">
+
+
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon blue-icon">
+
+                                    ♙
+
+                                </span>
+
+
+
+                                <h2>
+
+                                    Profile Information
+
+                                </h2>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="profile-information-grid">
+
+
+
+                            <div class="profile-field">
+
+                                <span>Full Name</span>
+
+                                <strong>@studentName</strong>
+
+                            </div>
+
+
+
+                            <div class="profile-field">
+
+                                <span>Email Address</span>
+
+                                <strong>@studentEmail</strong>
+
+                            </div>
+
+
+
+                            <div class="profile-field">
+
+                                <span>Account Role</span>
+
+                                <strong>
+
+                                    @studentRole
+
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="profile-field">
+
+                                <span>Enrolled Courses</span>
+
+                                <strong>
+
+                                    @enrolledCourseCount
+
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="profile-field">
+
+                                <span>Average Progress</span>
+
+                                <strong>
+
+                                    @averageProgress%
+
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="profile-field">
+
+                                <span>Quizzes Completed</span>
+
+                                <strong>
+
+                                    @quizCount
+
+                                </strong>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+
+
+                    <article class="dashboard-card profile-progress-card">
+
+
+
+                        <div class="panel-header">
+
+
+
+                            <div class="panel-title">
+
+                                <span class="panel-icon green-icon">
+
+                                    ◎
+
+                                </span>
+
+
+
+                                <h2>
+
+                                    Learning Progress
+
+                                </h2>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="profile-progress-content">
+
+
+
+                            <div class="profile-progress-ring"
+
+                                 style="--progress:@averageProgress;">
+
+
+
+                                <div>
+
+                                    <strong>
+
+                                        @averageProgress%
+
+                                    </strong>
+
+
+
+                                    <span>
+
+                                        Overall
+
+                                    </span>
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+
+                            <div class="profile-progress-details">
+
+
+
+                                <div>
+
+                                    <span>Courses</span>
+
+                                    <strong>
+
+                                        @enrolledCourseCount
+
+                                    </strong>
+
+                                </div>
+
+
+
+                                <div>
+
+                                    <span>Quizzes</span>
+
+                                    <strong>
+
+                                        @quizCount
+
+                                    </strong>
+
+                                </div>
+
+
+
+                                <div>
+
+                                    <span>Quiz Average</span>
+
+                                    <strong>
+
+                                        @averageQuizScore
+
+                                    </strong>
+
+                                </div>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+                    </article>
+
+
+
+                </div>
+
+
+
+            </section>
+
+
+
+        </div>
+
+
+
+    </main>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+
+    function showStudentSection(sectionId, clickedElement) {
+
+
+
+        document
+
+            .querySelectorAll('.student-section')
+
+            .forEach(function (section) {
+
+                section.classList.remove('active-section');
+
+            });
+
+
+
+        const target =
+
+            document.getElementById(sectionId);
+
+
+
+        if (target) {
+
+            target.classList.add('active-section');
+
+        }
+
+
+
+        document
+
+            .querySelectorAll('.student-nav-link')
+
+            .forEach(function (link) {
+
+                link.classList.remove('active');
+
+            });
+
+
+
+        if (clickedElement) {
+
+            clickedElement.classList.add('active');
+
+        }
+
+
+
+        closeStudentSidebar();
+
+
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: 'smooth'
+
+        });
+
+    }
+
+
+
+
+
+    function openStudentSection(sectionId) {
+
+
+
+        const navItem =
+
+            document.querySelector(
+
+                '.student-nav-link[data-section="' +
+
+                sectionId +
+
+                '"]'
+
+            );
+
+
+
+        showStudentSection(
+
+            sectionId,
+
+            navItem
+
+        );
+
+    }
+
+
+
+
+
+    function toggleStudentSidebar() {
+
+
+
+        document
+
+            .getElementById('studentSidebar')
+
+            .classList
+
+            .toggle('mobile-open');
+
+
+
+        document
+
+            .getElementById('studentSidebarOverlay')
+
+            .classList
+
+            .toggle('show');
+
+
+
+        document.body.classList.toggle(
+
+            'sidebar-open'
+
+        );
+
+    }
+
+
+
+
+
+    function closeStudentSidebar() {
+
+
+
+        document
+
+            .getElementById('studentSidebar')
+
+            .classList
+
+            .remove('mobile-open');
+
+
+
+        document
+
+            .getElementById('studentSidebarOverlay')
+
+            .classList
+
+            .remove('show');
+
+
+
+        document.body.classList.remove(
+
+            'sidebar-open'
+
+        );
+
+    }
+
+
+
+
+
+    function filterStudentCourses() {
+
+
+
+        const input =
+
+            document.getElementById(
+
+                'courseSearch'
+
+            );
+
+
+
+        if (!input) {
+
+            return;
+
+        }
+
+
+
+        const query =
+
+            input.value
+
+                .toLowerCase()
+
+                .trim();
+
+
+
+        document
+
+            .querySelectorAll(
+
+                '.student-course-card'
+
+            )
+
+            .forEach(function (card) {
+
+
+
+                const courseData =
+
+                    card.dataset.course || '';
+
+
+
+                card.style.display =
+
+                    courseData.includes(query)
+
+                        ? ''
+
+                        : 'none';
+
+
+
+            });
+
+    }
+
+
+
+
+
+    document.addEventListener(
+
+        'keydown',
+
+        function (event) {
+
+
+
+            if (event.key === 'Escape') {
+
+                closeStudentSidebar();
+
+            }
+
+
+
+        }
+
+    );
+
+
+
+</script>

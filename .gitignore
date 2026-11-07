@@ -1,0 +1,22 @@
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+.DS_Store
+*.user
+*.suo
+*.log
+.env
+.env.*
+**/appsettings.Local.json
+**/appsettings.Production.json
+
+# Local configuration
+appsettings.json
+appsettings.Development.json
+
+# User uploaded files
+wwwroot/uploads/**
+!wwwroot/uploads/**/
+!wwwroot/uploads/**/.gitkeep

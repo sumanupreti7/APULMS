@@ -1,0 +1,144 @@
+@{
+    Layout = null;
+
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Lecturer Portal";
+
+    var lecturerName = ViewBag.Name?.ToString();
+
+    if (string.IsNullOrWhiteSpace(lecturerName))
+    {
+        lecturerName = Context.Session.GetString("UserName") ?? "Lecturer";
+    }
+
+    string? profileImage =
+        ViewBag.ProfileImage as string
+        ?? Context.Session.GetString("ProfileImage");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@pageTitle - APU LMS</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Lecturer Portal CSS -->
+    <link rel="stylesheet"
+          href="~/css/lecturer-dashboard.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="lecturer-portal">
+
+        <!-- ============================================
+             LECTURER SIDEBAR
+        ============================================= -->
+        @await Html.PartialAsync("_LecturerLayout", null, new ViewDataDictionary(ViewData) { ["ProfileImage"] = profileImage })
+
+
+        <!-- ============================================
+             MAIN CONTENT AREA
+        ============================================= -->
+        <main class="lecturer-main">
+
+            <!-- ========================================
+                 TOP BAR
+            ========================================= -->
+            <header class="lecturer-topbar">
+
+                <!-- Search -->
+                <div class="lecturer-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           placeholder="Search courses, students or quizzes..."
+                           autocomplete="off" />
+
+                </div>
+
+
+                <!-- Topbar Actions -->
+                <div class="lecturer-topbar-actions">
+
+                    <!-- Notification Button -->
+                    <button type="button"
+                            class="topbar-icon"
+                            title="Notifications">
+
+                        <i class="bi bi-bell"></i>
+
+                    </button>
+
+
+                    <!-- Lecturer Profile -->
+                    <a asp-controller="Lecturer"
+                       asp-action="Profile"
+                       class="lecturer-top-profile">
+
+                        <span class="top-profile-avatar">
+
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@lecturerName Profile Picture"
+                                     style="width:100%;
+                                            height:100%;
+                                            object-fit:cover;
+                                            border-radius:50%;
+                                            display:block;" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-fill"></i>
+                            }
+
+                        </span>
+
+                        <span class="top-profile-information">
+
+                            <strong>@lecturerName</strong>
+
+                            <small>Lecturer</small>
+
+                        </span>
+
+                        <i class="bi bi-chevron-down"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- ========================================
+                 CURRENT LECTURER PAGE
+            ========================================= -->
+            <div class="lecturer-content">
+
+                @RenderBody()
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ============================================
+         PAGE-SPECIFIC SCRIPTS
+    ============================================= -->
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

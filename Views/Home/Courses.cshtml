@@ -1,0 +1,392 @@
+@model List<APULMS.Controllers.GuestCourse>
+
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<div class="courses-page">
+
+    <!-- PUBLIC COURSE HERO -->
+    <section class="courses-hero">
+        <div class="courses-hero-content">
+
+            <span class="courses-hero-badge">
+                <i class="bi bi-book-fill"></i>
+                Guest Course Catalogue
+            </span>
+
+            <h1>Explore APULMS Courses</h1>
+
+            <p>
+                Browse the courses currently available in APULMS.
+                Course information is public, while enrolment, quizzes,
+                progress and results require a registered student account.
+            </p>
+
+        </div>
+    </section>
+
+
+    <!-- SEARCH -->
+    <section class="course-search-section">
+
+        <div class="course-search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="courseSearch"
+                   placeholder="Search by course, category or lecturer..."
+                   autocomplete="off" />
+
+        </div>
+
+    </section>
+
+
+    <!-- FILTERS -->
+    <section class="course-filter-section">
+
+        <div class="course-filters" id="courseFilters">
+
+            <button type="button"
+                    class="course-filter active"
+                    data-filter="all">
+                All Courses
+            </button>
+
+            @foreach (var category in Model
+                .Select(course => course.Category)
+                .Where(category => !string.IsNullOrWhiteSpace(category))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(category => category))
+            {
+                var categoryKey = category
+                    .Trim()
+                    .ToLowerInvariant()
+                    .Replace(" ", "-");
+
+                <button type="button"
+                        class="course-filter"
+                        data-filter="@categoryKey">
+                    @category
+                </button>
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- COURSE LIST -->
+    <section class="courses-list-section">
+
+        <div class="courses-heading">
+
+            <div>
+                <span class="section-mini-label">
+                    PUBLIC INFORMATION
+                </span>
+
+                <h2>Available Courses</h2>
+            </div>
+
+            <p id="courseCount">
+                @Model.Count @(Model.Count == 1 ? "course" : "courses") available
+            </p>
+
+        </div>
+
+
+        @if (ViewBag.CourseError != null)
+        {
+            <div class="course-no-results"
+                 style="display:block;">
+
+                <i class="bi bi-exclamation-circle"></i>
+
+                <h3>Unable to load courses</h3>
+
+                <p>@ViewBag.CourseError</p>
+
+            </div>
+        }
+        else if (Model.Count == 0)
+        {
+            <div class="course-no-results"
+                 style="display:block;">
+
+                <i class="bi bi-journal-x"></i>
+
+                <h3>No courses available</h3>
+
+                <p>
+                    There are currently no courses available
+                    in the public catalogue.
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <div class="courses-grid"
+                 id="coursesGrid">
+
+                @foreach (var course in Model)
+                {
+                    var category =
+                        string.IsNullOrWhiteSpace(course.Category)
+                            ? "General"
+                            : course.Category;
+
+                    var categoryKey = category
+                        .Trim()
+                        .ToLowerInvariant()
+                        .Replace(" ", "-");
+
+                    <article class="course-item"
+                             data-category="@categoryKey"
+                             data-title="@course.Title"
+                             data-lecturer="@course.LecturerName">
+
+                        <div class="course-image">
+
+                            <img src="@Url.Content("~/images/banner_apu_iconic_campus.jpg")"
+                                 alt="@course.Title" />
+
+                            <span class="course-category">
+                                @category
+                            </span>
+
+                        </div>
+
+
+                        <div class="course-content">
+
+                            <h3>@course.Title</h3>
+
+                            <p>
+                                @course.Description
+                            </p>
+
+                            <div style="
+                                margin-top:12px;
+                                display:flex;
+                                align-items:center;
+                                gap:7px;
+                                font-size:13px;
+                                opacity:.75;">
+
+                                <i class="bi bi-person-workspace"></i>
+
+                                <span>
+                                    Lecturer: @course.LecturerName
+                                </span>
+
+                            </div>
+
+
+                            <div class="course-footer">
+
+                                <span class="course-level">
+
+                                    <i class="bi bi-eye-fill"></i>
+
+                                    Guest Preview
+
+                                </span>
+
+                                <a asp-controller="Account"
+                                   asp-action="Login"
+                                   class="course-btn">
+
+                                    Login to Enrol
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+                }
+
+            </div>
+
+
+            <div class="course-no-results"
+                 id="courseNoResults">
+
+                <i class="bi bi-search"></i>
+
+                <h3>No courses found</h3>
+
+                <p>
+                    Try another course name, lecturer or category.
+                </p>
+
+            </div>
+        }
+
+    </section>
+
+
+    <!-- GUEST INFORMATION -->
+    <section class="courses-cta">
+
+        <div class="courses-cta-content">
+
+            <span class="courses-hero-badge">
+                <i class="bi bi-info-circle-fill"></i>
+                Guest Access
+            </span>
+
+            <h2>Want to Start Learning?</h2>
+
+            <p>
+                Guests can browse course information without an account.
+                Register as a student to enrol in courses, take quizzes,
+                monitor progress and view results.
+            </p>
+
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="course-btn">
+
+                Create Student Account
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+
+<script>
+    const searchInput =
+        document.getElementById("courseSearch");
+
+    const filterButtons =
+        document.querySelectorAll(".course-filter");
+
+    const courseItems =
+        document.querySelectorAll(".course-item");
+
+    const noResults =
+        document.getElementById("courseNoResults");
+
+    const courseCount =
+        document.getElementById("courseCount");
+
+    let currentFilter = "all";
+
+
+    function filterCourses() {
+
+        const searchText =
+            (searchInput?.value || "")
+                .toLowerCase()
+                .trim();
+
+        let visibleCount = 0;
+
+
+        courseItems.forEach(course => {
+
+            const category =
+                (course.dataset.category || "")
+                    .toLowerCase();
+
+            const searchableText =
+                (
+                    (course.dataset.title || "") + " " +
+                    (course.dataset.lecturer || "") + " " +
+                    course.textContent
+                ).toLowerCase();
+
+            const matchesFilter =
+                currentFilter === "all" ||
+                category === currentFilter;
+
+            const matchesSearch =
+                searchableText.includes(searchText);
+
+
+            if (matchesFilter && matchesSearch) {
+
+                course.style.display = "";
+                course.classList.add("course-visible");
+                visibleCount++;
+
+            } else {
+
+                course.style.display = "none";
+                course.classList.remove("course-visible");
+
+            }
+
+        });
+
+
+        if (courseCount) {
+
+            courseCount.textContent =
+                visibleCount +
+                (visibleCount === 1
+                    ? " course available"
+                    : " courses available");
+
+        }
+
+
+        if (noResults) {
+
+            noResults.style.display =
+                visibleCount === 0
+                    ? "block"
+                    : "none";
+
+        }
+    }
+
+
+    searchInput?.addEventListener(
+        "input",
+        filterCourses
+    );
+
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                filterButtons.forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+                this.classList.add("active");
+
+                currentFilter =
+                    this.dataset.filter || "all";
+
+                filterCourses();
+            }
+        );
+
+    });
+
+
+    filterCourses();
+</script>
+
+}

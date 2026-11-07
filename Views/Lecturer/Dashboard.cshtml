@@ -1,0 +1,1707 @@
+@{
+
+    Layout = null;
+
+    ViewData["Title"] = "Lecturer Dashboard";
+
+
+
+    var lecturerName = ViewBag.Name?.ToString() ?? "Lecturer";
+
+    var lecturerEmail = ViewBag.Email?.ToString() ?? "";
+
+
+
+    var totalStudents = ViewBag.TotalStudents ?? 0;
+
+    var totalCourses = ViewBag.TotalCourses ?? 0;
+
+
+
+    var lecturerCourses =
+
+        ViewBag.LecturerCourses as List<APULMS.Models.Course>
+
+        ?? new List<APULMS.Models.Course>();
+
+}
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="utf-8" />
+
+
+
+    <title>@ViewData["Title"] - APULMS</title>
+
+
+
+    <meta name="viewport"
+
+          content="width=device-width, initial-scale=1.0" />
+
+
+
+    <link rel="stylesheet"
+
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+
+
+    <link rel="stylesheet"
+
+          href="~/css/lecturer-dashboard.css"
+
+          asp-append-version="true" />
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="lecturer-portal">
+
+
+
+    @await Html.PartialAsync("_LecturerLayout")
+
+
+
+    <main class="lecturer-main">
+
+
+
+        <!-- =====================================================
+
+             TOP BAR
+
+        ====================================================== -->
+
+
+
+        <header class="lecturer-topbar">
+
+
+
+            <div class="lecturer-search">
+
+
+
+                <i class="bi bi-search"></i>
+
+
+
+                <input type="text"
+
+                       placeholder="Search courses, students or quizzes..." />
+
+
+
+            </div>
+
+
+
+
+
+            <div class="lecturer-topbar-actions">
+
+
+
+                <button class="topbar-icon"
+
+                        type="button"
+
+                        title="Notifications">
+
+
+
+                    <i class="bi bi-bell"></i>
+
+
+
+                </button>
+
+
+
+
+
+                <a asp-controller="Lecturer"
+
+                   asp-action="Profile"
+
+                   class="lecturer-top-profile">
+
+
+
+                    <span class="top-profile-avatar">
+
+                        <i class="bi bi-person-fill"></i>
+
+                    </span>
+
+
+
+                    <div class="top-profile-information">
+
+                        <strong>@lecturerName</strong>
+
+                        <small>Lecturer</small>
+
+                    </div>
+
+
+
+                    <i class="bi bi-chevron-down"></i>
+
+
+
+                </a>
+
+
+
+            </div>
+
+
+
+        </header>
+
+
+
+
+
+        <!-- =====================================================
+
+             MAIN CONTENT
+
+        ====================================================== -->
+
+
+
+        <div class="lecturer-content">
+
+
+
+            <div class="lecturer-dashboard-grid">
+
+
+
+
+
+                <!-- =================================================
+
+                     WELCOME HERO
+
+                ================================================== -->
+
+
+
+                <section class="lecturer-welcome">
+
+
+
+                    <div class="welcome-content">
+
+
+
+                        <span class="welcome-label">
+
+                            LECTURER DASHBOARD
+
+                        </span>
+
+
+
+                        <h1>
+
+                            Welcome back,<br />
+
+                            @lecturerName!
+
+                            <span class="welcome-wave">👋</span>
+
+                        </h1>
+
+
+
+                        <p>
+
+                            Manage your courses, students and academic
+
+                            activities from one professional workspace.
+
+                        </p>
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Courses"
+
+                           class="welcome-button">
+
+
+
+                            Manage Courses
+
+
+
+                            <i class="bi bi-arrow-right"></i>
+
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div class="welcome-visual">
+
+
+
+                        <div class="visual-circle"></div>
+
+
+
+                        <div class="visual-board">
+
+
+
+                            <div class="visual-board-heading">
+
+                                <span></span>
+
+                                <span></span>
+
+                                <span></span>
+
+                            </div>
+
+
+
+                            <div class="visual-chart">
+
+
+
+                                <i style="height: 35%;"></i>
+
+                                <i style="height: 60%;"></i>
+
+                                <i style="height: 48%;"></i>
+
+                                <i style="height: 78%;"></i>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="visual-person">
+
+
+
+                            <div class="visual-person-head">
+
+                                <i class="bi bi-person-fill"></i>
+
+                            </div>
+
+
+
+                            <div class="visual-person-body">
+
+                                <i class="bi bi-book-half"></i>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="visual-floating visual-book">
+
+                            <i class="bi bi-journal-bookmark-fill"></i>
+
+                        </div>
+
+
+
+                        <div class="visual-floating visual-cap">
+
+                            <i class="bi bi-mortarboard-fill"></i>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+                <!-- =================================================
+                     WORKSPACE OVERVIEW
+                ================================================== -->
+
+                <section class="dashboard-card today-overview">
+
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="dashboard-small-label">OVERVIEW</span>
+                            <h2>Teaching Overview</h2>
+                        </div>
+
+                        <div class="header-icon">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                    </div>
+
+                    <div class="overview-content">
+
+                        <div class="overview-ring">
+                            <div class="overview-ring-inner">
+                                <strong>@totalCourses</strong>
+                                <span>Active<br />Courses</span>
+                            </div>
+                        </div>
+
+                        <div class="overview-details">
+
+                            <div class="overview-detail">
+                                <span class="overview-dot blue"></span>
+                                <div>
+                                    <strong>@totalCourses</strong>
+                                    <small>Courses</small>
+                                </div>
+                            </div>
+
+                            <div class="overview-detail">
+                                <span class="overview-dot green"></span>
+                                <div>
+                                    <strong>@totalStudents</strong>
+                                    <small>Students</small>
+                                </div>
+                            </div>
+
+                            <div class="overview-detail">
+                                <span class="overview-dot orange"></span>
+                                <div>
+                                    <strong>Quiz</strong>
+                                    <small>Assessment</small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+
+
+
+
+
+
+
+                <!-- =================================================
+
+                     STAT CARD 1
+
+                ================================================== -->
+
+
+
+                <section class="lecturer-stat">
+
+
+
+                    <div class="stat-icon stat-blue">
+
+
+
+                        <i class="bi bi-people-fill"></i>
+
+
+
+                    </div>
+
+
+
+                    <div class="stat-content">
+
+
+
+                        <span>Total Students</span>
+
+
+
+                        <strong>@totalStudents</strong>
+
+
+
+                        <small class="stat-positive">
+
+
+
+                            <i class="bi bi-arrow-up-short"></i>
+
+
+
+                            Active learners
+
+
+
+                        </small>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+
+
+
+
+                <!-- =================================================
+
+                     STAT CARD 2
+
+                ================================================== -->
+
+
+
+                <section class="lecturer-stat">
+
+
+
+                    <div class="stat-icon stat-purple">
+
+
+
+                        <i class="bi bi-book-half"></i>
+
+
+
+                    </div>
+
+
+
+                    <div class="stat-content">
+
+
+
+                        <span>Active Courses</span>
+
+
+
+                        <strong>@totalCourses</strong>
+
+
+
+                        <small>
+
+
+
+                            Current semester
+
+
+
+                        </small>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+
+
+
+
+                <!-- =================================================
+
+                     STAT CARD 3
+
+                ================================================== -->
+
+
+
+                <section class="lecturer-stat">
+
+
+
+                    <div class="stat-icon stat-orange">
+
+
+
+                        <i class="bi bi-file-earmark-text-fill"></i>
+
+
+
+                    </div>
+
+
+
+                    <div class="stat-content">
+
+
+
+                        <span>Pending Reviews</span>
+
+
+
+                        <strong>—</strong>
+
+
+
+                        <small class="stat-warning">
+
+
+
+                            Not available yet
+
+
+
+                        </small>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+
+
+
+
+                <!-- =================================================
+
+                     STAT CARD 4
+
+                ================================================== -->
+
+
+
+                <section class="lecturer-stat">
+
+
+
+                    <div class="stat-icon stat-yellow">
+
+
+
+                        <i class="bi bi-star-fill"></i>
+
+
+
+                    </div>
+
+
+
+                    <div class="stat-content">
+
+
+
+                        <span>Teaching Rating</span>
+
+
+
+                        <strong>—</strong>
+
+
+
+                        <small class="stat-positive">
+
+
+
+                            Not available yet
+
+
+
+                        </small>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+
+
+
+
+                <!-- =================================================
+
+                     MY COURSES
+
+                ================================================== -->
+
+
+
+                <section class="dashboard-card lecturer-my-courses">
+
+
+
+                    <div class="dashboard-card-header">
+
+
+
+                        <div>
+
+
+
+                            <span class="dashboard-small-label">
+
+                                TEACHING
+
+                            </span>
+
+
+
+                            <h2>My Courses</h2>
+
+
+
+                            <p>
+
+                                Your currently assigned teaching courses
+
+                            </p>
+
+
+
+                        </div>
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Courses"
+
+                           class="dashboard-view-link">
+
+
+
+                            View All
+
+
+
+                            <i class="bi bi-arrow-right"></i>
+
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+                    <div class="dashboard-course-list">
+
+
+
+                        @if (lecturerCourses.Count > 0)
+
+                        {
+
+                            var displayedCourses = 0;
+
+
+
+                            foreach (var course in lecturerCourses)
+
+                            {
+
+                                if (displayedCourses >= 3)
+
+                                {
+
+                                    break;
+
+                                }
+
+
+
+                                displayedCourses++;
+
+
+
+                                var categoryText =
+
+                                    string.IsNullOrWhiteSpace(course.Category)
+
+                                        ? "COURSE"
+
+                                        : course.Category.ToUpperInvariant();
+
+
+
+                                var thumbnailClass = "course-security";
+
+                                var courseIcon = "bi-book-half";
+
+
+
+                                if (!string.IsNullOrWhiteSpace(course.Category))
+
+                                {
+
+                                    var category = course.Category.ToLowerInvariant();
+
+
+
+                                    if (category.Contains("web"))
+
+                                    {
+
+                                        thumbnailClass = "course-web";
+
+                                        courseIcon = "bi-code-slash";
+
+                                    }
+
+                                    else if (category.Contains("database"))
+
+                                    {
+
+                                        thumbnailClass = "course-database";
+
+                                        courseIcon = "bi-database-fill";
+
+                                    }
+
+                                    else if (category.Contains("network"))
+
+                                    {
+
+                                        thumbnailClass = "course-security";
+
+                                        courseIcon = "bi-diagram-3-fill";
+
+                                    }
+
+                                    else if (category.Contains("cyber") ||
+
+                                             category.Contains("security"))
+
+                                    {
+
+                                        thumbnailClass = "course-security";
+
+                                        courseIcon = "bi-shield-lock-fill";
+
+                                    }
+
+                                }
+
+
+
+                                <article class="dashboard-course-row">
+
+
+
+                                    <div class="dashboard-course-thumbnail @thumbnailClass">
+
+
+
+                                        <i class="bi @courseIcon"></i>
+
+
+
+                                    </div>
+
+
+
+                                    <div class="dashboard-course-information">
+
+
+
+                                        <div class="dashboard-course-top">
+
+
+
+                                            <div>
+
+
+
+                                                <span class="course-category">
+
+                                                    @categoryText
+
+                                                </span>
+
+
+
+                                                <h3>
+
+                                                    @course.Title
+
+                                                </h3>
+
+
+
+                                            </div>
+
+
+
+                                            <span class="active-badge">
+
+
+
+                                                <i></i>
+
+
+
+                                                Active
+
+
+
+                                            </span>
+
+
+
+                                        </div>
+
+
+
+                                        <div class="course-meta">
+
+
+
+                                            <span>
+
+
+
+                                                <i class="bi bi-people"></i>
+
+
+
+                                                @course.StudentCount
+
+                                                @(course.StudentCount == 1 ? "Student" : "Students")
+
+
+
+                                            </span>
+
+
+
+                                            <span>
+
+
+
+                                                <i class="bi bi-calendar3"></i>
+
+
+
+                                                Added @course.CreatedAt.ToString("dd MMM yyyy")
+
+
+
+                                            </span>
+
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+                                    <a asp-controller="Lecturer"
+
+                                       asp-action="Courses"
+
+                                       class="course-open-button"
+
+                                       title="Manage course">
+
+
+
+                                        <i class="bi bi-chevron-right"></i>
+
+
+
+                                    </a>
+
+
+
+                                </article>
+
+                            }
+
+                        }
+
+                        else
+
+                        {
+
+                            <article class="dashboard-course-row">
+
+
+
+                                <div class="dashboard-course-thumbnail course-security">
+
+
+
+                                    <i class="bi bi-book-half"></i>
+
+
+
+                                </div>
+
+
+
+                                <div class="dashboard-course-information">
+
+
+
+                                    <div class="dashboard-course-top">
+
+
+
+                                        <div>
+
+
+
+                                            <span class="course-category">
+
+                                                COURSES
+
+                                            </span>
+
+
+
+                                            <h3>
+
+                                                No courses assigned yet
+
+                                            </h3>
+
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+                                    <div class="course-meta">
+
+
+
+                                        <span>
+
+
+
+                                            <i class="bi bi-info-circle"></i>
+
+
+
+                                            Courses assigned to your lecturer account will appear here.
+
+
+
+                                        </span>
+
+
+
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                            </article>
+
+                        }
+
+
+
+                    </div>
+
+
+
+                </section>
+
+                <!-- =================================================
+                     TEACHING TOOLS
+                ================================================== -->
+
+                <section class="dashboard-card lecturer-tasks">
+
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="dashboard-small-label">WORKSPACE</span>
+                            <h2>Teaching Tools</h2>
+                            <p>Access the features available in your lecturer portal</p>
+                        </div>
+
+                        <a asp-controller="Lecturer"
+                           asp-action="Quizzes"
+                           class="dashboard-view-link">
+                            Open Quizzes
+                        </a>
+                    </div>
+
+                    <div class="dashboard-task-list">
+
+                        <div class="dashboard-task-row">
+                            <div class="dashboard-task-icon task-blue">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+                            <div class="dashboard-task-content">
+                                <strong>Manage Courses</strong>
+                                <span>View your assigned teaching courses</span>
+                            </div>
+                            <a asp-controller="Lecturer"
+                               asp-action="Courses"
+                               class="priority-badge priority-normal">Open</a>
+                        </div>
+
+                        <div class="dashboard-task-row">
+                            <div class="dashboard-task-icon task-green">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="dashboard-task-content">
+                                <strong>View Students</strong>
+                                <span>Review enrollment and course progress</span>
+                            </div>
+                            <a asp-controller="Lecturer"
+                               asp-action="Students"
+                               class="priority-badge priority-normal">Open</a>
+                        </div>
+
+                        <div class="dashboard-task-row">
+                            <div class="dashboard-task-icon task-purple">
+                                <i class="bi bi-ui-checks-grid"></i>
+                            </div>
+                            <div class="dashboard-task-content">
+                                <strong>Manage Quizzes</strong>
+                                <span>Create and review course quiz questions</span>
+                            </div>
+                            <a asp-controller="Lecturer"
+                               asp-action="Quizzes"
+                               class="priority-badge priority-medium">Open</a>
+                        </div>
+
+                        <div class="dashboard-task-row">
+                            <div class="dashboard-task-icon task-red">
+                                <i class="bi bi-bar-chart-fill"></i>
+                            </div>
+                            <div class="dashboard-task-content">
+                                <strong>Quiz Results</strong>
+                                <span>Review recorded student quiz attempts</span>
+                            </div>
+                            <a asp-controller="Lecturer"
+                               asp-action="Grades"
+                               class="priority-badge priority-high">Open</a>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================================
+                     WORKSPACE STATUS
+                ================================================== -->
+
+                <section class="dashboard-card lecturer-activity">
+
+                    <div class="dashboard-card-header">
+                        <div>
+                            <span class="dashboard-small-label">CURRENT STATUS</span>
+                            <h2>Workspace Summary</h2>
+                            <p>Current information from your lecturer workspace</p>
+                        </div>
+                    </div>
+
+                    <div class="activity-timeline">
+
+                        <div class="activity-row">
+                            <div class="activity-marker activity-blue">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+                            <div class="activity-information">
+                                <strong>@totalCourses active courses</strong>
+                                <p>Your assigned courses are available from the Courses page.</p>
+                                <small>Database-backed</small>
+                            </div>
+                        </div>
+
+                        <div class="activity-row">
+                            <div class="activity-marker activity-green">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="activity-information">
+                                <strong>@totalStudents enrolled students</strong>
+                                <p>Student enrollment information is available from the Students page.</p>
+                                <small>Database-backed</small>
+                            </div>
+                        </div>
+
+                        <div class="activity-row">
+                            <div class="activity-marker activity-purple">
+                                <i class="bi bi-ui-checks-grid"></i>
+                            </div>
+                            <div class="activity-information">
+                                <strong>Quiz management available</strong>
+                                <p>Create quiz questions and review student results from the lecturer portal.</p>
+                                <small>Active feature</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+
+
+
+
+                <!-- =================================================
+
+                     PROFILE SUMMARY
+
+                ================================================== -->
+
+
+
+                <section class="dashboard-card lecturer-profile-summary">
+
+
+
+                    <div class="profile-summary-heading">
+
+
+
+                        <div class="profile-summary-avatar">
+
+
+
+                            <i class="bi bi-person-fill"></i>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div>
+
+
+
+                            <span class="dashboard-small-label">
+
+                                LECTURER PROFILE
+
+                            </span>
+
+
+
+                            <h2>@lecturerName</h2>
+
+
+
+                            <p>Lecturer</p>
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div class="profile-summary-information">
+
+
+
+
+
+                        <div class="profile-summary-row">
+
+
+
+                            <span>
+
+
+
+                                <i class="bi bi-person"></i>
+
+
+
+                                Name
+
+
+
+                            </span>
+
+
+
+                            <strong>
+
+                                @lecturerName
+
+                            </strong>
+
+
+
+                        </div>
+
+
+
+
+
+                        @if (!string.IsNullOrWhiteSpace(lecturerEmail))
+
+                        {
+
+                            <div class="profile-summary-row">
+
+
+
+                                <span>
+
+
+
+                                    <i class="bi bi-envelope"></i>
+
+
+
+                                    Email
+
+
+
+                                </span>
+
+
+
+                                <strong>
+
+                                    @lecturerEmail
+
+                                </strong>
+
+
+
+                            </div>
+
+                        }
+
+
+
+
+
+                        <div class="profile-summary-row">
+
+
+
+                            <span>
+
+
+
+                                <i class="bi bi-person-badge"></i>
+
+
+
+                                Role
+
+
+
+                            </span>
+
+
+
+                            <strong>
+
+                                Lecturer
+
+                            </strong>
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <a asp-controller="Lecturer"
+
+                       asp-action="Profile"
+
+                       class="profile-button">
+
+
+
+                        View Full Profile
+
+
+
+                        <i class="bi bi-arrow-right"></i>
+
+
+
+                    </a>
+
+
+
+                </section>
+
+
+
+
+
+                <!-- =================================================
+
+                     QUICK ACTIONS
+
+                ================================================== -->
+
+
+
+                <section class="dashboard-card lecturer-quick-actions">
+
+
+
+                    <div class="dashboard-card-header">
+
+
+
+                        <div>
+
+
+
+                            <span class="dashboard-small-label">
+
+                                SHORTCUTS
+
+                            </span>
+
+
+
+                            <h2>Quick Actions</h2>
+
+
+
+                            <p>
+
+                                Access your most frequently used lecturer tools
+
+                            </p>
+
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div class="quick-action-grid">
+
+
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Courses"
+
+                           class="quick-action-item quick-blue">
+
+
+
+                            <div class="quick-action-icon">
+
+
+
+                                <i class="bi bi-book-half"></i>
+
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+                                    Manage Courses
+
+                                </strong>
+
+
+
+                                <span>
+
+                                    View your teaching courses
+
+                                </span>
+
+
+
+                            </div>
+
+
+
+                            <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+
+
+                        </a>
+
+
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Students"
+
+                           class="quick-action-item quick-purple">
+
+
+
+                            <div class="quick-action-icon">
+
+
+
+                                <i class="bi bi-people-fill"></i>
+
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+                                    View Students
+
+                                </strong>
+
+
+
+                                <span>
+
+                                    Monitor your learners
+
+                                </span>
+
+
+
+                            </div>
+
+
+
+                            <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+
+
+                        </a>
+
+
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Quizzes"
+
+                           class="quick-action-item quick-orange">
+
+
+
+                            <div class="quick-action-icon">
+
+
+
+                                <i class="bi bi-ui-checks-grid"></i>
+
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+                                    Quizzes
+
+                                </strong>
+
+
+
+                                <span>
+
+                                    Manage course quiz questions
+
+                                </span>
+
+
+
+                            </div>
+
+
+
+                            <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+
+
+                        </a>
+
+
+
+
+
+                        <a asp-controller="Lecturer"
+
+                           asp-action="Quiz Results"
+
+                           class="quick-action-item quick-green">
+
+
+
+                            <div class="quick-action-icon">
+
+
+
+                                <i class="bi bi-bar-chart-fill"></i>
+
+
+
+                            </div>
+
+
+
+                            <div>
+
+
+
+                                <strong>
+
+                                    Grades
+
+                                </strong>
+
+
+
+                                <span>
+
+                                    Review student results
+
+                                </span>
+
+
+
+                            </div>
+
+
+
+                            <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+
+
+                        </a>
+
+
+
+                    </div>
+
+
+
+                </section>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </main>
+
+
+
+</div>
+
+
+
+</body>
+
+</html>

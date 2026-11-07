@@ -1,0 +1,459 @@
+@model APULMS.Models.Course
+
+@{
+    ViewData["Title"] = "Edit Course";
+
+    var lecturers =
+        ViewBag.Lecturers as List<APULMS.Models.User>
+        ?? new List<APULMS.Models.User>();
+}
+
+<div class="admin-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="admin-page-header">
+
+        <div>
+            <span class="admin-eyebrow">ADMIN PORTAL</span>
+
+            <h1>✏️ Edit Course</h1>
+
+            <p>
+                Update the selected course information.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Courses"
+           class="admin-back-btn">
+            ← Back to Courses
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM
+    ====================================================== -->
+
+    <section class="admin-panel course-form-panel">
+
+        <div class="course-form-heading">
+
+            <div class="course-form-icon">
+                ✏️
+            </div>
+
+            <div>
+
+                <h2>
+                    Edit: @Model.Title
+                </h2>
+
+                <p>
+                    Course ID #@Model.Id
+                </p>
+
+            </div>
+
+        </div>
+
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly"
+                 class="course-validation-summary">
+            </div>
+        }
+
+
+        <form asp-controller="Admin"
+              asp-action="EditCourse"
+              method="post"
+              class="course-form">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id" type="hidden" />
+
+
+            <!-- TITLE -->
+
+            <div class="form-group full-width">
+
+                <label asp-for="Title">
+                    Course Title
+                    <span>*</span>
+                </label>
+
+                <input asp-for="Title"
+                       class="form-control"
+                       maxlength="255"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Title"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label asp-for="Category">
+                    Category
+                </label>
+
+                <input asp-for="Category"
+                       class="form-control"
+                       maxlength="100"
+                       placeholder="e.g. Web Development" />
+
+                <span asp-validation-for="Category"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- LECTURER -->
+
+            <div class="form-group">
+
+                <label asp-for="LecturerId">
+                    Lecturer
+                    <span>*</span>
+                </label>
+
+                <select asp-for="LecturerId"
+                        class="form-control">
+
+                    <option value="">
+                        -- Select Lecturer --
+                    </option>
+
+                    @foreach (var lecturer in lecturers)
+                    {
+                        <option value="@lecturer.Id">
+                            @lecturer.Name (@lecturer.Email)
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="LecturerId"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group full-width">
+
+                <label asp-for="Description">
+                    Course Description
+                </label>
+
+                <textarea asp-for="Description"
+                          class="form-control course-description"
+                          rows="6"
+                          maxlength="2000"
+                          placeholder="Describe what students will learn in this course..."></textarea>
+
+                <div class="character-hint">
+                    Maximum 2000 characters.
+                </div>
+
+                <span asp-validation-for="Description"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- THUMBNAIL -->
+
+            <div class="form-group">
+
+                <label asp-for="Thumbnail">
+                    Thumbnail
+                </label>
+
+                <input asp-for="Thumbnail"
+                       class="form-control"
+                       maxlength="255"
+                       placeholder="e.g. images/web.jpg" />
+
+                <small>
+                    Enter the path of an existing image inside wwwroot.
+                </small>
+
+                <span asp-validation-for="Thumbnail"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- VIDEO URL -->
+
+            <div class="form-group">
+
+                <label asp-for="VideoUrl">
+                    Video URL
+                </label>
+
+                <input asp-for="VideoUrl"
+                       class="form-control"
+                       type="url"
+                       maxlength="255"
+                       placeholder="https://youtube.com/..." />
+
+                <small>
+                    Optional YouTube or learning-video URL.
+                </small>
+
+                <span asp-validation-for="VideoUrl"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- EXISTING DATE -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Created
+                </label>
+
+                <div class="course-readonly-field">
+                    @Model.CreatedAt.ToString("dd MMMM yyyy, hh:mm tt")
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="course-form-actions">
+
+                <a asp-controller="Admin"
+                   asp-action="Courses"
+                   class="course-secondary-btn">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="course-submit-btn">
+                    ✓ Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+
+<style>
+
+    .course-form-panel {
+        max-width: 1050px;
+        margin: 0 auto;
+    }
+
+    .course-form-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 24px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .course-form-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        font-size: 25px;
+    }
+
+    .course-form-heading h2 {
+        margin: 0 0 5px;
+    }
+
+    .course-form-heading p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .course-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .form-group label span {
+        color: #f87171;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        color: inherit;
+        outline: none;
+        font: inherit;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .form-control:focus {
+        border-color: rgba(99,102,241,.7);
+        box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 140px;
+    }
+
+    select.form-control option {
+        color: #111827;
+        background: #ffffff;
+    }
+
+    .form-group small,
+    .character-hint {
+        font-size: 12px;
+        opacity: .55;
+    }
+
+    .field-validation {
+        color: #fca5a5;
+        font-size: 12px;
+    }
+
+    .course-validation-summary {
+        margin-bottom: 20px;
+        padding: 14px;
+        border-radius: 10px;
+        background: rgba(239,68,68,.10);
+        border: 1px solid rgba(239,68,68,.20);
+        color: #fecaca;
+    }
+
+    .course-validation-summary ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .course-readonly-field {
+        padding: 13px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(255,255,255,.025);
+        opacity: .7;
+    }
+
+    .course-form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 8px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .course-secondary-btn,
+    .course-submit-btn {
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .course-secondary-btn {
+        color: inherit;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .course-submit-btn {
+        color: #fff;
+        border: 0;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+    }
+
+    .course-secondary-btn:hover,
+    .course-submit-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    @@media (max-width: 700px) {
+
+        .course-form {
+            grid-template-columns: 1fr;
+        }
+
+        .full-width {
+            grid-column: auto;
+        }
+
+        .course-form-actions {
+            grid-column: auto;
+            flex-direction: column;
+        }
+
+        .course-secondary-btn,
+        .course-submit-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

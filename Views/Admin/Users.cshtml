@@ -1,0 +1,1227 @@
+@model List<APULMS.Models.User>
+
+
+
+@{
+
+    ViewData["Title"] = "Manage Users";
+
+}
+
+
+
+<div class="admin-page admin-users-page">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Warning"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+
+    <!-- =====================================================
+
+         PAGE HEADER
+
+    \====================================================== -->
+
+    <section class="admin-inner-header">
+
+
+
+        <div class="admin-inner-header-content">
+
+
+
+            <div class="admin-inner-heading">
+
+
+
+                <div class="admin-page-icon admin-page-icon-blue">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+
+
+                <div>
+
+                    <span class="admin-page-label">
+
+                        ADMIN PORTAL
+
+                    </span>
+
+
+
+                    <h1>Manage Users</h1>
+
+
+
+                    <p>
+
+                        View and monitor all registered APULMS user accounts.
+
+                    </p>
+
+                </div>
+
+
+
+            </div>
+
+
+
+            <a asp-controller="Admin"
+
+               asp-action="Dashboard"
+
+               class="admin-back-button">
+
+
+
+                <i class="bi bi-arrow-left"></i>
+
+
+
+                <span>Back to Dashboard</span>
+
+
+
+            </a>
+
+
+
+        </div>
+
+
+
+    </section>
+
+
+
+
+
+    <!-- =====================================================
+
+         USER STATISTICS
+
+    \====================================================== -->
+
+    <section class="admin-inner-stats">
+
+
+
+        <!-- TOTAL USERS -->
+
+        <article class="admin-inner-stat-card">
+
+
+
+            <div class="admin-inner-stat-icon stat-users">
+
+                <i class="bi bi-people-fill"></i>
+
+            </div>
+
+
+
+            <div class="admin-inner-stat-content">
+
+
+
+                <span>Total Users</span>
+
+
+
+                <strong>
+
+                    @ViewBag.TotalUsers
+
+                </strong>
+
+
+
+                <small>
+
+                    Registered accounts
+
+                </small>
+
+
+
+            </div>
+
+
+
+            <div class="admin-stat-decoration">
+
+                <i class="bi bi-people-fill"></i>
+
+            </div>
+
+
+
+        </article>
+
+
+
+
+
+        <!-- STUDENTS -->
+
+        <article class="admin-inner-stat-card">
+
+
+
+            <div class="admin-inner-stat-icon stat-students">
+
+                <i class="bi bi-mortarboard-fill"></i>
+
+            </div>
+
+
+
+            <div class="admin-inner-stat-content">
+
+
+
+                <span>Students</span>
+
+
+
+                <strong>
+
+                    @ViewBag.TotalStudents
+
+                </strong>
+
+
+
+                <small>
+
+                    Student accounts
+
+                </small>
+
+
+
+            </div>
+
+
+
+            <div class="admin-stat-decoration">
+
+                <i class="bi bi-mortarboard-fill"></i>
+
+            </div>
+
+
+
+        </article>
+
+
+
+
+
+        <!-- LECTURERS -->
+
+        <article class="admin-inner-stat-card">
+
+
+
+            <div class="admin-inner-stat-icon stat-lecturers">
+
+                <i class="bi bi-person-workspace"></i>
+
+            </div>
+
+
+
+            <div class="admin-inner-stat-content">
+
+
+
+                <span>Lecturers</span>
+
+
+
+                <strong>
+
+                    @ViewBag.TotalLecturers
+
+                </strong>
+
+
+
+                <small>
+
+                    Teaching accounts
+
+                </small>
+
+
+
+            </div>
+
+
+
+            <div class="admin-stat-decoration">
+
+                <i class="bi bi-person-workspace"></i>
+
+            </div>
+
+
+
+        </article>
+
+
+
+
+
+        <!-- ADMINISTRATORS -->
+
+        <article class="admin-inner-stat-card">
+
+
+
+            <div class="admin-inner-stat-icon stat-admins">
+
+                <i class="bi bi-shield-check"></i>
+
+            </div>
+
+
+
+            <div class="admin-inner-stat-content">
+
+
+
+                <span>Administrators</span>
+
+
+
+                <strong>
+
+                    @ViewBag.TotalAdmins
+
+                </strong>
+
+
+
+                <small>
+
+                    Administrative accounts
+
+                </small>
+
+
+
+            </div>
+
+
+
+            <div class="admin-stat-decoration">
+
+                <i class="bi bi-shield-check"></i>
+
+            </div>
+
+
+
+        </article>
+
+
+
+    </section>
+
+
+
+
+
+    <!-- =====================================================
+
+         USERS PANEL
+
+    \====================================================== -->
+
+    <section class="admin-inner-panel">
+
+
+
+        <!-- PANEL HEADER -->
+
+        <div class="admin-inner-panel-header">
+
+
+
+            <div class="admin-panel-title">
+
+
+
+                <div class="admin-panel-title-icon">
+
+                    <i class="bi bi-person-lines-fill"></i>
+
+                </div>
+
+
+
+                <div>
+
+
+
+                    <h2>
+
+                        Registered Users
+
+                    </h2>
+
+
+
+                    <p>
+
+                        Live user records retrieved directly from the APULMS database.
+
+                    </p>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+            <div class="admin-user-tools">
+
+
+
+                <div class="admin-table-search">
+
+
+
+                    <i class="bi bi-search"></i>
+
+
+
+                    <input type="search"
+
+                           id="adminUserSearch"
+
+                           placeholder="Search users..."
+
+                           autocomplete="off"
+
+                           aria-label="Search registered users" />
+
+
+
+                </div>
+
+
+
+                <div class="admin-record-count">
+
+
+
+                    <i class="bi bi-database-check"></i>
+
+
+
+                    <span>
+
+                        @ViewBag.TotalUsers records
+
+                    </span>
+
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- =================================================
+
+             TABLE
+
+        \================================================== -->
+
+        <div class="admin-table-container">
+
+
+
+            <table class="admin-data-table"
+
+                   id="adminUsersTable">
+
+
+
+                <thead>
+
+
+
+                    <tr>
+
+
+
+                        <th class="admin-id-column">
+
+                            ID
+
+                        </th>
+
+
+
+                        <th>
+
+                            User
+
+                        </th>
+
+
+
+                        <th>
+
+                            Email Address
+
+                        </th>
+
+
+
+                        <th>
+
+                            Role
+
+                        </th>
+
+
+
+                        <th>
+
+                            Created
+
+                        </th>
+
+
+
+                        <th>
+
+                            Status
+
+                        </th>
+
+                       <th class="text-end">
+                           Actions
+                       </th>
+
+
+
+                    </tr>
+
+
+
+                </thead>
+
+
+
+
+
+                <tbody>
+
+
+
+                    @if (Model == null || Model.Count == 0)
+
+                    {
+
+                        <tr>
+
+
+
+                            <td colspan="7"
+
+                                class="admin-empty-cell">
+
+
+
+                                <div class="admin-empty-state">
+
+
+
+                                    <div class="admin-empty-icon">
+
+                                        <i class="bi bi-people"></i>
+
+                                    </div>
+
+
+
+                                    <strong>
+
+                                        No users found
+
+                                    </strong>
+
+
+
+                                    <span>
+
+                                        There are currently no registered users
+
+                                        in the APULMS database.
+
+                                    </span>
+
+
+
+                                </div>
+
+
+
+                            </td>
+
+
+
+                        </tr>
+
+                    }
+
+                    else
+
+                    {
+
+                        foreach (var user in Model)
+
+                        {
+
+                            var role = user.Role ?? "student";
+
+
+
+                            var initial =
+
+                                !string.IsNullOrWhiteSpace(user.Name)
+
+                                    ? user.Name.Substring(0, 1).ToUpperInvariant()
+
+                                    : "U";
+
+
+
+                            <tr class="admin-user-row">
+
+
+
+                                <!-- ID -->
+
+                                <td class="admin-id-cell">
+
+
+
+                                    <span class="admin-user-id">
+
+                                        #@user.Id
+
+                                    </span>
+
+
+
+                                </td>
+
+
+
+
+
+                                <!-- USER -->
+
+                                <td>
+
+
+
+                                    <div class="admin-table-user">
+
+
+
+                                        <div class="admin-table-avatar">
+
+                                            @initial
+
+                                        </div>
+
+
+
+                                        <div class="admin-table-user-info">
+
+
+
+                                            <strong>
+
+                                                @user.Name
+
+                                            </strong>
+
+
+
+                                            <span>
+
+                                                APULMS User
+
+                                            </span>
+
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+
+                                </td>
+
+
+
+
+
+                                <!-- EMAIL -->
+
+                                <td>
+
+
+
+                                    <div class="admin-email-cell">
+
+
+
+                                        <i class="bi bi-envelope"></i>
+
+
+
+                                        <span>
+
+                                            @user.Email
+
+                                        </span>
+
+
+
+                                    </div>
+
+
+
+                                </td>
+
+
+
+
+
+                                <!-- ROLE -->
+
+                                <td>
+
+
+
+                                    @if (role.Equals(
+
+                                        "admin",
+
+                                        StringComparison.OrdinalIgnoreCase))
+
+                                    {
+
+                                        <span class="admin-role-badge role-admin">
+
+
+
+                                            <i class="bi bi-shield-check"></i>
+
+
+
+                                            Administrator
+
+
+
+                                        </span>
+
+                                    }
+
+                                    else if (role.Equals(
+
+                                        "lecturer",
+
+                                        StringComparison.OrdinalIgnoreCase))
+
+                                    {
+
+                                        <span class="admin-role-badge role-lecturer">
+
+
+
+                                            <i class="bi bi-person-workspace"></i>
+
+
+
+                                            Lecturer
+
+
+
+                                        </span>
+
+                                    }
+
+                                    else
+
+                                    {
+
+                                        <span class="admin-role-badge role-student">
+
+
+
+                                            <i class="bi bi-mortarboard-fill"></i>
+
+
+
+                                            Student
+
+
+
+                                        </span>
+
+                                    }
+
+
+
+                                </td>
+
+
+
+
+
+                                <!-- CREATED -->
+
+                                <td>
+
+
+
+                                    <div class="admin-date-cell">
+
+
+
+                                        <i class="bi bi-calendar3"></i>
+
+
+
+                                        <span>
+
+                                            @(user.CreatedAt == DateTime.MinValue
+
+                                                ? "-"
+
+                                                : user.CreatedAt.ToString("dd MMM yyyy"))
+
+                                        </span>
+
+
+
+                                    </div>
+
+
+
+                                </td>
+
+
+
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+
+
+                                    <span class="admin-status-badge">
+
+
+
+                                        <span class="admin-status-indicator"></span>
+
+
+
+                                        Active
+
+
+
+                                    </span>
+
+
+
+                                </td>
+
+                               <!-- ACTIONS -->
+                               <td class="text-end">
+
+                                   <div class="d-inline-flex align-items-center gap-2">
+
+                                       <a asp-controller="Admin"
+                                          asp-action="EditUser"
+                                          asp-route-id="@user.Id"
+                                          class="btn btn-sm btn-outline-primary"
+                                          title="Edit user">
+
+                                           <i class="bi bi-pencil-square"></i>
+                                           <span class="ms-1">Edit</span>
+
+                                       </a>
+
+                                       <form asp-controller="Admin"
+                                             asp-action="DeleteUser"
+                                             asp-route-id="@user.Id"
+                                             method="post"
+                                             class="d-inline"
+                                             data-user-name="@user.Name"
+                                             onsubmit="return confirmDeleteUser(this);">
+
+                                           @Html.AntiForgeryToken()
+
+                                           <button type="submit"
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   title="Delete user">
+
+                                               <i class="bi bi-trash3"></i>
+                                               <span class="ms-1">Delete</span>
+
+                                           </button>
+
+                                       </form>
+
+                                   </div>
+
+                               </td>
+
+
+
+                            </tr>
+
+                        }
+
+                    }
+
+
+
+                </tbody>
+
+
+
+            </table>
+
+
+
+
+
+            <!-- SEARCH EMPTY STATE -->
+
+            <div class="admin-search-empty"
+
+                 id="adminUserSearchEmpty"
+
+                 style="display:none;">
+
+
+
+                <div class="admin-empty-icon">
+
+                    <i class="bi bi-search"></i>
+
+                </div>
+
+
+
+                <strong>
+
+                    No matching users
+
+                </strong>
+
+
+
+                <span>
+
+                    Try searching with another name, email address or role.
+
+                </span>
+
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <!-- *=================================================*
+
+             PANEL FOOTER
+
+        \=*=================================================* -->
+
+        <div class="admin-panel-footer">
+
+
+
+            <div class="admin-panel-footer-info">
+
+
+
+                <i class="bi bi-database-check"></i>
+
+
+
+                <span>
+
+                    Showing
+
+                    <strong>@ViewBag.TotalUsers</strong>
+
+                    registered users from the APULMS database
+
+                </span>
+
+
+
+            </div>
+
+
+
+            <a asp-controller="Admin"
+
+               asp-action="Dashboard"
+
+               class="admin-panel-footer-link">
+
+
+
+                Dashboard
+
+
+
+                <i class="bi bi-arrow-right"></i>
+
+
+
+            </a>
+
+
+
+        </div>
+
+
+
+    </section>
+
+
+
+</div>
+
+
+
+
+
+@section Scripts {
+
+
+
+    <script>
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+
+            const searchInput =
+
+                document.getElementById("adminUserSearch");
+
+
+
+            const table =
+
+                document.getElementById("adminUsersTable");
+
+
+
+            const emptyState =
+
+                document.getElementById("adminUserSearchEmpty");
+
+
+
+            if (!searchInput || !table) {
+
+                return;
+
+            }
+
+
+
+            const rows =
+
+                table.querySelectorAll(
+
+                    "tbody .admin-user-row"
+
+                );
+
+
+
+            searchInput.addEventListener(
+
+                "input",
+
+                function () {
+
+
+
+                    const query =
+
+                        this.value
+
+                            .trim()
+
+                            .toLowerCase();
+
+
+
+                    let visibleRows = 0;
+
+
+
+                    rows.forEach(function (row) {
+
+
+
+                        const content =
+
+                            row.textContent
+
+                               .toLowerCase();
+
+
+
+                        const matches =
+
+                            content.includes(query);
+
+
+
+                        row.style.display =
+
+                            matches ? "" : "none";
+
+
+
+                        if (matches) {
+
+                            visibleRows++;
+
+                        }
+
+
+
+                    });
+
+
+
+                    if (emptyState) {
+
+
+
+                        emptyState.style.display =
+
+                            visibleRows === 0 &&
+
+                            rows.length > 0
+
+                                ? "flex"
+
+                                : "none";
+
+
+
+                    }
+
+
+
+                }
+
+            );
+
+
+
+        });
+       window.confirmDeleteUser = function (form) {
+
+           const userName =
+               form.dataset.userName || "this user";
+
+           return window.confirm(
+               "Delete " + userName + "?\n\n" +
+               "This action cannot be undone."
+           );
+
+       };
+
+
+
+
+
+
+    </script>
+
+
+
+}

@@ -1,0 +1,354 @@
+@model List<APULMS.Controllers.AdminStudentEnrollment>
+
+@{
+    ViewData["Title"] = "Manage Students";
+
+    var students = Model ?? new List<APULMS.Controllers.AdminStudentEnrollment>();
+
+    int totalStudents = ViewBag.TotalStudents != null
+        ? Convert.ToInt32(ViewBag.TotalStudents)
+        : 0;
+
+    int enrolledStudents = ViewBag.EnrolledStudents != null
+        ? Convert.ToInt32(ViewBag.EnrolledStudents)
+        : 0;
+
+    int totalEnrollments = ViewBag.TotalEnrollments != null
+        ? Convert.ToInt32(ViewBag.TotalEnrollments)
+        : 0;
+
+    int averageProgress = ViewBag.AverageProgress != null
+        ? Convert.ToInt32(ViewBag.AverageProgress)
+        : 0;
+}
+
+<div class="admin-page admin-students-page">
+
+    <section class="admin-inner-header">
+        <div class="admin-inner-header-content">
+
+            <div class="admin-inner-heading">
+                <div class="admin-page-icon admin-page-icon-green">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+
+                <div>
+                    <span class="admin-page-label">ADMIN PORTAL</span>
+                    <h1>Manage Students</h1>
+                    <p>
+                        Monitor real student accounts, course enrolments
+                        and learning progress across APULMS.
+                    </p>
+                </div>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Dashboard"
+               class="admin-back-button">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+
+        </div>
+    </section>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @TempData["Error"]
+        </div>
+    }
+
+    <section class="admin-inner-stats">
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-students">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Total Students</span>
+                <strong>@totalStudents</strong>
+                <small>Registered student accounts</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-courses">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Enrolled Students</span>
+                <strong>@enrolledStudents</strong>
+                <small>Students with course enrolments</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-progress">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Average Progress</span>
+                <strong>@averageProgress%</strong>
+                <small>Across recorded enrolments</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-active">
+                <i class="bi bi-journal-check"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Total Enrolments</span>
+                <strong>@totalEnrollments</strong>
+                <small>Course enrolment records</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-journal-check"></i>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="admin-inner-panel">
+
+        <div class="admin-inner-panel-header">
+
+            <div class="admin-panel-title">
+                <div class="admin-panel-title-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+                    <h2>Student Overview</h2>
+                    <p>
+                        Review student accounts and their current
+                        course enrolment information.
+                    </p>
+                </div>
+            </div>
+
+            <div class="admin-user-tools">
+
+                <div class="admin-table-search">
+                    <i class="bi bi-search"></i>
+
+                    <input type="search"
+                           id="studentSearch"
+                           placeholder="Search students or courses..."
+                           autocomplete="off"
+                           aria-label="Search students or courses" />
+                </div>
+
+                <div class="admin-record-count">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <span id="studentRecordCount">@students.Count displayed</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="admin-table-container">
+
+            <table class="admin-data-table" id="studentTable">
+
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Email Address</th>
+                        <th>Course</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (students.Count == 0)
+                    {
+                        <tr id="studentEmptyRow">
+                            <td colspan="5">
+                                <div style="padding: 32px; text-align: center;">
+                                    <i class="bi bi-people"
+                                       style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                    <strong>No student records found</strong>
+                                    <div>
+                                        Student accounts will appear here after registration.
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var student in students)
+                        {
+                            var initial = !string.IsNullOrWhiteSpace(student.StudentName)
+                                ? student.StudentName.Substring(0, 1).ToUpperInvariant()
+                                : "S";
+
+                            var hasEnrollment = student.EnrollmentId.HasValue;
+                            var progress = Math.Clamp(student.Progress, 0, 100);
+
+                            <tr class="student-row"
+                                data-search="@($"{student.StudentName} {student.StudentEmail} {student.CourseTitle}".ToLowerInvariant())">
+
+                                <td>
+                                    <div class="admin-table-user">
+                                        <div class="admin-table-avatar student-avatar">
+                                            @initial
+                                        </div>
+
+                                        <div class="admin-table-user-info">
+                                            <strong>@student.StudentName</strong>
+                                            <span>Student</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="admin-email-cell">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>@student.StudentEmail</span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="admin-course-assignment">
+                                        <div class="admin-assignment-icon">
+                                            <i class="bi @(hasEnrollment ? "bi-book-half" : "bi-dash-circle")"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>@student.CourseTitle</strong>
+                                            <span>
+                                                @(hasEnrollment ? "Enrolled course" : "No current enrolment")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (hasEnrollment)
+                                    {
+                                        <div class="admin-progress-cell">
+                                            <div class="admin-progress-top">
+                                                <strong>@progress%</strong>
+                                                <span>Progress</span>
+                                            </div>
+
+                                            <div class="admin-progress-track">
+                                                <span class="admin-progress-fill"
+                                                      style="width: @progress%;"></span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>—</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (hasEnrollment)
+                                    {
+                                        <span class="admin-status-badge">
+                                            <span class="admin-status-indicator"></span>
+                                            Enrolled
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="admin-status-badge admin-status-warning">
+                                            <span class="admin-status-indicator"></span>
+                                            Not Enrolled
+                                        </span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                    <tr id="studentNoSearchResults" style="display: none;">
+                        <td colspan="5">
+                            <div style="padding: 28px; text-align: center;">
+                                <i class="bi bi-search"
+                                   style="font-size: 1.7rem; display: block; margin-bottom: 8px;"></i>
+                                <strong>No matching students found</strong>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("studentSearch");
+            const rows = Array.from(document.querySelectorAll("#studentTable .student-row"));
+            const count = document.getElementById("studentRecordCount");
+            const noResults = document.getElementById("studentNoSearchResults");
+
+            if (!searchInput) {
+                return;
+            }
+
+            function filterStudents() {
+                const term = searchInput.value.trim().toLowerCase();
+                let visible = 0;
+
+                rows.forEach(function (row) {
+                    const searchableText =
+                        row.dataset.search || row.innerText.toLowerCase();
+
+                    const matches = searchableText.includes(term);
+
+                    row.style.display = matches ? "" : "none";
+
+                    if (matches) {
+                        visible++;
+                    }
+                });
+
+                if (count) {
+                    count.textContent = visible + " displayed";
+                }
+
+                if (noResults) {
+                    noResults.style.display =
+                        rows.length > 0 && visible === 0 ? "" : "none";
+                }
+            }
+
+            searchInput.addEventListener("input", filterStudents);
+        });
+    </script>
+}

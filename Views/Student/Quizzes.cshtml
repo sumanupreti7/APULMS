@@ -1,0 +1,759 @@
+@using APULMS.Controllers
+@{
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+    ViewData["Title"] = "Quizzes";
+
+    var quizCourses =
+        ViewBag.QuizCourses as List<StudentQuizCourse>
+        ?? new List<StudentQuizCourse>();
+
+    int availableQuizCount =
+        ViewBag.AvailableQuizCount is int available
+            ? available
+            : quizCourses.Count;
+
+    int completedQuizCount =
+        ViewBag.CompletedQuizCount is int completed
+            ? completed
+            : quizCourses.Count(q => q.LatestScore.HasValue);
+
+    int pendingQuizCount =
+        Math.Max(0, availableQuizCount - completedQuizCount);
+
+    string studentName =
+        ViewBag.Name?.ToString() ?? "Student";
+}
+
+<div class="student-quizzes-page">
+
+    <section class="quiz-hero">
+        <div>
+            <span class="quiz-eyebrow">
+                <i class="bi bi-ui-checks-grid"></i>
+                STUDENT PORTAL
+            </span>
+
+            <h1>Course Quizzes</h1>
+
+            <p>
+                Test your knowledge with quizzes from the courses
+                you are currently enrolled in.
+            </p>
+        </div>
+
+        <a asp-controller="Student"
+           asp-action="Dashboard"
+           class="quiz-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </section>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="quiz-alert quiz-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["Success"]</span>
+        </div>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="quiz-alert quiz-alert-warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@TempData["Warning"]</span>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="quiz-alert quiz-alert-error">
+            <i class="bi bi-x-circle-fill"></i>
+            <span>@TempData["Error"]</span>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="quiz-alert quiz-alert-error">
+            <i class="bi bi-x-circle-fill"></i>
+            <span>@ViewBag.Error</span>
+        </div>
+    }
+
+    <section class="quiz-stats">
+        <article class="quiz-stat-card">
+            <div class="quiz-stat-icon">
+                <i class="bi bi-journal-check"></i>
+            </div>
+
+            <div>
+                <span>Available Quizzes</span>
+                <strong>@availableQuizCount</strong>
+                <small>From enrolled courses</small>
+            </div>
+        </article>
+
+        <article class="quiz-stat-card">
+            <div class="quiz-stat-icon">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+
+            <div>
+                <span>Attempted</span>
+                <strong>@completedQuizCount</strong>
+                <small>Quizzes completed</small>
+            </div>
+        </article>
+
+        <article class="quiz-stat-card">
+            <div class="quiz-stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <div>
+                <span>Not Attempted</span>
+                <strong>@pendingQuizCount</strong>
+                <small>Ready to take</small>
+            </div>
+        </article>
+    </section>
+
+    <section class="quiz-panel">
+        <div class="quiz-panel-header">
+            <div>
+                <span class="quiz-panel-label">MY QUIZZES</span>
+                <h2>Available Course Quizzes</h2>
+                <p>
+                    Welcome, @studentName. Choose an enrolled course
+                    below to start or retake its quiz.
+                </p>
+            </div>
+
+            @if (quizCourses.Count > 0)
+            {
+                <div class="quiz-search">
+                    <i class="bi bi-search"></i>
+                    <input type="search"
+                           id="quizSearch"
+                           placeholder="Search quizzes..."
+                           autocomplete="off"
+                           aria-label="Search quizzes" />
+                </div>
+            }
+        </div>
+
+        @if (quizCourses.Count == 0)
+        {
+            <div class="quiz-empty">
+                <div class="quiz-empty-icon">
+                    <i class="bi bi-ui-checks-grid"></i>
+                </div>
+
+                <h3>No quizzes available yet</h3>
+
+                <p>
+                    Quizzes will appear here when one of your enrolled
+                    courses has quiz questions available.
+                </p>
+
+                <a asp-controller="Student"
+                   asp-action="Courses"
+                   class="quiz-primary-btn">
+                    <i class="bi bi-book"></i>
+                    Browse Courses
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="quiz-grid" id="quizGrid">
+                @foreach (var quiz in quizCourses)
+                {
+                    bool attempted = quiz.LatestScore.HasValue;
+                    int score = quiz.LatestScore ?? 0;
+
+                    <article class="quiz-card"
+                             data-search="@($"{quiz.CourseTitle} {quiz.Category} {quiz.LecturerName}".ToLowerInvariant())">
+
+                        <div class="quiz-card-top">
+                            <div class="quiz-course-icon">
+                                <i class="bi bi-patch-question-fill"></i>
+                            </div>
+
+                            @if (attempted)
+                            {
+                                <span class="quiz-status quiz-status-completed">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Attempted
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="quiz-status quiz-status-ready">
+                                    <i class="bi bi-lightning-charge-fill"></i>
+                                    Ready
+                                </span>
+                            }
+                        </div>
+
+                        <div class="quiz-card-body">
+                            <span class="quiz-category">
+                                @(string.IsNullOrWhiteSpace(quiz.Category)
+                                    ? "General"
+                                    : quiz.Category)
+                            </span>
+
+                            <h3>@quiz.CourseTitle</h3>
+
+                            <div class="quiz-meta">
+                                <span>
+                                    <i class="bi bi-person-badge"></i>
+                                    @quiz.LecturerName
+                                </span>
+
+                                <span>
+                                    <i class="bi bi-list-check"></i>
+                                    @quiz.QuestionCount
+                                    @(quiz.QuestionCount == 1 ? "Question" : "Questions")
+                                </span>
+                            </div>
+
+                            @if (attempted)
+                            {
+                                <div class="quiz-score-box">
+                                    <div>
+                                        <span>Latest Score</span>
+                                        <strong>@score%</strong>
+                                    </div>
+
+                                    <div class="quiz-score-track"
+                                         aria-label="Latest quiz score">
+                                        <span style="width:@Math.Clamp(score, 0, 100)%"></span>
+                                    </div>
+
+                                    @if (quiz.LatestTakenAt.HasValue)
+                                    {
+                                        <small>
+                                            Last attempt:
+                                            @quiz.LatestTakenAt.Value.ToString("dd MMM yyyy, hh:mm tt")
+                                        </small>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="quiz-ready-box">
+                                    <i class="bi bi-info-circle"></i>
+                                    <span>
+                                        You have not attempted this quiz yet.
+                                    </span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="quiz-card-footer">
+                            <a asp-controller="Student"
+                               asp-action="TakeQuiz"
+                               asp-route-courseId="@quiz.CourseId"
+                               class="quiz-primary-btn quiz-full-btn">
+
+                                @if (attempted)
+                                {
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    <span>Retake Quiz</span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-play-circle-fill"></i>
+                                    <span>Take Quiz</span>
+                                }
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <div class="quiz-search-empty"
+                 id="quizSearchEmpty"
+                 style="display:none;">
+                <i class="bi bi-search"></i>
+                <h3>No matching quizzes</h3>
+                <p>Try another course, category, or lecturer name.</p>
+            </div>
+        }
+    </section>
+</div>
+
+<style>
+    .student-quizzes-page {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 32px;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #172033;
+    }
+
+    .quiz-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 30px 32px;
+        border: 1px solid #e7ebf2;
+        border-radius: 24px;
+        background: #ffffff;
+        box-shadow: 0 12px 35px rgba(20, 35, 70, .06);
+    }
+
+    .quiz-eyebrow,
+    .quiz-panel-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: #3157d5;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .11em;
+    }
+
+    .quiz-hero h1 {
+        margin: 0;
+        font-size: clamp(28px, 3vw, 42px);
+        line-height: 1.15;
+        font-weight: 800;
+    }
+
+    .quiz-hero p,
+    .quiz-panel-header p {
+        margin: 10px 0 0;
+        color: #697386;
+        line-height: 1.65;
+    }
+
+    .quiz-back-btn,
+    .quiz-primary-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 0;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .quiz-back-btn {
+        flex: 0 0 auto;
+        padding: 12px 17px;
+        color: #25314d;
+        background: #f3f5f9;
+    }
+
+    .quiz-primary-btn {
+        padding: 13px 18px;
+        color: #ffffff;
+        background: #3157d5;
+        box-shadow: 0 8px 18px rgba(49, 87, 213, .18);
+    }
+
+    .quiz-back-btn:hover,
+    .quiz-primary-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .quiz-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 18px;
+        padding: 14px 17px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .quiz-alert-success {
+        color: #17663b;
+        background: #eaf8f0;
+    }
+
+    .quiz-alert-warning {
+        color: #8a5b00;
+        background: #fff7df;
+    }
+
+    .quiz-alert-error {
+        color: #a52a2a;
+        background: #fff0f0;
+    }
+
+    .quiz-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .quiz-stat-card {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+        padding: 22px;
+        border: 1px solid #e7ebf2;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 10px 28px rgba(20, 35, 70, .05);
+    }
+
+    .quiz-stat-icon,
+    .quiz-course-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        color: #3157d5;
+        background: #edf2ff;
+        font-size: 22px;
+    }
+
+    .quiz-stat-card span {
+        display: block;
+        color: #697386;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .quiz-stat-card strong {
+        display: block;
+        margin: 2px 0;
+        color: #172033;
+        font-size: 27px;
+        line-height: 1.15;
+    }
+
+    .quiz-stat-card small {
+        color: #929bad;
+        font-size: 12px;
+    }
+
+    .quiz-panel {
+        margin-top: 22px;
+        overflow: hidden;
+        border: 1px solid #e7ebf2;
+        border-radius: 22px;
+        background: #ffffff;
+        box-shadow: 0 12px 35px rgba(20, 35, 70, .05);
+    }
+
+    .quiz-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 26px 28px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .quiz-panel-header h2 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .quiz-search {
+        position: relative;
+        flex: 0 1 320px;
+    }
+
+    .quiz-search i {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        transform: translateY(-50%);
+        color: #8b94a5;
+    }
+
+    .quiz-search input {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1px solid #dfe4ec;
+        border-radius: 12px;
+        outline: none;
+        background: #f9fafc;
+    }
+
+    .quiz-search input:focus {
+        border-color: #3157d5;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(49, 87, 213, .08);
+    }
+
+    .quiz-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+        padding: 28px;
+    }
+
+    .quiz-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        border: 1px solid #e5e9f0;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 8px 24px rgba(20, 35, 70, .05);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .quiz-card:hover {
+        transform: translateY(-3px);
+        border-color: #cfd8f6;
+        box-shadow: 0 15px 32px rgba(20, 35, 70, .09);
+    }
+
+    .quiz-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 20px 0;
+    }
+
+    .quiz-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .quiz-status-completed {
+        color: #17663b;
+        background: #eaf8f0;
+    }
+
+    .quiz-status-ready {
+        color: #8a5b00;
+        background: #fff7df;
+    }
+
+    .quiz-card-body {
+        flex: 1;
+        padding: 18px 20px;
+    }
+
+    .quiz-category {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: #3157d5;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    .quiz-card h3 {
+        margin: 0;
+        min-height: 52px;
+        color: #172033;
+        font-size: 20px;
+        line-height: 1.35;
+    }
+
+    .quiz-meta {
+        display: grid;
+        gap: 8px;
+        margin-top: 17px;
+        color: #697386;
+        font-size: 13px;
+    }
+
+    .quiz-meta span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .quiz-score-box,
+    .quiz-ready-box {
+        margin-top: 20px;
+        padding: 14px;
+        border-radius: 13px;
+        background: #f7f9fc;
+    }
+
+    .quiz-score-box > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .quiz-score-box span,
+    .quiz-score-box small {
+        color: #697386;
+        font-size: 12px;
+    }
+
+    .quiz-score-box strong {
+        color: #3157d5;
+        font-size: 21px;
+    }
+
+    .quiz-score-track {
+        height: 7px;
+        margin: 10px 0;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e4e8f0;
+    }
+
+    .quiz-score-track span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: #3157d5;
+    }
+
+    .quiz-ready-box {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #697386;
+        font-size: 13px;
+    }
+
+    .quiz-card-footer {
+        padding: 0 20px 20px;
+    }
+
+    .quiz-full-btn {
+        width: 100%;
+    }
+
+    .quiz-empty,
+    .quiz-search-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 70px 24px;
+        text-align: center;
+    }
+
+    .quiz-empty-icon {
+        display: grid;
+        place-items: center;
+        width: 70px;
+        height: 70px;
+        margin-bottom: 16px;
+        border-radius: 20px;
+        color: #3157d5;
+        background: #edf2ff;
+        font-size: 30px;
+    }
+
+    .quiz-empty h3,
+    .quiz-search-empty h3 {
+        margin: 0 0 8px;
+        font-size: 21px;
+    }
+
+    .quiz-empty p,
+    .quiz-search-empty p {
+        max-width: 520px;
+        margin: 0 0 20px;
+        color: #697386;
+        line-height: 1.6;
+    }
+
+    .quiz-search-empty i {
+        margin-bottom: 12px;
+        color: #9aa3b2;
+        font-size: 30px;
+    }
+
+    @@media (max-width: 1050px) {
+        .quiz-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 800px) {
+        .student-quizzes-page {
+            padding: 20px;
+        }
+
+        .quiz-hero,
+        .quiz-panel-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .quiz-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .quiz-search {
+            width: 100%;
+            flex-basis: auto;
+        }
+    }
+
+    @@media (max-width: 620px) {
+        .quiz-grid {
+            grid-template-columns: 1fr;
+            padding: 18px;
+        }
+
+        .quiz-hero {
+            padding: 24px 20px;
+        }
+
+        .quiz-back-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("quizSearch");
+        const grid = document.getElementById("quizGrid");
+        const emptyState = document.getElementById("quizSearchEmpty");
+
+        if (!searchInput || !grid) {
+            return;
+        }
+
+        const cards = grid.querySelectorAll(".quiz-card");
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const content =
+                    (card.getAttribute("data-search") || "").toLowerCase();
+
+                const visible = content.includes(query);
+
+                card.style.display = visible ? "" : "none";
+
+                if (visible) {
+                    visibleCount++;
+                }
+            });
+
+            if (emptyState) {
+                emptyState.style.display =
+                    visibleCount === 0 ? "flex" : "none";
+            }
+        });
+    });
+</script>

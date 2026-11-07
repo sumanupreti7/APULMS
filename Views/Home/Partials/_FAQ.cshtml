@@ -1,0 +1,257 @@
+<section class="faq-section">
+
+    <div class="faq-container">
+
+        <div class="faq-header">
+
+            <span class="section-label">
+                NEED HELP?
+            </span>
+
+            <h2>
+                Frequently Asked
+                <span>Questions</span>
+            </h2>
+
+            <p>
+                Find quick answers about APULMS, guest access,
+                courses, student accounts, quizzes and system access.
+            </p>
+
+        </div>
+
+
+        <div class="faq-list">
+
+            <!-- FAQ 1 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        What is APULMS?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        APULMS (Asia Pacific University Learning Management
+                        System) is a web-based learning platform designed
+                        to provide course information and support learning
+                        activities for students, lecturers and administrators.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 2 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        Can I view courses without registering?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Yes. Guests can browse general APULMS information
+                        and view the public course catalogue without
+                        creating an account. Registration and login are
+                        required to access student learning features.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 3 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        How can students access courses?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Students can create an account, log in to the
+                        student portal, browse available courses and
+                        enrol in courses from their dashboard.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 4 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        Can students take quizzes in APULMS?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Yes. Registered students can access quizzes for
+                        their courses, submit answers and view their
+                        quiz results through the student portal.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 5 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        What can lecturers do in APULMS?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Lecturers can manage their courses, view enrolled
+                        students, create and manage quizzes, and review
+                        student quiz results.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 6 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        What does the administrator manage?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Administrators can manage users and courses,
+                        review student and lecturer information,
+                        and view system reports through the
+                        administration portal.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 7 -->
+            <div class="faq-item">
+
+                <button class="faq-question"
+                        type="button">
+
+                    <span>
+                        Is APULMS available on mobile devices?
+                    </span>
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Yes. APULMS uses a responsive web interface
+                        designed to adapt to desktop, tablet and
+                        mobile screen sizes.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const faqItems =
+        document.querySelectorAll(".faq-item");
+
+    faqItems.forEach(function (item) {
+
+        const button =
+            item.querySelector(".faq-question");
+
+        if (!button) {
+            return;
+        }
+
+        button.addEventListener("click", function () {
+
+            const isOpen =
+                item.classList.contains("active");
+
+            /* Close all questions first */
+            faqItems.forEach(function (faq) {
+                faq.classList.remove("active");
+            });
+
+            /* Open selected question */
+            if (!isOpen) {
+                item.classList.add("active");
+            }
+
+        });
+
+    });
+
+});
+</script>

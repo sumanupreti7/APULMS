@@ -1,0 +1,207 @@
+@{
+    ViewData["Title"] = "Admin Profile";
+    string? profileImage = ViewBag.ProfileImage as string;
+}
+
+<div class="admin-page admin-profile-page">
+
+    <!-- PAGE HEADER -->
+    <div class="admin-page-header">
+        <div>
+            <span class="admin-eyebrow">ADMIN PORTAL</span>
+
+            <h1>
+                <i class="bi bi-person-circle"></i>
+                Administrator Profile
+            </h1>
+
+            <p>
+                Manage your APULMS administrator profile and account information.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="admin-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Dashboard
+        </a>
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["ProfileSuccess"] != null)
+    {
+        <div class="admin-alert admin-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+
+            <div>
+                <strong>Success</strong>
+                <span>@TempData["ProfileSuccess"]</span>
+            </div>
+        </div>
+    }
+
+
+    <!-- ERROR MESSAGE -->
+    @if (TempData["ProfileError"] != null)
+    {
+        <div class="admin-alert admin-alert-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+                <strong>Unable to update profile</strong>
+                <span>@TempData["ProfileError"]</span>
+            </div>
+        </div>
+    }
+
+
+    <section class="admin-profile-container">
+
+        <!-- PROFILE CARD -->
+        <div class="admin-profile-photo-section">
+
+            <div class="admin-profile-photo">
+
+                @if (!string.IsNullOrEmpty(profileImage))
+                {
+                    <img src="@profileImage"
+                         alt="Administrator Profile Picture" />
+                }
+                else
+                {
+                    <div class="admin-profile-placeholder">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                }
+
+            </div>
+
+            <h2>@ViewBag.Name</h2>
+
+            <p class="admin-profile-role">
+                <i class="bi bi-shield-check"></i>
+                Administrator
+            </p>
+
+
+            <!-- PROFILE PICTURE UPLOAD -->
+            <form asp-controller="Admin"
+                  asp-action="UploadProfilePicture"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="admin-upload-form">
+
+                @Html.AntiForgeryToken()
+
+                <label for="profilePicture"
+                       class="admin-upload-label">
+                    <i class="bi bi-camera-fill"></i>
+                    Choose Profile Picture
+                </label>
+
+                <input type="file"
+                       id="profilePicture"
+                       name="profilePicture"
+                       accept=".jpg,.jpeg,.png,.webp"
+                       class="admin-file-input"
+                       required />
+
+                <small>
+                    JPG, PNG or WEBP · Maximum 5 MB
+                </small>
+
+                <button type="submit"
+                        class="admin-upload-btn">
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                    Upload Picture
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- ACCOUNT INFORMATION -->
+        <div class="admin-profile-information">
+
+            <div class="admin-profile-heading">
+                <span>ACCOUNT INFORMATION</span>
+                <h2>Profile Details</h2>
+                <p>
+                    Administrator account information associated with APULMS.
+                </p>
+            </div>
+
+
+            <div class="admin-profile-details">
+
+                <div class="admin-detail-card">
+                    <i class="bi bi-person-fill"></i>
+
+                    <div>
+                        <span>Full Name</span>
+                        <strong>@ViewBag.Name</strong>
+                    </div>
+                </div>
+
+
+                <div class="admin-detail-card">
+                    <i class="bi bi-envelope-fill"></i>
+
+                    <div>
+                        <span>Email Address</span>
+                        <strong>@ViewBag.Email</strong>
+                    </div>
+                </div>
+
+
+                <div class="admin-detail-card">
+                    <i class="bi bi-shield-check"></i>
+
+                    <div>
+                        <span>Account Role</span>
+                        <strong>Administrator</strong>
+                    </div>
+                </div>
+
+
+                <div class="admin-detail-card">
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    <div>
+                        <span>Account Status</span>
+
+                        <strong class="admin-status-active">
+                            <span></span>
+                            Active
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- INFORMATION NOTE -->
+            <div class="admin-profile-note">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <div>
+                    <strong>Profile Picture</strong>
+
+                    <p>
+                        Your uploaded profile picture is associated
+                        with your administrator account and displayed
+                        throughout the APULMS administrator portal.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

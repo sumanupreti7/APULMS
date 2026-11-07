@@ -1,0 +1,894 @@
+@{
+    ViewData["Title"] = "Quiz Management";
+
+    var lecturerCourses =
+        ViewBag.LecturerCourses as List<APULMS.Models.Course>
+        ?? new List<APULMS.Models.Course>();
+
+    var lecturerQuizzes =
+        ViewBag.LecturerQuizzes as List<dynamic>
+        ?? new List<dynamic>();
+
+    int totalQuestions =
+        Convert.ToInt32(ViewBag.TotalQuestions ?? 0);
+
+    int? selectedCourseId =
+        ViewBag.SelectedCourseId == null
+            ? null
+            : Convert.ToInt32(ViewBag.SelectedCourseId);
+
+    var databaseError =
+        ViewBag.DatabaseError?.ToString() ?? "";
+}
+
+<div class="portal-page">
+
+    <div class="portal-back-row">
+        <button type="button"
+                class="portal-back-button"
+                onclick="window.history.back();">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back</span>
+        </button>
+    </div>
+
+    <section class="portal-page-heading">
+        <div>
+            <span class="page-eyebrow">ACADEMIC MANAGEMENT</span>
+            <h1>Quiz Management</h1>
+            <p>
+                Create and manage quiz questions for the courses assigned to you.
+            </p>
+        </div>
+
+        <div class="page-heading-icon">
+            <i class="bi bi-ui-checks-grid"></i>
+        </div>
+    </section>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="quiz-alert quiz-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["Success"]</span>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="quiz-alert quiz-alert-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@TempData["Error"]</span>
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(databaseError))
+    {
+        <div class="quiz-alert quiz-alert-error">
+            <i class="bi bi-database-exclamation"></i>
+            <span>@databaseError</span>
+        </div>
+    }
+
+    <section class="portal-stat-grid quiz-stat-grid">
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-blue">
+                <i class="bi bi-book-half"></i>
+            </div>
+            <div class="stat-content">
+                <span>Assigned Courses</span>
+                <strong>@lecturerCourses.Count</strong>
+                <small>Available for quizzes</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-purple">
+                <i class="bi bi-question-circle-fill"></i>
+            </div>
+            <div class="stat-content">
+                <span>Total Questions</span>
+                <strong>@totalQuestions</strong>
+                <small>Current quiz questions</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-orange">
+                <i class="bi bi-funnel-fill"></i>
+            </div>
+            <div class="stat-content">
+                <span>Course Filter</span>
+                <strong class="text-stat">
+                    @(selectedCourseId.HasValue ? "Active" : "All")
+                </strong>
+                <small>
+                    @(selectedCourseId.HasValue
+                        ? "One course selected"
+                        : "Showing all courses")
+                </small>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="quiz-layout">
+
+        <article class="portal-main-card quiz-create-card">
+
+            <div class="dashboard-card-header">
+                <div>
+                    <span class="dashboard-small-label">
+                        CREATE QUESTION
+                    </span>
+
+                    <h2>New Quiz Question</h2>
+
+                    <p>
+                        Add one multiple-choice question with four options.
+                    </p>
+                </div>
+
+                <div class="quiz-header-icon">
+                    <i class="bi bi-plus-circle-fill"></i>
+                </div>
+            </div>
+
+            @if (lecturerCourses.Count == 0)
+            {
+                <div class="quiz-empty compact-empty">
+                    <i class="bi bi-book"></i>
+                    <h3>No courses assigned</h3>
+                    <p>
+                        You need an assigned course before creating quiz questions.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Lecturer"
+                      asp-action="CreateQuiz"
+                      method="post"
+                      class="quiz-form">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="quiz-field">
+                        <label for="courseId">
+                            <i class="bi bi-book-half"></i>
+                            Course
+                        </label>
+
+                        <select id="courseId"
+                                name="courseId"
+                                required>
+                            <option value="">Select a course</option>
+
+                            @foreach (var course in lecturerCourses)
+                            {
+                                if (selectedCourseId == course.Id)
+                                {
+                                    <option value="@course.Id" selected>
+                                        @course.Title
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@course.Id">
+                                        @course.Title
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="quiz-field">
+                        <label for="question">
+                            <i class="bi bi-question-circle"></i>
+                            Question
+                        </label>
+
+                        <textarea id="question"
+                                  name="question"
+                                  rows="4"
+                                  maxlength="2000"
+                                  placeholder="Enter the quiz question..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="quiz-option-grid">
+
+                        <div class="quiz-field">
+                            <label for="optionA">
+                                <span class="option-letter">A</span>
+                                Option A
+                            </label>
+
+                            <input id="optionA"
+                                   name="optionA"
+                                   type="text"
+                                   maxlength="255"
+                                   placeholder="Enter option A"
+                                   required />
+                        </div>
+
+                        <div class="quiz-field">
+                            <label for="optionB">
+                                <span class="option-letter">B</span>
+                                Option B
+                            </label>
+
+                            <input id="optionB"
+                                   name="optionB"
+                                   type="text"
+                                   maxlength="255"
+                                   placeholder="Enter option B"
+                                   required />
+                        </div>
+
+                        <div class="quiz-field">
+                            <label for="optionC">
+                                <span class="option-letter">C</span>
+                                Option C
+                            </label>
+
+                            <input id="optionC"
+                                   name="optionC"
+                                   type="text"
+                                   maxlength="255"
+                                   placeholder="Enter option C"
+                                   required />
+                        </div>
+
+                        <div class="quiz-field">
+                            <label for="optionD">
+                                <span class="option-letter">D</span>
+                                Option D
+                            </label>
+
+                            <input id="optionD"
+                                   name="optionD"
+                                   type="text"
+                                   maxlength="255"
+                                   placeholder="Enter option D"
+                                   required />
+                        </div>
+
+                    </div>
+
+                    <div class="quiz-field">
+                        <label for="correctAnswer">
+                            <i class="bi bi-check2-circle"></i>
+                            Correct Answer
+                        </label>
+
+                        <select id="correctAnswer"
+                                name="correctAnswer"
+                                required>
+                            <option value="">Select correct option</option>
+                            <option value="A">A - Option A</option>
+                            <option value="B">B - Option B</option>
+                            <option value="C">C - Option C</option>
+                            <option value="D">D - Option D</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="quiz-primary-button">
+                        <i class="bi bi-plus-lg"></i>
+                        Create Question
+                    </button>
+
+                </form>
+            }
+
+        </article>
+
+        <article class="portal-main-card quiz-list-card">
+
+            <div class="dashboard-card-header quiz-list-header">
+                <div>
+                    <span class="dashboard-small-label">
+                        QUESTION BANK
+                    </span>
+
+                    <h2>Your Quiz Questions</h2>
+
+                    <p>
+                        Review questions created for your teaching courses.
+                    </p>
+                </div>
+
+                <form asp-controller="Lecturer"
+                      asp-action="Quizzes"
+                      method="get"
+                      class="quiz-filter-form">
+
+                    <select name="courseId"
+                            onchange="this.form.submit()">
+                        <option value="">All Courses</option>
+
+                        @foreach (var course in lecturerCourses)
+                        {
+                            if (selectedCourseId == course.Id)
+                            {
+                                <option value="@course.Id" selected>
+                                    @course.Title
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@course.Id">
+                                    @course.Title
+                                </option>
+                            }
+                        }
+                    </select>
+
+                </form>
+            </div>
+
+            <div class="quiz-search-row">
+                <div class="page-search quiz-search">
+                    <i class="bi bi-search"></i>
+
+                    <input type="text"
+                           id="quizSearch"
+                           placeholder="Search questions or courses..."
+                           aria-label="Search quiz questions" />
+                </div>
+            </div>
+
+            @if (lecturerQuizzes.Count > 0)
+            {
+                <div class="quiz-question-list"
+                     id="quizQuestionList">
+
+                    @foreach (var quiz in lecturerQuizzes)
+                    {
+                        string searchText =
+                            $"{quiz.Question} {quiz.CourseTitle}"
+                                .ToLowerInvariant();
+
+                        <article class="quiz-question-card"
+                                 data-search="@searchText">
+
+                            <div class="quiz-question-top">
+
+                                <div class="quiz-question-number">
+                                    <i class="bi bi-patch-question-fill"></i>
+                                </div>
+
+                                <div class="quiz-question-main">
+                                    <span class="quiz-course-badge">
+                                        @quiz.CourseTitle
+                                    </span>
+
+                                    <h3>@quiz.Question</h3>
+                                </div>
+
+                                <form asp-controller="Lecturer"
+                                      asp-action="DeleteQuiz"
+                                      method="post"
+                                      class="quiz-delete-form"
+                                      onsubmit="return confirm('Delete this quiz question?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@quiz.Id" />
+
+                                    @if (selectedCourseId.HasValue)
+                                    {
+                                        <input type="hidden"
+                                               name="courseId"
+                                               value="@selectedCourseId.Value" />
+                                    }
+
+                                    <button type="submit"
+                                            class="quiz-delete-button"
+                                            title="Delete question">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <div class="quiz-options">
+
+                                <div class="quiz-option @(quiz.CorrectAnswer == "A" ? "correct-option" : "")">
+                                    <span>A</span>
+                                    <p>@quiz.OptionA</p>
+
+                                    @if (quiz.CorrectAnswer == "A")
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                </div>
+
+                                <div class="quiz-option @(quiz.CorrectAnswer == "B" ? "correct-option" : "")">
+                                    <span>B</span>
+                                    <p>@quiz.OptionB</p>
+
+                                    @if (quiz.CorrectAnswer == "B")
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                </div>
+
+                                <div class="quiz-option @(quiz.CorrectAnswer == "C" ? "correct-option" : "")">
+                                    <span>C</span>
+                                    <p>@quiz.OptionC</p>
+
+                                    @if (quiz.CorrectAnswer == "C")
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                </div>
+
+                                <div class="quiz-option @(quiz.CorrectAnswer == "D" ? "correct-option" : "")">
+                                    <span>D</span>
+                                    <p>@quiz.OptionD</p>
+
+                                    @if (quiz.CorrectAnswer == "D")
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+                <div id="quizSearchEmpty"
+                     class="quiz-empty"
+                     style="display:none;">
+                    <i class="bi bi-search"></i>
+                    <h3>No matching questions</h3>
+                    <p>Try another question or course name.</p>
+                </div>
+            }
+            else
+            {
+                <div class="quiz-empty">
+                    <i class="bi bi-ui-checks"></i>
+                    <h3>No quiz questions yet</h3>
+                    <p>
+                        Create your first question using the form on this page.
+                    </p>
+                </div>
+            }
+
+        </article>
+
+    </section>
+
+</div>
+
+<style>
+    .quiz-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 13px 16px;
+        border: 1px solid;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .quiz-alert-success {
+        border-color: #bbf7d0;
+        background: #f0fdf4;
+        color: #166534;
+    }
+
+    .quiz-alert-error {
+        border-color: #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+    }
+
+    .quiz-stat-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .quiz-layout {
+        display: grid;
+        grid-template-columns: minmax(330px, .78fr) minmax(0, 1.45fr);
+        gap: 22px;
+        align-items: start;
+    }
+
+    .quiz-create-card,
+    .quiz-list-card {
+        min-width: 0;
+    }
+
+    .quiz-header-icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 12px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 19px;
+    }
+
+    .quiz-form {
+        display: flex;
+        flex-direction: column;
+        gap: 17px;
+        padding-top: 8px;
+    }
+
+    .quiz-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .quiz-field label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #374151;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .quiz-field input,
+    .quiz-field textarea,
+    .quiz-field select,
+    .quiz-filter-form select {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #dfe5ee;
+        border-radius: 11px;
+        outline: none;
+        background: #fff;
+        color: #111827;
+        font: inherit;
+        font-size: 13px;
+        transition: .2s ease;
+    }
+
+    .quiz-field input,
+    .quiz-field select,
+    .quiz-filter-form select {
+        min-height: 44px;
+        padding: 0 12px;
+    }
+
+    .quiz-field textarea {
+        min-height: 105px;
+        padding: 12px;
+        resize: vertical;
+        line-height: 1.5;
+    }
+
+    .quiz-field input:focus,
+    .quiz-field textarea:focus,
+    .quiz-field select:focus,
+    .quiz-filter-form select:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, .10);
+    }
+
+    .quiz-option-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+    }
+
+    .option-letter {
+        display: grid;
+        width: 21px;
+        height: 21px;
+        place-items: center;
+        border-radius: 6px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+    .quiz-primary-button {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #4f46e5, #6d5dfc);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(79, 70, 229, .18);
+        transition: .2s ease;
+    }
+
+    .quiz-primary-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 11px 24px rgba(79, 70, 229, .24);
+    }
+
+    .quiz-list-header {
+        gap: 20px;
+    }
+
+    .quiz-filter-form {
+        width: min(220px, 100%);
+        flex-shrink: 0;
+    }
+
+    .quiz-search-row {
+        display: flex;
+        justify-content: flex-end;
+        margin: 4px 0 18px;
+    }
+
+    .quiz-search {
+        width: min(390px, 100%);
+    }
+
+    .quiz-question-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .quiz-question-card {
+        padding: 17px;
+        border: 1px solid #e5eaf1;
+        border-radius: 14px;
+        background: #fff;
+        transition: .2s ease;
+    }
+
+    .quiz-question-card:hover {
+        border-color: #d6dcff;
+        box-shadow: 0 7px 22px rgba(15, 23, 42, .05);
+    }
+
+    .quiz-question-top {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .quiz-question-number {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 10px;
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .quiz-question-main {
+        min-width: 0;
+    }
+
+    .quiz-course-badge {
+        display: inline-block;
+        margin-bottom: 6px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .quiz-question-main h3 {
+        margin: 0;
+        color: #111827;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .quiz-delete-form {
+        margin: 0;
+    }
+
+    .quiz-delete-button {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border: 1px solid #fee2e2;
+        border-radius: 10px;
+        background: #fff;
+        color: #ef4444;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .quiz-delete-button:hover {
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .quiz-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-top: 14px;
+    }
+
+    .quiz-option {
+        display: grid;
+        grid-template-columns: 26px minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+        min-height: 43px;
+        padding: 8px 10px;
+        border: 1px solid #e8edf3;
+        border-radius: 10px;
+        background: #f9fafb;
+    }
+
+    .quiz-option > span {
+        display: grid;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 7px;
+        background: #e9edf3;
+        color: #4b5563;
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+    .quiz-option p {
+        margin: 0;
+        overflow-wrap: anywhere;
+        color: #4b5563;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .quiz-option > i {
+        color: #16a34a;
+    }
+
+    .correct-option {
+        border-color: #bbf7d0;
+        background: #f0fdf4;
+    }
+
+    .correct-option > span {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .correct-option p {
+        color: #166534;
+        font-weight: 700;
+    }
+
+    .quiz-empty {
+        padding: 45px 20px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .quiz-empty > i {
+        display: block;
+        margin-bottom: 10px;
+        color: #94a3b8;
+        font-size: 34px;
+    }
+
+    .quiz-empty h3 {
+        margin: 0 0 7px;
+        color: #1f2937;
+        font-size: 16px;
+    }
+
+    .quiz-empty p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .compact-empty {
+        padding: 30px 15px;
+    }
+
+    @@media (max-width: 1100px) {
+        .quiz-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 800px) {
+        .quiz-stat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quiz-option-grid,
+        .quiz-options {
+            grid-template-columns: 1fr;
+        }
+
+        .quiz-list-header {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .quiz-filter-form,
+        .quiz-search {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("quizSearch");
+
+        const questionList =
+            document.getElementById("quizQuestionList");
+
+        const emptyMessage =
+            document.getElementById("quizSearchEmpty");
+
+        if (!searchInput || !questionList) {
+            return;
+        }
+
+        const questionCards =
+            questionList.querySelectorAll(
+                ".quiz-question-card[data-search]"
+            );
+
+        searchInput.addEventListener("input", function () {
+
+            const searchValue =
+                this.value.toLowerCase().trim();
+
+            let visibleQuestions = 0;
+
+            questionCards.forEach(function (card) {
+
+                const searchText =
+                    card.dataset.search || "";
+
+                const matches =
+                    searchText.includes(searchValue);
+
+                card.style.display =
+                    matches ? "" : "none";
+
+                if (matches) {
+                    visibleQuestions++;
+                }
+            });
+
+            if (emptyMessage) {
+                emptyMessage.style.display =
+                    visibleQuestions === 0
+                        ? "block"
+                        : "none";
+            }
+        });
+    });
+</script>

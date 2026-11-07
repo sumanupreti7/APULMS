@@ -1,0 +1,481 @@
+/* ================================================= */
+/* HOMEPAGE ENHANCEMENTS */
+/* ================================================= */
+
+:root{
+    --primary:#0d6efd;
+    --accent:#00d4ff;
+    --dark:#0a0a1a;
+    --dark2:#0d0d2b;
+}
+
+/* ================================================= */
+/* DARK MODE */
+/* ================================================= */
+
+body{
+    transition:.4s ease;
+}
+
+body.light-mode{
+    background:#f7f9fc;
+    color:#222;
+}
+
+body.light-mode .stats-counter,
+body.light-mode .how-it-works,
+body.light-mode .instructors-section,
+body.light-mode .testimonials,
+body.light-mode .cta-banner{
+    background:white;
+    color:#222;
+}
+
+.light-mode{
+    background:white;
+    color:#222;
+}
+
+.light-mode section{
+    background:white;
+}
+
+.light-mode .stats-counter{
+    background:#f8f9fa;
+    color:#111;
+}
+
+.light-mode .testimonial-card{
+    background:white;
+    color:#222;
+}
+
+/* ================================================= */
+/* THEME TOGGLE BUTTON */
+/* ================================================= */
+
+.theme-toggle{
+    background:none;
+    border:none;
+    color:white;
+    font-size:1.3rem;
+    cursor:pointer;
+    margin-left:20px;
+}
+
+/* ================================================= */
+/* NAVBAR SCROLL */
+/* ================================================= */
+
+.navbar-scrolled{
+    background:#0a0a1a !important;
+    box-shadow:0 2px 20px rgba(0,0,0,.4);
+    padding:10px 50px;
+}
+
+.navbar.scrolled{
+    background:#0a0a1a;
+    padding:10px 50px;
+    box-shadow:0 2px 20px rgba(0,0,0,.4);
+}
+
+/* ================================================= */
+/* HERO TYPING EFFECT */
+/* ================================================= */
+
+.typing-container{
+    min-height:80px;
+}
+
+#typing-text{
+    color:#00d4ff;
+}
+
+.typing-text{
+    color:var(--accent);
+}
+
+.cursor{
+    display:inline-block;
+    color:#00d4ff;
+    animation:blink .8s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+/* ================================================= */
+/* REVEAL ANIMATION */
+/* ================================================= */
+
+.reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:all .8s ease;
+}
+
+.reveal.active,
+.reveal.active-reveal{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* ================================================= */
+/* COUNTER SECTION */
+/* ================================================= */
+
+.stats-counter{
+    background:#0d0d2b;
+    color:white;
+    text-align:center;
+}
+
+.counter-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+}
+
+.counter-card{
+    text-align:center;
+    background:rgba(255,255,255,.05);
+    padding:35px;
+    border-radius:20px;
+    transition:.3s;
+}
+
+.counter-card:hover{
+    transform:translateY(-10px);
+}
+
+.counter-box{
+    padding:30px;
+}
+
+.counter-box h3{
+    font-size:3rem;
+    color:var(--accent);
+}
+
+.counter{
+    color:#00d4ff;
+    font-size:3rem;
+    font-weight:bold;
+}
+
+.counter-card p{
+    margin-top:10px;
+}
+
+/* ================================================= */
+/* FILTER TABS */
+/* ================================================= */
+
+.filter-tabs{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:35px;
+}
+
+.filter-btn{
+    padding:12px 25px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    background:#e5e7eb;
+    font-weight:600;
+    transition:.3s;
+}
+
+.filter-btn.active{
+    background:#00d4ff;
+    color:white;
+}
+
+.filter-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* ================================================= */
+/* HOW IT WORKS */
+/* ================================================= */
+
+.how-it-works{
+    background:#f8fbff;
+}
+
+.steps-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.step-card{
+    background:white;
+    padding:35px;
+    text-align:center;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:.4s;
+}
+
+.step-card:hover{
+    transform:translateY(-10px);
+}
+
+.step-number{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:#00d4ff;
+    color:white;
+    margin:auto;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1.5rem;
+    font-weight:bold;
+}
+
+.step-icon{
+    font-size:2.5rem;
+    margin-bottom:15px;
+}
+
+/* ================================================= */
+/* INSTRUCTORS */
+/* ================================================= */
+
+.instructors-section{
+    background:#081120;
+    padding:80px 8%;
+    text-align:center;
+}
+
+.instructors-section h2{
+    color:#ffffff;
+    font-size:2.8rem;
+    margin-bottom:50px;
+}
+
+.instructor-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:35px;
+    max-width:1300px;
+    margin:auto;
+}
+
+.instructor-card{
+    background:#111c34;
+    border-radius:25px;
+    padding:35px 30px;
+    transition:all .3s ease;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+.instructor-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 45px rgba(0,212,255,.15);
+}
+
+.instructor-card img{
+    width:150px;
+    height:150px;
+    object-fit:cover;
+    border-radius:50%;
+    border:5px solid #00d4ff;
+    margin-bottom:20px;
+}
+
+.instructor-card h3{
+    color:#00d4ff;
+    font-size:1.6rem;
+    margin-bottom:8px;
+}
+
+.instructor-card h4{
+    color:#ffffff;
+    font-size:1rem;
+    margin-bottom:15px;
+    font-weight:500;
+}
+
+.instructor-card p{
+    color:#cbd5e1;
+    line-height:1.8;
+    margin-bottom:20px;
+}
+
+.instructor-socials{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:20px;
+}
+
+.instructor-socials a{
+    text-decoration:none;
+    color:white;
+    background:#0d6efd;
+    padding:10px 18px;
+    border-radius:8px;
+    transition:.3s;
+    font-size:.9rem;
+    font-weight:bold;
+}
+
+.instructor-socials a:hover{
+    background:#00d4ff;
+    color:#000;
+}
+
+/* ================================================= */
+/* TESTIMONIALS */
+/* ================================================= */
+
+.testimonials{
+    background:#111827;
+}
+
+.testimonials h2{
+    color:white;
+}
+
+.testimonial-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+
+.testimonial-card{
+    background:#1f2937;
+    color:white;
+    padding:30px;
+    border-radius:20px;
+    transition:.3s;
+}
+
+.testimonial-card:hover{
+    transform:translateY(-8px);
+}
+
+.quote{
+    font-size:3rem;
+    color:#00d4ff;
+}
+
+.stars{
+    color:#ffd700;
+    margin:15px 0;
+}
+
+/* ================================================= */
+/* CTA SECTION */
+/* ================================================= */
+
+.cta-banner{
+    background:linear-gradient(135deg,#0d0d2b,#1c2350);
+    color:white;
+    text-align:center;
+}
+
+.cta-banner h2{
+    color:white;
+    font-size:3rem;
+}
+
+.cta-banner p{
+    margin:20px 0;
+    font-size:1.2rem;
+}
+
+.cta-section{
+    background:linear-gradient(135deg,#0d6efd,#001f5f);
+    color:white;
+    text-align:center;
+}
+
+.cta-section h2{
+    color:white;
+    font-size:3rem;
+}
+
+.cta-buttons{
+    margin-top:30px;
+}
+
+.cta-buttons .btn{
+    margin:10px;
+}
+
+.cta-buttons .btn-primary{
+    background:#00d4ff;
+    color:white;
+}
+
+.cta-buttons .btn-secondary{
+    background:white;
+    color:#111;
+}
+
+/* ================================================= */
+/* VIEW TRANSITIONS */
+/* ================================================= */
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.25s;
+  animation-timing-function:cubic-bezier(0.19,1,0.22,1);
+}
+
+/* ================================================= */
+/* MOBILE */
+/* ================================================= */
+
+@media(max-width:768px){
+
+    .counter{
+        font-size:2rem;
+    }
+
+    .counter-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .cta-banner h2,
+    .cta-section h2{
+        font-size:2rem;
+    }
+
+    .steps-grid{
+        grid-template-columns:1fr;
+    }
+
+    .instructor-grid,
+    .testimonial-grid{
+        grid-template-columns:1fr;
+    }
+
+    .instructor-card{
+        padding:25px;
+    }
+
+    .instructor-card img{
+        width:120px;
+        height:120px;
+    }
+
+    .instructors-section h2{
+        font-size:2rem;
+    }
+
+}

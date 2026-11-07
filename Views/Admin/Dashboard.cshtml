@@ -1,0 +1,631 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+
+    var adminName = ViewBag.Name?.ToString();
+    if (string.IsNullOrWhiteSpace(adminName))
+    {
+        adminName = Context.Session.GetString("UserName") ?? "Administrator";
+    }
+
+    var adminEmail = ViewBag.Email?.ToString();
+    if (string.IsNullOrWhiteSpace(adminEmail))
+    {
+        adminEmail = Context.Session.GetString("UserEmail") ?? "";
+    }
+
+    int totalUsers = ViewBag.DashboardTotalUsers ?? 0;
+    int totalCourses = ViewBag.DashboardTotalCourses ?? 0;
+    int totalLecturers = ViewBag.DashboardTotalLecturers ?? 0;
+    int totalStudents = ViewBag.DashboardTotalStudents ?? 0;
+    int totalAdmins = ViewBag.DashboardTotalAdmins ?? 0;
+}
+
+<div class="admin-dashboard-page">
+
+    <div class="admin-dashboard-grid">
+
+        <!-- =====================================================
+             WELCOME HERO
+        ====================================================== -->
+        <section class="admin-welcome">
+
+            <div class="admin-welcome-content">
+
+                <span class="admin-eyebrow">
+                    ADMINISTRATOR PORTAL
+                </span>
+
+                <h1>
+                    Welcome back, @adminName!
+                    <span class="admin-wave">👋</span>
+                </h1>
+
+                <p>
+                    Manage APULMS users, courses and academic activities
+                    from one central dashboard.
+                </p>
+
+                <div class="admin-welcome-actions">
+
+                    <a asp-controller="Admin"
+                       asp-action="Users"
+                       class="admin-primary-button">
+
+                        <i class="bi bi-people-fill"></i>
+                        <span>Manage Users</span>
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                    <a asp-controller="Admin"
+                       asp-action="Courses"
+                       class="admin-secondary-button">
+
+                        <i class="bi bi-book-half"></i>
+                        <span>View Courses</span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="admin-welcome-visual"
+                 aria-hidden="true">
+
+                <div class="admin-visual-circle admin-circle-one"></div>
+                <div class="admin-visual-circle admin-circle-two"></div>
+
+                <div class="admin-visual-card">
+
+                    <div class="admin-visual-screen">
+
+                        <div class="admin-visual-screen-top">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <div class="admin-visual-screen-body">
+
+                            <div class="visual-chart">
+                                <span style="height: 42%;"></span>
+                                <span style="height: 68%;"></span>
+                                <span style="height: 54%;"></span>
+                                <span style="height: 82%;"></span>
+                                <span style="height: 70%;"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="admin-visual-person">
+
+                        <div class="visual-person-head">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div class="visual-person-body">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+             PLATFORM SUMMARY
+        ====================================================== -->
+        <section class="admin-platform-summary admin-dashboard-card">
+
+            <div class="admin-card-heading">
+
+                <div>
+                    <span class="admin-small-label">APULMS</span>
+                    <h2>Platform Summary</h2>
+                    <p>Central administration overview.</p>
+                </div>
+
+                <div class="admin-heading-icon admin-heading-blue">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+
+            </div>
+
+            <div class="admin-summary-list">
+
+                <div class="admin-summary-row">
+
+                    <div class="admin-summary-icon summary-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <div class="admin-summary-content">
+                        <span>User Management</span>
+                        <strong>Manage Accounts</strong>
+                    </div>
+
+                    <a asp-controller="Admin"
+                       asp-action="Users"
+                       class="admin-summary-action"
+                       title="Manage users">
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+                <div class="admin-summary-row">
+
+                    <div class="admin-summary-icon summary-purple">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+
+                    <div class="admin-summary-content">
+                        <span>Course Management</span>
+                        <strong>Manage Courses</strong>
+                    </div>
+
+                    <a asp-controller="Admin"
+                       asp-action="Courses"
+                       class="admin-summary-action"
+                       title="Manage courses">
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+                <div class="admin-summary-row">
+
+                    <div class="admin-summary-icon summary-orange">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <div class="admin-summary-content">
+                        <span>Academic Staff</span>
+                        <strong>View Lecturers</strong>
+                    </div>
+
+                    <a asp-controller="Admin"
+                       asp-action="Lecturers"
+                       class="admin-summary-action"
+                       title="View lecturers">
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+             REAL DATABASE STATISTICS
+        ====================================================== -->
+        <article class="admin-stat admin-stat-users">
+
+            <div class="admin-stat-icon admin-stat-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="admin-stat-content">
+                <span>Total Users</span>
+                <strong>@totalUsers</strong>
+                <small>All registered accounts</small>
+            </div>
+
+        </article>
+
+        <article class="admin-stat admin-stat-courses">
+
+            <div class="admin-stat-icon admin-stat-purple">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+            <div class="admin-stat-content">
+                <span>Total Courses</span>
+                <strong>@totalCourses</strong>
+                <small>Available learning courses</small>
+            </div>
+
+        </article>
+
+        <article class="admin-stat admin-stat-lecturers">
+
+            <div class="admin-stat-icon admin-stat-orange">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+            <div class="admin-stat-content">
+                <span>Lecturers</span>
+                <strong>@totalLecturers</strong>
+                <small>Teaching accounts</small>
+            </div>
+
+        </article>
+
+        <article class="admin-stat admin-stat-students">
+
+            <div class="admin-stat-icon admin-stat-green">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+
+            <div class="admin-stat-content">
+                <span>Students</span>
+                <strong>@totalStudents</strong>
+                <small>Student accounts</small>
+            </div>
+
+        </article>
+
+        <!-- =====================================================
+             SYSTEM OVERVIEW
+        ====================================================== -->
+        <section class="admin-system-overview admin-dashboard-card">
+
+            <div class="admin-card-heading">
+
+                <div>
+                    <span class="admin-small-label">MANAGEMENT OVERVIEW</span>
+                    <h2>System Overview</h2>
+                    <p>Quick access to the main APULMS management areas.</p>
+                </div>
+
+                <a asp-controller="Admin"
+                   asp-action="Reports"
+                   class="admin-card-link">
+                    View Reports
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+            <div class="admin-overview-list">
+
+                <a asp-controller="Admin"
+                   asp-action="Users"
+                   class="admin-overview-row">
+
+                    <div class="admin-overview-icon overview-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <div class="admin-overview-content">
+                        <strong>User Management</strong>
+                        <span>Create, review and manage APULMS user accounts.</span>
+                    </div>
+
+                    <div class="admin-overview-end">
+                        <span class="admin-overview-badge badge-blue">Users</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Courses"
+                   class="admin-overview-row">
+
+                    <div class="admin-overview-icon overview-purple">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+
+                    <div class="admin-overview-content">
+                        <strong>Course Management</strong>
+                        <span>Create, edit and maintain learning courses.</span>
+                    </div>
+
+                    <div class="admin-overview-end">
+                        <span class="admin-overview-badge badge-purple">Courses</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Lecturers"
+                   class="admin-overview-row">
+
+                    <div class="admin-overview-icon overview-orange">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <div class="admin-overview-content">
+                        <strong>Lecturer Management</strong>
+                        <span>Review lecturer accounts and teaching access.</span>
+                    </div>
+
+                    <div class="admin-overview-end">
+                        <span class="admin-overview-badge badge-orange">Lecturers</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Students"
+                   class="admin-overview-row">
+
+                    <div class="admin-overview-icon overview-green">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+
+                    <div class="admin-overview-content">
+                        <strong>Student Management</strong>
+                        <span>Review students and academic participation.</span>
+                    </div>
+
+                    <div class="admin-overview-end">
+                        <span class="admin-overview-badge badge-green">Students</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+             QUICK ACTIONS
+        ====================================================== -->
+        <section class="admin-quick-actions admin-dashboard-card">
+
+            <div class="admin-card-heading">
+
+                <div>
+                    <span class="admin-small-label">ADMIN TOOLS</span>
+                    <h2>Quick Actions</h2>
+                    <p>Frequently used administrator tools.</p>
+                </div>
+
+                <div class="admin-heading-icon admin-heading-purple">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+
+            </div>
+
+            <div class="admin-action-grid">
+
+                <a asp-controller="Admin"
+                   asp-action="Users"
+                   class="admin-action-card">
+
+                    <div class="admin-action-icon action-blue">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Manage Users</strong>
+                        <span>Accounts and roles</span>
+                    </div>
+
+                    <i class="bi bi-arrow-up-right"></i>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="CreateCourse"
+                   class="admin-action-card">
+
+                    <div class="admin-action-icon action-purple">
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Create Course</strong>
+                        <span>Add a new course</span>
+                    </div>
+
+                    <i class="bi bi-arrow-up-right"></i>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Lecturers"
+                   class="admin-action-card">
+
+                    <div class="admin-action-icon action-orange">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <div>
+                        <strong>Lecturers</strong>
+                        <span>Teaching accounts</span>
+                    </div>
+
+                    <i class="bi bi-arrow-up-right"></i>
+
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Reports"
+                   class="admin-action-card">
+
+                    <div class="admin-action-icon action-green">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </div>
+
+                    <div>
+                        <strong>Reports</strong>
+                        <span>System information</span>
+                    </div>
+
+                    <i class="bi bi-arrow-up-right"></i>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+             ADMINISTRATION ACTIVITY / MANAGEMENT AREAS
+        ====================================================== -->
+        <section class="admin-recent-activity admin-dashboard-card">
+
+            <div class="admin-card-heading">
+
+                <div>
+                    <span class="admin-small-label">ADMINISTRATION</span>
+                    <h2>Management Areas</h2>
+                    <p>Core APULMS administration responsibilities.</p>
+                </div>
+
+                <div class="admin-heading-icon admin-heading-green">
+                    <i class="bi bi-activity"></i>
+                </div>
+
+            </div>
+
+            <div class="admin-activity-list">
+
+                <div class="admin-activity-row">
+
+                    <div class="admin-activity-icon activity-blue">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+
+                    <div class="admin-activity-content">
+                        <strong>User management</strong>
+                        <span>Review and maintain registered APULMS accounts.</span>
+                    </div>
+
+                    <span class="admin-activity-type">Users</span>
+
+                </div>
+
+                <div class="admin-activity-row">
+
+                    <div class="admin-activity-icon activity-purple">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+
+                    <div class="admin-activity-content">
+                        <strong>Course management</strong>
+                        <span>Maintain course information and lecturer assignments.</span>
+                    </div>
+
+                    <span class="admin-activity-type">Courses</span>
+
+                </div>
+
+                <div class="admin-activity-row">
+
+                    <div class="admin-activity-icon activity-orange">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <div class="admin-activity-content">
+                        <strong>Academic management</strong>
+                        <span>Monitor lecturers and student participation.</span>
+                    </div>
+
+                    <span class="admin-activity-type">Academic</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+             REAL USER DISTRIBUTION
+        ====================================================== -->
+        <section class="admin-user-distribution admin-dashboard-card">
+
+            <div class="admin-card-heading">
+
+                <div>
+                    <span class="admin-small-label">USER ACCOUNTS</span>
+                    <h2>User Distribution</h2>
+                    <p>Current APULMS account categories.</p>
+                </div>
+
+                <div class="admin-heading-icon admin-heading-blue">
+                    <i class="bi bi-pie-chart-fill"></i>
+                </div>
+
+            </div>
+
+            <div class="admin-distribution-content">
+
+                <div class="admin-distribution-chart">
+
+                    <div class="admin-donut">
+
+                        <div class="admin-donut-center">
+                            <strong>@totalUsers</strong>
+                            <span>Total Users</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="admin-distribution-list">
+
+                    <div class="admin-distribution-row">
+
+                        <div class="distribution-name">
+
+                            <span class="distribution-dot distribution-student"></span>
+
+                            <div>
+                                <strong>Students</strong>
+                                <span>Student accounts</span>
+                            </div>
+
+                        </div>
+
+                        <strong>@totalStudents</strong>
+
+                    </div>
+
+                    <div class="admin-distribution-row">
+
+                        <div class="distribution-name">
+
+                            <span class="distribution-dot distribution-lecturer"></span>
+
+                            <div>
+                                <strong>Lecturers</strong>
+                                <span>Teaching accounts</span>
+                            </div>
+
+                        </div>
+
+                        <strong>@totalLecturers</strong>
+
+                    </div>
+
+                    <div class="admin-distribution-row">
+
+                        <div class="distribution-name">
+
+                            <span class="distribution-dot distribution-admin"></span>
+
+                            <div>
+                                <strong>Administrators</strong>
+                                <span>Administrative accounts</span>
+                            </div>
+
+                        </div>
+
+                        <strong>@totalAdmins</strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>

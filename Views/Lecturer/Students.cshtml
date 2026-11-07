@@ -1,0 +1,806 @@
+@{
+    ViewData["Title"] = "My Students";
+
+    var totalStudents = ViewBag.TotalStudents ?? 0;
+    var averageProgress = ViewBag.AverageProgress ?? 0;
+    var totalEnrollments = ViewBag.TotalEnrollments ?? 0;
+
+    int? selectedCourseId = ViewBag.SelectedCourseId as int?;
+
+    var selectedCourseTitle =
+        ViewBag.SelectedCourseTitle?.ToString() ?? "";
+
+    var selectedCourseCategory =
+        ViewBag.SelectedCourseCategory?.ToString() ?? "";
+
+    var databaseError =
+        ViewBag.DatabaseError?.ToString() ?? "";
+
+    var students =
+        ViewBag.LecturerStudents as IEnumerable<dynamic>
+        ?? new List<dynamic>();
+}
+
+<div class="portal-page">
+
+    <!-- BACK -->
+    <div class="portal-back-row">
+        <button type="button"
+                class="portal-back-button"
+                onclick="window.history.back();">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back</span>
+        </button>
+    </div>
+
+
+    <!-- PAGE HEADER -->
+    <section class="portal-page-heading">
+
+        <div>
+
+            <span class="page-eyebrow">
+                STUDENT MANAGEMENT
+            </span>
+
+            <h1>
+                @if (selectedCourseId.HasValue &&
+                     !string.IsNullOrWhiteSpace(selectedCourseTitle))
+                {
+                    <text>@selectedCourseTitle Students</text>
+                }
+                else
+                {
+                    <text>My Students</text>
+                }
+            </h1>
+
+            <p>
+                @if (selectedCourseId.HasValue &&
+                     !string.IsNullOrWhiteSpace(selectedCourseTitle))
+                {
+                    <text>
+                        View students enrolled in this course
+                        and monitor their learning progress.
+                    </text>
+                }
+                else
+                {
+                    <text>
+                        View enrolled students and monitor
+                        their learning progress.
+                    </text>
+                }
+            </p>
+
+        </div>
+
+
+        <div class="page-heading-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+    <section class="portal-stat-grid">
+
+        <!-- TOTAL STUDENTS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Total Students</span>
+
+                <strong>
+                    @totalStudents
+                </strong>
+
+                <small>
+                    @if (selectedCourseId.HasValue)
+                    {
+                        <text>In selected course</text>
+                    }
+                    else
+                    {
+                        <text>Across all courses</text>
+                    }
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- AVERAGE PROGRESS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-purple">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Average Progress</span>
+
+                <strong>
+                    @averageProgress%
+                </strong>
+
+                <small>
+                    Enrollment progress
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- TOTAL ENROLLMENTS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-orange">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Total Enrollments</span>
+
+                <strong>
+                    @totalEnrollments
+                </strong>
+
+                <small>
+                    Course registrations
+                </small>
+
+            </div>
+
+        </article>
+
+
+        <!-- FILTER STATUS -->
+        <article class="lecturer-stat">
+
+            <div class="stat-icon stat-yellow">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span>Student View</span>
+
+                <strong class="text-stat">
+
+                    @if (selectedCourseId.HasValue)
+                    {
+                        <text>Filtered</text>
+                    }
+                    else
+                    {
+                        <text>All Courses</text>
+                    }
+
+                </strong>
+
+                <small>
+
+                    @if (selectedCourseId.HasValue &&
+                         !string.IsNullOrWhiteSpace(selectedCourseTitle))
+                    {
+                        <text>@selectedCourseTitle</text>
+                    }
+                    else
+                    {
+                        <text>Your teaching courses</text>
+                    }
+
+                </small>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- STUDENT DIRECTORY -->
+    <section class="portal-main-card">
+
+        <div class="dashboard-card-header">
+
+            <div>
+
+                <span class="dashboard-small-label">
+                    STUDENT DIRECTORY
+                </span>
+
+                <h2>
+                    Enrolled Students
+                </h2>
+
+                <p>
+                    @if (selectedCourseId.HasValue &&
+                         !string.IsNullOrWhiteSpace(selectedCourseTitle))
+                    {
+                        <text>
+                            Students enrolled in
+                            @selectedCourseTitle.
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            Review student activity and
+                            course progress.
+                        </text>
+                    }
+                </p>
+
+            </div>
+
+
+            <div class="page-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="studentSearch"
+                       placeholder="Search students..."
+                       aria-label="Search students" />
+
+            </div>
+
+        </div>
+
+
+        <!-- DATABASE ERROR -->
+        @if (!string.IsNullOrWhiteSpace(databaseError))
+        {
+            <div class="alert alert-danger"
+                 role="alert">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                @databaseError
+
+            </div>
+        }
+
+
+        <!-- STUDENT LIST -->
+        <div class="lecturer-student-list"
+             id="lecturerStudentList">
+
+
+            <!-- TABLE HEADER -->
+            <div class="lecturer-student-header">
+
+                <span>Student</span>
+
+                <span>Course</span>
+
+                <span>Progress</span>
+
+                <span>Status</span>
+
+                <span></span>
+
+            </div>
+
+
+            @if (students.Any())
+            {
+                foreach (var student in students)
+                {
+                    string studentName =
+                        student.StudentName?.ToString()
+                        ?? "Student";
+
+                    string studentEmail =
+                        student.StudentEmail?.ToString()
+                        ?? "";
+
+                    string courseTitle =
+                        student.CourseTitle?.ToString()
+                        ?? "Course";
+
+                    string courseCategory =
+                        student.CourseCategory?.ToString()
+                        ?? "";
+
+                    int progress =
+                        Convert.ToInt32(student.Progress);
+
+                    int studentId =
+                        Convert.ToInt32(student.StudentId);
+
+                    int courseId =
+                        Convert.ToInt32(student.CourseId);
+
+
+                    // =============================================
+                    // STUDENT INITIALS
+                    // =============================================
+                    var nameParts =
+                        studentName
+                            .Split(
+                                ' ',
+                                StringSplitOptions.RemoveEmptyEntries
+                            );
+
+                    string initials;
+
+                    if (nameParts.Length >= 2)
+                    {
+                        initials =
+                            $"{nameParts[0][0]}{nameParts[1][0]}"
+                                .ToUpperInvariant();
+                    }
+                    else if (nameParts.Length == 1 &&
+                             nameParts[0].Length >= 2)
+                    {
+                        initials =
+                            nameParts[0]
+                                .Substring(0, 2)
+                                .ToUpperInvariant();
+                    }
+                    else if (nameParts.Length == 1)
+                    {
+                        initials =
+                            nameParts[0]
+                                .Substring(0, 1)
+                                .ToUpperInvariant();
+                    }
+                    else
+                    {
+                        initials = "ST";
+                    }
+
+
+                    // =============================================
+                    // COURSE ICON
+                    // =============================================
+                    string courseIconClass =
+                        "course-row-blue";
+
+                    string courseIcon =
+                        "bi-book-half";
+
+
+                    if (!string.IsNullOrWhiteSpace(courseCategory))
+                    {
+                        string category =
+                            courseCategory.ToLowerInvariant();
+
+
+                        if (category.Contains("web"))
+                        {
+                            courseIconClass =
+                                "course-row-purple";
+
+                            courseIcon =
+                                "bi-code-slash";
+                        }
+                        else if (category.Contains("database"))
+                        {
+                            courseIconClass =
+                                "course-row-green";
+
+                            courseIcon =
+                                "bi-database-fill";
+                        }
+                        else if (category.Contains("cyber") ||
+                                 category.Contains("security"))
+                        {
+                            courseIconClass =
+                                "course-row-blue";
+
+                            courseIcon =
+                                "bi-shield-lock-fill";
+                        }
+                        else if (category.Contains("network"))
+                        {
+                            courseIconClass =
+                                "course-row-blue";
+
+                            courseIcon =
+                                "bi-diagram-3-fill";
+                        }
+                    }
+
+
+                    // =============================================
+                    // PROGRESS STATUS
+                    // =============================================
+                    string progressStatus;
+
+                    if (progress >= 100)
+                    {
+                        progressStatus = "Completed";
+                    }
+                    else if (progress > 0)
+                    {
+                        progressStatus = "Active";
+                    }
+                    else
+                    {
+                        progressStatus = "Enrolled";
+                    }
+
+
+                    <!-- STUDENT ROW -->
+                    <article class="lecturer-student-row"
+                             data-student-name="@studentName.ToLowerInvariant()"
+                             data-student-email="@studentEmail.ToLowerInvariant()"
+                             data-course-title="@courseTitle.ToLowerInvariant()"
+                             data-course-category="@courseCategory.ToLowerInvariant()">
+
+
+                        <!-- STUDENT -->
+                        <div class="student-row-person">
+
+                            <div class="portal-student-avatar">
+                                @initials
+                            </div>
+
+
+                            <div class="student-row-name">
+
+                                <strong>
+                                    @studentName
+                                </strong>
+
+                                <span>
+                                    @if (!string.IsNullOrWhiteSpace(studentEmail))
+                                    {
+                                        @studentEmail
+                                    }
+                                    else
+                                    {
+                                        <text>Student</text>
+                                    }
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- COURSE -->
+                        <div class="student-row-course">
+
+                            <div class="student-course-icon @courseIconClass">
+
+                                <i class="bi @courseIcon"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    @courseTitle
+                                </strong>
+
+                                <span>
+
+                                    @if (!string.IsNullOrWhiteSpace(courseCategory))
+                                    {
+                                        @courseCategory
+                                    }
+                                    else
+                                    {
+                                        <text>Course</text>
+                                    }
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PROGRESS -->
+                        <div class="student-row-progress">
+
+                            <div class="student-progress-heading">
+
+                                <span>
+                                    Progress
+                                </span>
+
+                                <strong>
+                                    @progress%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="progress-track">
+
+                                <i style="width:@progress%;"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <span class="course-row-status">
+
+                            <i></i>
+
+                            @progressStatus
+
+                        </span>
+
+
+                        <!-- ACTION -->
+                        <a asp-controller="Lecturer"
+                           asp-action="Grades"
+                           asp-route-studentId="@studentId"
+                           asp-route-courseId="@courseId"
+                           class="course-row-action"
+                           title="View student grades">
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </article>
+                }
+            }
+            else
+            {
+                <!-- NO STUDENTS -->
+                <article class="lecturer-student-row">
+
+                    <div class="student-row-person">
+
+                        <div class="portal-student-avatar">
+                            --
+                        </div>
+
+
+                        <div class="student-row-name">
+
+                            <strong>
+                                No enrolled students
+                            </strong>
+
+                            <span>
+
+                                @if (selectedCourseId.HasValue &&
+                                     !string.IsNullOrWhiteSpace(selectedCourseTitle))
+                                {
+                                    <text>
+                                        No students are enrolled in
+                                        @selectedCourseTitle yet.
+                                    </text>
+                                }
+                                else
+                                {
+                                    <text>
+                                        Students enrolled in your courses
+                                        will appear here.
+                                    </text>
+                                }
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="student-row-course">
+
+                        <div class="student-course-icon course-row-blue">
+
+                            <i class="bi bi-book-half"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <strong>
+                                No enrollment data
+                            </strong>
+
+                            <span>
+                                Waiting for enrollments
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="student-row-progress">
+
+                        <div class="student-progress-heading">
+
+                            <span>
+                                Progress
+                            </span>
+
+                            <strong>
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            <i style="width:0%;"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="course-row-status">
+
+                        <i></i>
+
+                        No Students
+
+                    </span>
+
+
+                    <span></span>
+
+                </article>
+            }
+
+        </div>
+
+
+        <!-- SEARCH EMPTY RESULT -->
+        <div id="studentSearchEmpty"
+             style="display:none; padding:30px; text-align:center;">
+
+            <i class="bi bi-search"></i>
+
+            <h3>
+                No matching students
+            </h3>
+
+            <p>
+                Try searching by student name,
+                email, course, or category.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const searchInput =
+                document.getElementById(
+                    "studentSearch"
+                );
+
+            const studentList =
+                document.getElementById(
+                    "lecturerStudentList"
+                );
+
+            const emptyMessage =
+                document.getElementById(
+                    "studentSearchEmpty"
+                );
+
+
+            if (!searchInput ||
+                !studentList) {
+
+                return;
+            }
+
+
+            const studentRows =
+                studentList.querySelectorAll(
+                    ".lecturer-student-row[data-student-name]"
+                );
+
+
+            searchInput.addEventListener(
+                "input",
+                function () {
+
+                    const searchValue =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    let visibleStudents = 0;
+
+
+                    studentRows.forEach(
+                        function (student) {
+
+                            const name =
+                                student.dataset.studentName
+                                || "";
+
+                            const email =
+                                student.dataset.studentEmail
+                                || "";
+
+                            const course =
+                                student.dataset.courseTitle
+                                || "";
+
+                            const category =
+                                student.dataset.courseCategory
+                                || "";
+
+
+                            const matches =
+                                name.includes(searchValue) ||
+                                email.includes(searchValue) ||
+                                course.includes(searchValue) ||
+                                category.includes(searchValue);
+
+
+                            if (matches) {
+
+                                student.style.display = "";
+
+                                visibleStudents++;
+
+                            }
+                            else {
+
+                                student.style.display = "none";
+
+                            }
+
+                        }
+                    );
+
+
+                    if (emptyMessage) {
+
+                        if (
+                            visibleStudents === 0 &&
+                            studentRows.length > 0
+                        ) {
+
+                            emptyMessage.style.display =
+                                "block";
+
+                        }
+                        else {
+
+                            emptyMessage.style.display =
+                                "none";
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+    );
+</script>

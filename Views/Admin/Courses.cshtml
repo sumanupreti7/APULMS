@@ -1,0 +1,852 @@
+@model IEnumerable<APULMS.Models.Course>
+
+@{
+    ViewData["Title"] = "Manage Courses";
+
+    var courses =
+        Model?.ToList()
+        ?? new List<APULMS.Models.Course>();
+
+    int totalCourses =
+        ViewBag.TotalCourses ?? courses.Count;
+
+    int totalStudents =
+        ViewBag.TotalStudents ?? 0;
+
+    int totalLecturers =
+        ViewBag.TotalLecturers ?? 0;
+
+    int activeCourses =
+        ViewBag.ActiveCourses ?? courses.Count;
+}
+
+<div class="admin-page admin-courses-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+    <section class="admin-inner-header">
+
+        <div class="admin-inner-header-content">
+
+            <div class="admin-inner-heading">
+
+                <div class="admin-page-icon admin-page-icon-purple">
+                    <i class="bi bi-book-half"></i>
+                </div>
+
+                <div>
+
+                    <span class="admin-page-label">
+                        ADMIN PORTAL
+                    </span>
+
+                    <h1>
+                        Manage Courses
+                    </h1>
+
+                    <p>
+                        Create, view, update and manage APULMS
+                        courses from one central workspace.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-header-actions">
+
+                <a asp-controller="Admin"
+                   asp-action="Dashboard"
+                   class="admin-back-button">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    <span>
+                        Back to Dashboard
+                    </span>
+
+                </a>
+
+
+                <a asp-controller="Admin"
+                   asp-action="CreateCourse"
+                   class="admin-primary-button">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    <span>
+                        Add New Course
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SUCCESS / ERROR MESSAGES
+    ====================================================== -->
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="admin-message admin-message-success">
+
+            <div class="admin-message-icon">
+                <i class="bi bi-check-lg"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Course action completed
+                </strong>
+
+                <p>
+                    @TempData["Success"]
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="admin-message-close"
+                    onclick="this.parentElement.remove();"
+                    aria-label="Close message">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+    }
+
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="admin-message admin-message-error">
+
+            <div class="admin-message-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Action failed
+                </strong>
+
+                <p>
+                    @TempData["Error"]
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="admin-message-close"
+                    onclick="this.parentElement.remove();"
+                    aria-label="Close message">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+    }
+
+
+    <!-- =====================================================
+         COURSE STATISTICS
+    ====================================================== -->
+    <section class="admin-inner-stats">
+
+        <!-- TOTAL COURSES -->
+        <article class="admin-inner-stat-card">
+
+            <div class="admin-inner-stat-icon stat-courses">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+
+                <span>
+                    Total Courses
+                </span>
+
+                <strong>
+                    @totalCourses
+                </strong>
+
+                <small>
+                    Available learning courses
+                </small>
+
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+        </article>
+
+
+        <!-- ENROLLMENTS -->
+        <article class="admin-inner-stat-card">
+
+            <div class="admin-inner-stat-icon stat-enrollments">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+
+                <span>
+                    Total Enrollments
+                </span>
+
+                <strong>
+                    @totalStudents
+                </strong>
+
+                <small>
+                    Course enrollments
+                </small>
+
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+        </article>
+
+
+        <!-- LECTURERS -->
+        <article class="admin-inner-stat-card">
+
+            <div class="admin-inner-stat-icon stat-lecturers">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+
+                <span>
+                    Lecturers
+                </span>
+
+                <strong>
+                    @totalLecturers
+                </strong>
+
+                <small>
+                    Teaching accounts
+                </small>
+
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+        </article>
+
+
+        <!-- ACTIVE COURSES -->
+        <article class="admin-inner-stat-card">
+
+            <div class="admin-inner-stat-icon stat-active">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+
+                <span>
+                    Active Courses
+                </span>
+
+                <strong>
+                    @activeCourses
+                </strong>
+
+                <small>
+                    Currently available
+                </small>
+
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- =====================================================
+         COURSE MANAGEMENT PANEL
+    ====================================================== -->
+    <section class="admin-inner-panel">
+
+        <!-- PANEL HEADER -->
+        <div class="admin-inner-panel-header">
+
+            <div class="admin-panel-title">
+
+                <div class="admin-panel-title-icon">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>
+                        Course Management
+                    </h2>
+
+                    <p>
+                        Live course records retrieved directly
+                        from the APULMS MySQL database.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-course-tools">
+
+                <!-- SEARCH -->
+                <div class="admin-table-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="search"
+                           id="courseSearch"
+                           placeholder="Search courses..."
+                           autocomplete="off"
+                           aria-label="Search courses" />
+
+                </div>
+
+
+                <!-- COURSE COUNT -->
+                <div class="admin-record-count">
+
+                    <i class="bi bi-database-check"></i>
+
+                    <span>
+                        @totalCourses courses
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COURSES
+        ================================================== -->
+
+        @if (courses.Any())
+        {
+            <div class="admin-table-container">
+
+                <table class="admin-data-table admin-course-table"
+                       id="coursesTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="admin-id-column">
+                                ID
+                            </th>
+
+                            <th>
+                                Course
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Lecturer
+                            </th>
+
+                            <th>
+                                Students
+                            </th>
+
+                            <th>
+                                Created
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th class="admin-actions-column">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (var course in courses)
+                        {
+                            <tr class="course-row">
+
+                                <!-- =========================
+                                     COURSE ID
+                                ========================== -->
+                                <td>
+
+                                    <span class="admin-course-id">
+                                        #@course.Id
+                                    </span>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     COURSE INFORMATION
+                                ========================== -->
+                                <td>
+
+                                    <div class="admin-course-info">
+
+                                        @if (!string.IsNullOrWhiteSpace(course.Thumbnail))
+                                        {
+                                            <div class="admin-course-thumbnail">
+
+                                                <img src="@course.Thumbnail"
+                                                     alt="@course.Title"
+                                                     onerror="this.style.display='none'; this.parentElement.classList.add('image-error');" />
+
+                                                <i class="bi bi-book-half"></i>
+
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="admin-course-thumbnail admin-course-thumbnail-placeholder">
+
+                                                <i class="bi bi-book-half"></i>
+
+                                            </div>
+                                        }
+
+
+                                        <div class="admin-course-details">
+
+                                            <strong>
+                                                @course.Title
+                                            </strong>
+
+                                            @if (!string.IsNullOrWhiteSpace(course.Description))
+                                            {
+                                                <span>
+                                                    @(course.Description.Length > 75
+                                                        ? course.Description.Substring(0, 75) + "..."
+                                                        : course.Description)
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span>
+                                                    No course description available.
+                                                </span>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     CATEGORY
+                                ========================== -->
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(course.Category))
+                                    {
+                                        <span class="admin-category-badge">
+
+                                            <i class="bi bi-tag"></i>
+
+                                            @course.Category
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="admin-category-badge category-empty">
+
+                                            <i class="bi bi-tag"></i>
+
+                                            Uncategorized
+
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- =========================
+                                     LECTURER
+                                ========================== -->
+                                <td>
+
+                                    <div class="admin-lecturer-cell">
+
+                                        <div class="admin-lecturer-avatar">
+
+                                            <i class="bi bi-person-workspace"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                @(string.IsNullOrWhiteSpace(course.LecturerName)
+                                                    ? "Not Assigned"
+                                                    : course.LecturerName)
+                                            </strong>
+
+                                            <span>
+                                                Lecturer
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     STUDENTS
+                                ========================== -->
+                                <td>
+
+                                    <div class="admin-student-count">
+
+                                        <i class="bi bi-people"></i>
+
+                                        <strong>
+                                            @course.StudentCount
+                                        </strong>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     CREATED DATE
+                                ========================== -->
+                                <td>
+
+                                    <div class="admin-date-cell">
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        <span>
+                                            @course.CreatedAt.ToString("dd MMM yyyy")
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     STATUS
+                                ========================== -->
+                                <td>
+
+                                    <span class="admin-status-badge">
+
+                                        <span class="admin-status-indicator"></span>
+
+                                        Active
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- =========================
+                                     ACTIONS
+                                ========================== -->
+                                <td>
+
+                                    <div class="admin-row-actions">
+
+                                        <!-- EDIT -->
+                                        <a asp-controller="Admin"
+                                           asp-action="EditCourse"
+                                           asp-route-id="@course.Id"
+                                           class="admin-action-button admin-action-edit"
+                                           title="Edit @course.Title"
+                                           aria-label="Edit @course.Title">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </a>
+
+
+                                        <!-- DELETE -->
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteCourse"
+                                              asp-route-id="@course.Id"
+                                              method="post"
+                                              class="delete-course-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="admin-action-button admin-action-delete"
+                                                    title="Delete @course.Title"
+                                                    aria-label="Delete @course.Title">
+
+                                                <i class="bi bi-trash3"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- SEARCH EMPTY STATE -->
+                <div id="noSearchResults"
+                     class="admin-search-empty"
+                     style="display:none;">
+
+                    <div class="admin-empty-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <strong>
+                        No matching courses
+                    </strong>
+
+                    <span>
+                        Try another course title, category
+                        or lecturer name.
+                    </span>
+
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <!-- =================================================
+                 DATABASE EMPTY STATE
+            ================================================== -->
+            <div class="admin-empty-state admin-course-empty">
+
+                <div class="admin-empty-icon">
+                    <i class="bi bi-journal-plus"></i>
+                </div>
+
+                <strong>
+                    No courses available
+                </strong>
+
+                <span>
+                    There are currently no courses in the
+                    APULMS database.
+                </span>
+
+                <a asp-controller="Admin"
+                   asp-action="CreateCourse"
+                   class="admin-primary-button">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    Create First Course
+
+                </a>
+
+            </div>
+        }
+
+
+        <!-- =================================================
+             PANEL FOOTER
+        ================================================== -->
+        <div class="admin-panel-footer">
+
+            <div class="admin-panel-footer-info">
+
+                <i class="bi bi-database-check"></i>
+
+                <span>
+                    Showing
+                    <strong>@totalCourses</strong>
+                    courses from the APULMS database
+                </span>
+
+            </div>
+
+
+            <a asp-controller="Admin"
+               asp-action="CreateCourse"
+               class="admin-panel-footer-link">
+
+                Add Course
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                /* =============================================
+                   COURSE SEARCH
+                ============================================== */
+
+                const searchInput =
+                    document.getElementById("courseSearch");
+
+                const table =
+                    document.getElementById("coursesTable");
+
+                const noResults =
+                    document.getElementById("noSearchResults");
+
+
+                if (searchInput && table) {
+
+                    const rows =
+                        table.querySelectorAll(
+                            "tbody .course-row"
+                        );
+
+                    searchInput.addEventListener(
+                        "input",
+                        function () {
+
+                            const searchTerm =
+                                this.value
+                                    .toLowerCase()
+                                    .trim();
+
+                            let visibleRows = 0;
+
+
+                            rows.forEach(
+                                function (row) {
+
+                                    const content =
+                                        row.textContent
+                                           .toLowerCase();
+
+                                    const matches =
+                                        content.includes(
+                                            searchTerm
+                                        );
+
+                                    row.style.display =
+                                        matches
+                                            ? ""
+                                            : "none";
+
+                                    if (matches) {
+                                        visibleRows++;
+                                    }
+
+                                }
+                            );
+
+
+                            if (noResults) {
+
+                                noResults.style.display =
+                                    visibleRows === 0 &&
+                                    rows.length > 0
+                                        ? "flex"
+                                        : "none";
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =============================================
+                   DELETE CONFIRMATION
+                ============================================== */
+
+                document
+                    .querySelectorAll(
+                        ".delete-course-form"
+                    )
+                    .forEach(
+                        function (form) {
+
+                            form.addEventListener(
+                                "submit",
+                                function (event) {
+
+                                    const confirmed =
+                                        confirm(
+                                            "Are you sure you want to delete this course?\n\n" +
+                                            "This action may also remove related records depending on your database relationships."
+                                        );
+
+                                    if (!confirmed) {
+                                        event.preventDefault();
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+    </script>
+
+}

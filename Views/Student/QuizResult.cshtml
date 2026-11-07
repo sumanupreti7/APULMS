@@ -1,0 +1,511 @@
+@{
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+    ViewData["Title"] = "Quiz Result";
+
+    int courseId = ViewBag.CourseId ?? 0;
+    string courseTitle = ViewBag.CourseTitle?.ToString() ?? "Course Quiz";
+    int score = ViewBag.Score ?? 0;
+    DateTime takenAt = ViewBag.TakenAt is DateTime dt ? dt : DateTime.Now;
+
+    int? correctAnswers = ViewBag.CorrectAnswers as int?;
+    int? totalQuestions = ViewBag.TotalQuestions as int?;
+
+    string performanceTitle;
+    string performanceMessage;
+
+    if (score >= 80)
+    {
+        performanceTitle = "Excellent work!";
+        performanceMessage = "You demonstrated a strong understanding of this course quiz.";
+    }
+    else if (score >= 60)
+    {
+        performanceTitle = "Good effort!";
+        performanceMessage = "You completed the quiz successfully. Review the course and aim even higher next time.";
+    }
+    else
+    {
+        performanceTitle = "Keep learning!";
+        performanceMessage = "Review the course material and try the quiz again when you are ready.";
+    }
+}
+
+<div class="quiz-result-page">
+
+    <section class="result-hero">
+
+        <div class="result-hero-copy">
+            <span class="result-eyebrow">
+                QUIZ COMPLETED
+            </span>
+
+            <h1>@performanceTitle</h1>
+
+            <p>
+                Your result for
+                <strong>@courseTitle</strong>
+                has been recorded in APULMS.
+            </p>
+        </div>
+
+        <div class="score-circle"
+             style="--score:@score;">
+            <div class="score-circle-inner">
+                <strong>@score%</strong>
+                <span>Your Score</span>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="result-grid">
+
+        <article class="result-card main-result-card">
+
+            <div class="result-card-heading">
+                <div class="heading-icon">✓</div>
+
+                <div>
+                    <span>ASSESSMENT RESULT</span>
+                    <h2>@courseTitle</h2>
+                </div>
+            </div>
+
+            <div class="score-summary">
+
+                <div class="summary-item">
+                    <span>Final Score</span>
+                    <strong>@score%</strong>
+                </div>
+
+                @if (correctAnswers.HasValue && totalQuestions.HasValue)
+                {
+                    <div class="summary-item">
+                        <span>Correct Answers</span>
+                        <strong>
+                            @correctAnswers / @totalQuestions
+                        </strong>
+                    </div>
+                }
+
+                <div class="summary-item">
+                    <span>Date Completed</span>
+                    <strong>
+                        @takenAt.ToString("dd MMM yyyy")
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Status</span>
+                    <strong class="completed-status">
+                        Completed
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="performance-message">
+                <div class="performance-icon">★</div>
+
+                <div>
+                    <strong>@performanceTitle</strong>
+                    <p>@performanceMessage</p>
+                </div>
+            </div>
+
+        </article>
+
+        <aside class="result-card next-actions-card">
+
+            <span class="result-eyebrow">
+                WHAT'S NEXT?
+            </span>
+
+            <h2>Continue Learning</h2>
+
+            <p>
+                Your result is saved. You can review your quiz
+                activity, retake this course quiz, or continue
+                with another course.
+            </p>
+
+            <div class="result-actions">
+
+                <a asp-controller="Student"
+                   asp-action="Quizzes"
+                   class="primary-result-button">
+                    View All Quizzes
+                    <span>→</span>
+                </a>
+
+                <a asp-controller="Student"
+                   asp-action="TakeQuiz"
+                   asp-route-courseId="@courseId"
+                   class="secondary-result-button">
+                    Retake Quiz
+                </a>
+
+                <a asp-controller="Student"
+                   asp-action="Dashboard"
+                   class="secondary-result-button">
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+    <section class="result-note">
+
+        <div class="note-icon">i</div>
+
+        <div>
+            <strong>Result saved successfully</strong>
+            <span>
+                This attempt is stored in your quiz history and
+                will appear in your Student Dashboard results.
+            </span>
+        </div>
+
+    </section>
+
+</div>
+
+<style>
+    .quiz-result-page {
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 34px;
+        color: #172033;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .result-hero,
+    .result-card,
+    .result-note {
+        border: 1px solid #e4e9f1;
+        background: #ffffff;
+        box-shadow: 0 12px 34px rgba(20, 35, 70, .055);
+    }
+
+    .result-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        padding: 34px 38px;
+        border-radius: 24px;
+        overflow: hidden;
+    }
+
+    .result-hero-copy {
+        max-width: 720px;
+    }
+
+    .result-eyebrow {
+        display: block;
+        margin-bottom: 9px;
+        color: #3157d5;
+        font-size: 11px;
+        font-weight: 850;
+        letter-spacing: .12em;
+    }
+
+    .result-hero h1 {
+        margin: 0;
+        color: #172033;
+        font-size: clamp(31px, 4vw, 46px);
+        line-height: 1.12;
+    }
+
+    .result-hero p {
+        margin: 12px 0 0;
+        color: #697386;
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .score-circle {
+        --score: 0;
+        display: grid;
+        place-items: center;
+        width: 150px;
+        height: 150px;
+        flex: 0 0 150px;
+        border-radius: 50%;
+        background:
+            conic-gradient(
+                #3157d5 calc(var(--score) * 1%),
+                #e8edf8 0
+            );
+        box-shadow: 0 14px 32px rgba(49, 87, 213, .12);
+    }
+
+    .score-circle-inner {
+        display: grid;
+        place-items: center;
+        align-content: center;
+        width: 122px;
+        height: 122px;
+        border-radius: 50%;
+        background: #ffffff;
+    }
+
+    .score-circle-inner strong {
+        color: #172033;
+        font-size: 32px;
+        line-height: 1;
+    }
+
+    .score-circle-inner span {
+        margin-top: 7px;
+        color: #7c879a;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(300px, .85fr);
+        gap: 22px;
+        margin-top: 22px;
+    }
+
+    .result-card {
+        border-radius: 20px;
+    }
+
+    .main-result-card {
+        padding: 29px;
+    }
+
+    .result-card-heading {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .heading-icon {
+        display: grid;
+        place-items: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 13px;
+        color: #17663b;
+        background: #eaf8f0;
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .result-card-heading span {
+        display: block;
+        margin-bottom: 4px;
+        color: #8a94a6;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .09em;
+    }
+
+    .result-card-heading h2 {
+        margin: 0;
+        color: #172033;
+        font-size: 20px;
+    }
+
+    .score-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+        margin-top: 22px;
+    }
+
+    .summary-item {
+        padding: 17px;
+        border-radius: 13px;
+        background: #f7f9fc;
+    }
+
+    .summary-item span {
+        display: block;
+        margin-bottom: 6px;
+        color: #7c879a;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .summary-item strong {
+        color: #172033;
+        font-size: 18px;
+    }
+
+    .completed-status {
+        color: #17663b !important;
+    }
+
+    .performance-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-top: 20px;
+        padding: 17px;
+        border-radius: 14px;
+        background: #f5f7ff;
+    }
+
+    .performance-icon {
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        flex: 0 0 37px;
+        border-radius: 10px;
+        color: #3157d5;
+        background: #e6ecff;
+        font-weight: 900;
+    }
+
+    .performance-message strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+
+    .performance-message p {
+        margin: 0;
+        color: #697386;
+        font-size: 12px;
+        line-height: 1.55;
+    }
+
+    .next-actions-card {
+        padding: 29px;
+    }
+
+    .next-actions-card h2 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .next-actions-card > p {
+        margin: 10px 0 22px;
+        color: #697386;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .result-actions {
+        display: grid;
+        gap: 10px;
+    }
+
+    .primary-result-button,
+    .secondary-result-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 46px;
+        padding: 11px 16px;
+        border-radius: 11px;
+        font-size: 13px;
+        font-weight: 780;
+        text-decoration: none;
+        transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .primary-result-button {
+        color: #ffffff;
+        border: 1px solid #3157d5;
+        background: #3157d5;
+        box-shadow: 0 8px 18px rgba(49, 87, 213, .16);
+    }
+
+    .secondary-result-button {
+        color: #344054;
+        border: 1px solid #dce1e9;
+        background: #ffffff;
+    }
+
+    .primary-result-button:hover,
+    .secondary-result-button:hover {
+        transform: translateY(-1px);
+    }
+
+    .result-note {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-top: 22px;
+        padding: 17px 20px;
+        border-radius: 15px;
+    }
+
+    .note-icon {
+        display: grid;
+        place-items: center;
+        width: 35px;
+        height: 35px;
+        flex: 0 0 35px;
+        border-radius: 10px;
+        color: #3157d5;
+        background: #edf2ff;
+        font-weight: 900;
+    }
+
+    .result-note strong,
+    .result-note span {
+        display: block;
+    }
+
+    .result-note strong {
+        margin-bottom: 3px;
+        font-size: 13px;
+    }
+
+    .result-note span {
+        color: #697386;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    @@media (max-width: 860px) {
+        .quiz-result-page {
+            padding: 20px;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .result-hero {
+            align-items: flex-start;
+            flex-direction: column;
+            padding: 26px;
+        }
+
+        .score-circle {
+            width: 125px;
+            height: 125px;
+            flex-basis: 125px;
+        }
+
+        .score-circle-inner {
+            width: 101px;
+            height: 101px;
+        }
+
+        .score-circle-inner strong {
+            font-size: 27px;
+        }
+
+        .score-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -1,0 +1,390 @@
+@model APULMS.Models.User
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="admin-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="admin-page-header">
+
+        <div>
+            <span class="admin-eyebrow">ADMIN PORTAL</span>
+
+            <h1>✏️ Edit User</h1>
+
+            <p>
+                Update the selected user's account information and role.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Users"
+           class="admin-back-btn">
+            ← Back to Users
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM
+    ====================================================== -->
+
+    <section class="admin-panel user-form-panel">
+
+        <div class="user-form-heading">
+
+            <div class="user-form-icon">
+                👤
+            </div>
+
+            <div>
+                <h2>
+                    Edit: @Model.Name
+                </h2>
+
+                <p>
+                    User ID #@Model.Id
+                </p>
+            </div>
+
+        </div>
+
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly"
+                 class="user-validation-summary">
+            </div>
+        }
+
+
+        <form asp-controller="Admin"
+              asp-action="EditUser"
+              method="post"
+              class="user-form">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id" type="hidden" />
+
+
+            <!-- FULL NAME -->
+
+            <div class="form-group full-width">
+
+                <label asp-for="Name">
+                    Full Name
+                    <span>*</span>
+                </label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       maxlength="100"
+                       autocomplete="name"
+                       placeholder="Enter user's full name" />
+
+                <span asp-validation-for="Name"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label asp-for="Email">
+                    Email Address
+                    <span>*</span>
+                </label>
+
+                <input asp-for="Email"
+                       class="form-control"
+                       type="email"
+                       maxlength="150"
+                       autocomplete="email"
+                       placeholder="name@example.com" />
+
+                <span asp-validation-for="Email"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- ROLE -->
+
+            <div class="form-group">
+
+                <label asp-for="Role">
+                    User Role
+                    <span>*</span>
+                </label>
+
+                <select asp-for="Role"
+                        class="form-control">
+
+                    <option value="">-- Select Role --</option>
+                    <option value="student">Student</option>
+                    <option value="lecturer">Lecturer</option>
+                    <option value="admin">Administrator</option>
+
+                </select>
+
+                <span asp-validation-for="Role"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- PASSWORD INFORMATION -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="user-readonly-field">
+                    🔒 Password remains unchanged when editing this user.
+                </div>
+
+                <small>
+                    Password changes are intentionally not performed from this form.
+                </small>
+
+            </div>
+
+
+            <!-- CREATED DATE -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Account Created
+                </label>
+
+                <div class="user-readonly-field">
+                    @Model.CreatedAt.ToString("dd MMMM yyyy, hh:mm tt")
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="user-form-actions">
+
+                <a asp-controller="Admin"
+                   asp-action="Users"
+                   class="user-secondary-btn">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="user-submit-btn">
+                    ✓ Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+
+<style>
+
+    .user-form-panel {
+        max-width: 1050px;
+        margin: 0 auto;
+    }
+
+    .user-form-heading {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-bottom: 24px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .user-form-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        font-size: 25px;
+    }
+
+    .user-form-heading h2 {
+        margin: 0 0 5px;
+    }
+
+    .user-form-heading p {
+        margin: 0;
+        opacity: .65;
+    }
+
+    .user-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .form-group label span {
+        color: #f87171;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        color: inherit;
+        outline: none;
+        font: inherit;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .form-control:focus {
+        border-color: rgba(99,102,241,.7);
+        box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+    }
+
+    select.form-control option {
+        color: #111827;
+        background: #ffffff;
+    }
+
+    .form-group small {
+        font-size: 12px;
+        opacity: .55;
+    }
+
+    .field-validation {
+        color: #fca5a5;
+        font-size: 12px;
+    }
+
+    .user-validation-summary {
+        margin-bottom: 20px;
+        padding: 14px;
+        border-radius: 10px;
+        background: rgba(239,68,68,.10);
+        border: 1px solid rgba(239,68,68,.20);
+        color: #fecaca;
+    }
+
+    .user-validation-summary ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .user-readonly-field {
+        padding: 13px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(255,255,255,.025);
+        opacity: .7;
+    }
+
+    .user-form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 8px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .user-secondary-btn,
+    .user-submit-btn {
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .user-secondary-btn {
+        color: inherit;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .user-submit-btn {
+        color: #fff;
+        border: 0;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+    }
+
+    .user-secondary-btn:hover,
+    .user-submit-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    @@media (max-width: 700px) {
+
+        .user-form {
+            grid-template-columns: 1fr;
+        }
+
+        .full-width {
+            grid-column: auto;
+        }
+
+        .user-form-actions {
+            grid-column: auto;
+            flex-direction: column;
+        }
+
+        .user-secondary-btn,
+        .user-submit-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

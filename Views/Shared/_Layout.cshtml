@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - APU LMS
+    </title>
+
+    <!-- =====================================================
+         MAIN WEBSITE CSS
+    ====================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/style.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/index.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/auth.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/about.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/contact.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/courses.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- =====================================================
+         MAIN WEBSITE HEADER
+    ====================================================== -->
+
+    <header>
+        <nav class="navbar">
+
+            <!-- LOGO -->
+            <div class="logo">
+                APU LMS
+            </div>
+
+            <!-- NAVIGATION -->
+            <ul class="nav-links">
+
+                <li>
+                    <a asp-controller="Home"
+                       asp-action="Index">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Home"
+                       asp-action="About">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Home"
+                       asp-action="Courses">
+                        Courses
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Account"
+                       asp-action="Register">
+                        Register
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Account"
+                       asp-action="Login">
+                        Login
+                    </a>
+                </li>
+
+                <li>
+                    <a asp-controller="Home"
+                       asp-action="Contact">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- THEME + MOBILE MENU -->
+            <div style="display:flex;align-items:center;gap:15px;">
+
+                <button id="themeToggle"
+                        class="theme-toggle">
+                    🌙
+                </button>
+
+                <button class="hamburger"
+                        id="hamburger">
+                    ☰
+                </button>
+
+            </div>
+
+        </nav>
+    </header>
+
+    <!-- =====================================================
+         PAGE CONTENT
+    ====================================================== -->
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+        <p>
+            © 2026 Asia Pacific University LMS.
+            All Rights Reserved.
+        </p>
+    </footer>
+
+    <!-- =====================================================
+         MAIN JAVASCRIPT
+    ====================================================== -->
+
+    <script src="~/js/main.js"
+            asp-append-version="true">
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+    <!-- =====================================================
+         SWEET ALERT
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    </script>
+
+</body>
+</html>

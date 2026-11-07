@@ -1,0 +1,357 @@
+@{
+    ViewData["Title"] = "Results";
+
+    var results = ViewBag.LecturerResults as List<dynamic> ?? new List<dynamic>();
+
+    int totalAttempts = ViewBag.TotalAttempts != null
+        ? Convert.ToInt32(ViewBag.TotalAttempts)
+        : 0;
+
+    int totalStudents = ViewBag.TotalStudents != null
+        ? Convert.ToInt32(ViewBag.TotalStudents)
+        : 0;
+
+    int averageScore = ViewBag.AverageScore != null
+        ? Convert.ToInt32(ViewBag.AverageScore)
+        : 0;
+
+    int passRate = ViewBag.PassRate != null
+        ? Convert.ToInt32(ViewBag.PassRate)
+        : 0;
+}
+
+<div class="portal-page">
+
+    <!-- BACK -->
+    <div class="portal-back-row">
+        <button type="button"
+                class="portal-back-button"
+                onclick="window.history.back();">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back</span>
+        </button>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <section class="portal-page-heading">
+        <div>
+            <span class="page-eyebrow">PERFORMANCE</span>
+            <h1>Quiz Results</h1>
+            <p>Review real quiz attempts and student performance across your courses.</p>
+        </div>
+
+        <div class="page-heading-icon">
+            <i class="bi bi-bar-chart-fill"></i>
+        </div>
+    </section>
+
+    @if (ViewBag.DatabaseError != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@ViewBag.DatabaseError</span>
+        </div>
+    }
+
+    <!-- REAL STATISTICS -->
+    <section class="portal-stat-grid">
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-blue">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Average Score</span>
+                <strong>@averageScore%</strong>
+                <small>Across recorded attempts</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-purple">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Pass Rate</span>
+                <strong>@passRate%</strong>
+                <small>Scores of 50% or higher</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-orange">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Students</span>
+                <strong>@totalStudents</strong>
+                <small>Students with quiz attempts</small>
+            </div>
+        </article>
+
+        <article class="lecturer-stat">
+            <div class="stat-icon stat-yellow">
+                <i class="bi bi-ui-checks-grid"></i>
+            </div>
+
+            <div class="stat-content">
+                <span>Quiz Attempts</span>
+                <strong>@totalAttempts</strong>
+                <small>Recorded result entries</small>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- RESULTS -->
+    <section class="portal-main-card">
+
+        <div class="dashboard-card-header">
+
+            <div>
+                <span class="dashboard-small-label">
+                    QUIZ PERFORMANCE
+                </span>
+
+                <h2>Student Result History</h2>
+
+                <p>
+                    Results shown below are loaded from completed quiz attempts
+                    for courses assigned to your lecturer account.
+                </p>
+            </div>
+
+            <div class="page-search">
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="resultSearch"
+                       placeholder="Search student or course..."
+                       aria-label="Search quiz results"
+                       autocomplete="off" />
+            </div>
+
+        </div>
+
+        @if (results.Count == 0)
+        {
+            <div style="padding: 48px 24px; text-align: center;">
+                <div style="font-size: 42px; margin-bottom: 14px;">
+                    <i class="bi bi-bar-chart"></i>
+                </div>
+
+                <h3 style="margin-bottom: 8px;">No quiz results yet</h3>
+
+                <p style="margin: 0;">
+                    Student quiz attempts will appear here after learners complete
+                    quizzes in your assigned courses.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="lecturer-grade-list" id="resultList">
+
+                <!-- HEADER -->
+                <div class="lecturer-grade-header">
+                    <span>Student</span>
+                    <span>Course</span>
+                    <span>Score</span>
+                    <span>Result</span>
+                    <span>Date</span>
+                    <span>Status</span>
+                </div>
+
+                @foreach (var result in results)
+                {
+                    int score = Convert.ToInt32(result.Score);
+                    bool passed = score >= 50;
+
+                    string studentName = Convert.ToString(result.StudentName) ?? "Student";
+                    string studentEmail = Convert.ToString(result.StudentEmail) ?? "";
+                    string courseTitle = Convert.ToString(result.CourseTitle) ?? "Course";
+                    string courseCategory = Convert.ToString(result.CourseCategory) ?? "";
+                    DateTime takenAt = (DateTime)result.TakenAt;
+
+                    string initials = "";
+
+                    if (!string.IsNullOrWhiteSpace(studentName))
+                    {
+                        var nameParts = studentName
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        if (nameParts.Length > 0)
+                        {
+                            initials += nameParts[0][0];
+                        }
+
+                        if (nameParts.Length > 1)
+                        {
+                            initials += nameParts[nameParts.Length - 1][0];
+                        }
+                    }
+
+                    if (string.IsNullOrWhiteSpace(initials))
+                    {
+                        initials = "ST";
+                    }
+
+                    string gradeLabel;
+
+                    if (score >= 80)
+                    {
+                        gradeLabel = "Excellent";
+                    }
+                    else if (score >= 70)
+                    {
+                        gradeLabel = "Very Good";
+                    }
+                    else if (score >= 60)
+                    {
+                        gradeLabel = "Good";
+                    }
+                    else if (score >= 50)
+                    {
+                        gradeLabel = "Pass";
+                    }
+                    else
+                    {
+                        gradeLabel = "Needs Review";
+                    }
+
+                    <article class="lecturer-grade-row result-search-row"
+                             data-search="@($"{studentName} {studentEmail} {courseTitle} {courseCategory} {score} {gradeLabel}".ToLowerInvariant())">
+
+                        <div class="grade-row-person">
+
+                            <div class="portal-student-avatar">
+                                @initials.ToUpperInvariant()
+                            </div>
+
+                            <div class="grade-student-name">
+                                <strong>@studentName</strong>
+                                <span>@studentEmail</span>
+                            </div>
+
+                        </div>
+
+                        <div class="grade-row-course">
+
+                            <div class="student-course-icon course-row-blue">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+
+                            <div>
+                                <strong>@courseTitle</strong>
+                                <span>
+                                    @(string.IsNullOrWhiteSpace(courseCategory)
+                                        ? "Course"
+                                        : courseCategory)
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="grade-score">
+                            <strong>@score%</strong>
+
+                            <div class="progress-track">
+                                <i style="width:@score%;"></i>
+                            </div>
+                        </div>
+
+                        <span class="grade-result-badge @(passed ? "grade-result-a" : "grade-result-b")">
+                            @gradeLabel
+                        </span>
+
+                        <div>
+                            @if (takenAt == DateTime.MinValue)
+                            {
+                                <span>—</span>
+                            }
+                            else
+                            {
+                                <strong>@takenAt.ToString("dd MMM yyyy")</strong>
+                                <span style="display:block;">
+                                    @takenAt.ToString("hh:mm tt")
+                                </span>
+                            }
+                        </div>
+
+                        <span class="@(passed ? "course-row-status" : "assignment-review-status")">
+                            <i></i>
+                            @(passed ? "Passed" : "Review")
+                        </span>
+
+                    </article>
+                }
+
+            </div>
+
+            <div id="noSearchResults"
+                 style="display:none; padding: 40px 24px; text-align:center;">
+                <i class="bi bi-search" style="font-size:32px;"></i>
+                <h3 style="margin:12px 0 6px;">No matching results</h3>
+                <p style="margin:0;">Try another student name, course, category or score.</p>
+            </div>
+        }
+
+    </section>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("resultSearch");
+            const rows = Array.from(
+                document.querySelectorAll(".result-search-row")
+            );
+            const noSearchResults =
+                document.getElementById("noSearchResults");
+
+            if (!searchInput || rows.length === 0) {
+                return;
+            }
+
+            function filterResults() {
+                const query = searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+                let visibleCount = 0;
+
+                rows.forEach(function (row) {
+                    const searchText =
+                        row.dataset.search || "";
+
+                    const visible =
+                        query === "" ||
+                        searchText.includes(query);
+
+                    row.style.display =
+                        visible ? "" : "none";
+
+                    if (visible) {
+                        visibleCount++;
+                    }
+                });
+
+                if (noSearchResults) {
+                    noSearchResults.style.display =
+                        visibleCount === 0
+                            ? "block"
+                            : "none";
+                }
+            }
+
+            searchInput.addEventListener(
+                "input",
+                filterResults
+            );
+        });
+    </script>
+}

@@ -1,0 +1,638 @@
+@{
+
+    var adminName = ViewBag.Name as string;
+
+    if (string.IsNullOrWhiteSpace(adminName))
+
+    {
+
+        adminName = Context.Session.GetString("UserName");
+
+    }
+
+    adminName ??= "Administrator";
+
+    var adminEmail = ViewBag.Email as string;
+
+    if (string.IsNullOrWhiteSpace(adminEmail))
+
+    {
+
+        adminEmail = Context.Session.GetString("UserEmail");
+
+    }
+
+    adminEmail ??= "";
+
+    
+    var profileImage = ViewBag.ProfileImage as string;
+var currentController =
+
+        ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+
+    var currentAction =
+
+        ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    var firstLetter = adminName.Length > 0
+
+        ? adminName.Substring(0, 1).ToUpperInvariant()
+
+        : "A";
+
+    bool IsActive(string action)
+
+    {
+
+        return currentController.Equals(
+
+                   "Admin",
+
+                   StringComparison.OrdinalIgnoreCase)
+
+               &&
+
+               currentAction.Equals(
+
+                   action,
+
+                   StringComparison.OrdinalIgnoreCase);
+
+    }
+
+    bool IsCourseActive()
+
+    {
+
+        if (!currentController.Equals(
+
+                "Admin",
+
+                StringComparison.OrdinalIgnoreCase))
+
+        {
+
+            return false;
+
+        }
+
+        return currentAction.Equals(
+
+                   "Courses",
+
+                   StringComparison.OrdinalIgnoreCase)
+
+               ||
+
+               currentAction.Equals(
+
+                   "CreateCourse",
+
+                   StringComparison.OrdinalIgnoreCase)
+
+               ||
+
+               currentAction.Equals(
+
+                   "EditCourse",
+
+                   StringComparison.OrdinalIgnoreCase)
+
+               ||
+
+               currentAction.Equals(
+
+                   "DeleteCourse",
+
+                   StringComparison.OrdinalIgnoreCase);
+
+    }
+
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - APULMS</title>
+
+    <!-- =====================================================
+
+         FONT
+
+    ====================================================== -->
+
+    <link rel="preconnect"
+
+          href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect"
+
+          href="https://fonts.gstatic.com"
+
+          crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+
+          rel="stylesheet" />
+
+    <!-- =====================================================
+
+         BOOTSTRAP ICONS
+
+    ====================================================== -->
+
+    <link rel="stylesheet"
+
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- =====================================================
+
+         ADMIN PORTAL CSS
+
+    ====================================================== -->
+
+    <link rel="stylesheet"
+
+          href="~/css/admin-dashboard.css"
+
+          asp-append-version="true" />
+
+    @await RenderSectionAsync(
+
+        "Styles",
+
+        required: false
+
+    )
+
+</head>
+
+<body>
+
+    <div class="admin-portal">
+
+        <!-- =====================================================
+
+             ADMIN SIDEBAR
+
+        ====================================================== -->
+
+        <aside class="admin-sidebar">
+
+            <!-- BRAND -->
+
+            <div class="admin-sidebar-brand">
+
+                <div class="admin-brand-icon">
+
+                    <i class="bi bi-mortarboard-fill"></i>
+
+                </div>
+
+                <div class="admin-brand-text">
+
+                    <strong>APULMS</strong>
+
+                    <span>
+
+                        Learning Management System
+
+                    </span>
+
+                    <small>
+
+                        Administrator Portal
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <!-- =================================================
+
+                 ADMIN PROFILE
+
+            ================================================== -->
+
+            <div class="admin-sidebar-profile">
+
+                <div class="admin-sidebar-avatar">
+
+                    @if (!string.IsNullOrWhiteSpace(profileImage))
+                    {
+                        <img src="@profileImage"
+                             alt="@adminName Profile Picture"
+                             style="width:100%; height:100%; object-fit:cover; object-position:center 20%; border-radius:50%; display:block;" />
+                    }
+                    else
+                    {
+                        <span>
+                            @firstLetter
+                        </span>
+                    }
+
+                    <span class="admin-online-dot"></span>
+
+                </div>
+
+                <strong>
+
+                    @adminName
+
+                </strong>
+
+                <span class="admin-sidebar-role">
+
+                    Administrator
+
+                </span>
+
+                <div class="admin-online-status">
+
+                    <span class="admin-status-dot"></span>
+
+                    <span>Online</span>
+
+                </div>
+
+            </div>
+
+            <!-- =================================================
+
+                 NAVIGATION
+
+            ================================================== -->
+
+            <nav class="admin-sidebar-nav">
+
+                <!-- DASHBOARD -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Dashboard"
+
+                   class="admin-nav-link @(IsActive("Dashboard") ? "active" : "")">
+
+                    <i class="bi bi-grid-fill"></i>
+
+                    <span>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <!-- USERS -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Users"
+
+                   class="admin-nav-link @(IsActive("Users") ? "active" : "")">
+
+                    <i class="bi bi-people-fill"></i>
+
+                    <span>
+
+                        Users
+
+                    </span>
+
+                </a>
+
+                <!-- COURSES -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Courses"
+
+                   class="admin-nav-link @(IsCourseActive() ? "active" : "")">
+
+                    <i class="bi bi-book-half"></i>
+
+                    <span>
+
+                        Courses
+
+                    </span>
+
+                </a>
+
+                <!-- LECTURERS -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Lecturers"
+
+                   class="admin-nav-link @(IsActive("Lecturers") ? "active" : "")">
+
+                    <i class="bi bi-person-workspace"></i>
+
+                    <span>
+
+                        Lecturers
+
+                    </span>
+
+                </a>
+
+                <!-- STUDENTS -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Students"
+
+                   class="admin-nav-link @(IsActive("Students") ? "active" : "")">
+
+                    <i class="bi bi-mortarboard-fill"></i>
+
+                    <span>
+
+                        Students
+
+                    </span>
+
+                </a>
+
+                <!-- REPORTS -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Reports"
+
+                   class="admin-nav-link @(IsActive("Reports") ? "active" : "")">
+
+                    <i class="bi bi-bar-chart-fill"></i>
+
+                    <span>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+
+                <!-- INQUIRIES -->
+
+                <a asp-controller="Admin"
+                   asp-action="Inquiries"
+                   class="admin-nav-link @(IsActive("Inquiries") || IsActive("InquiryDetails") ? "active" : "")">
+
+                    <i class="bi bi-envelope-fill"></i>
+
+                    <span>
+                        Inquiries
+                    </span>
+
+                </a>
+
+                <!-- PROFILE -->
+
+                <a asp-controller="Admin"
+
+                   asp-action="Profile"
+
+                   class="admin-nav-link @(IsActive("Profile") ? "active" : "")">
+
+                    <i class="bi bi-person-gear"></i>
+
+                    <span>
+
+                        Profile
+
+                    </span>
+
+                </a>
+
+                <!-- DIVIDER -->
+
+                <div class="admin-nav-divider"></div>
+
+                <!-- LOGOUT -->
+
+                <a asp-controller="Account"
+
+                   asp-action="Logout"
+
+                   class="admin-nav-link admin-logout-link">
+
+                    <i class="bi bi-box-arrow-right"></i>
+
+                    <span>
+
+                        Logout
+
+                    </span>
+
+                </a>
+
+            </nav>
+
+            <!-- =================================================
+
+                 SIDEBAR FOOTER
+
+            ================================================== -->
+
+            <div class="admin-sidebar-bottom">
+
+                <div class="admin-sidebar-campus">
+
+                    <div class="admin-campus-decoration">
+
+                        <i class="bi bi-buildings-fill"></i>
+
+                    </div>
+
+                    <div class="admin-campus-content">
+
+                        <strong>
+
+                            Manage
+
+                        </strong>
+
+                        <span>
+
+                            Monitor
+
+                        </span>
+
+                        <small>
+
+                            Grow
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <p class="admin-sidebar-copyright">
+
+                    © 2026 APULMS
+
+                </p>
+
+            </div>
+
+        </aside>
+
+        <!-- =====================================================
+
+             RIGHT SIDE
+
+        ====================================================== -->
+
+        <div class="admin-portal-main">
+
+            <!-- =================================================
+
+                 TOPBAR
+
+            ================================================== -->
+
+            <header class="admin-topbar">
+
+                <!-- SEARCH -->
+
+                <div class="admin-topbar-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input type="search"
+
+                           placeholder="Search users, courses, lecturers, or reports..."
+
+                           aria-label="Search APULMS" />
+
+                </div>
+
+                <!-- TOPBAR ACTIONS -->
+
+                <div class="admin-topbar-actions">
+
+                    <!-- NOTIFICATIONS -->
+
+                    <button type="button"
+
+                            class="admin-topbar-icon"
+
+                            aria-label="Notifications">
+
+                        <i class="bi bi-bell"></i>
+
+                    </button>
+
+                    <!-- THEME -->
+
+                    <button type="button"
+
+                            class="admin-topbar-icon"
+
+                            aria-label="Theme">
+
+                        <i class="bi bi-moon"></i>
+
+                    </button>
+
+                    <!-- ADMIN PROFILE -->
+
+                    <a asp-controller="Admin"
+
+                       asp-action="Profile"
+
+                       class="admin-topbar-profile">
+
+                        <div class="admin-topbar-avatar">
+
+                            @if (!string.IsNullOrWhiteSpace(profileImage))
+                            {
+                                <img src="@profileImage"
+                                     alt="@adminName Profile Picture"
+                                     style="width:100%; height:100%; object-fit:cover; object-position:center 20%; border-radius:50%; display:block;" />
+                            }
+                            else
+                            {
+                                @firstLetter
+                            }
+
+                        </div>
+
+                        <div class="admin-topbar-user">
+
+                            <strong>
+
+                                @adminName
+
+                            </strong>
+
+                            <span>
+
+                                Administrator
+
+                            </span>
+
+                        </div>
+
+                        <i class="bi bi-chevron-down admin-profile-chevron"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+            <!-- =================================================
+
+                 CURRENT ADMIN PAGE
+
+            ================================================== -->
+
+            <main class="admin-content">
+
+                @RenderBody()
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================================
+
+         SCRIPTS
+
+    ========================================================== -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync(
+
+        "Scripts",
+
+        required: false
+
+    )
+
+</body>
+
+</html>

@@ -1,0 +1,412 @@
+@model List<APULMS.Controllers.AdminLecturerCourse>
+
+@{
+    ViewData["Title"] = "Manage Lecturers";
+
+    var lecturers = Model ?? new List<APULMS.Controllers.AdminLecturerCourse>();
+
+    int totalLecturers = ViewBag.TotalLecturers != null
+        ? Convert.ToInt32(ViewBag.TotalLecturers)
+        : 0;
+
+    int assignedCourses = ViewBag.AssignedCourses != null
+        ? Convert.ToInt32(ViewBag.AssignedCourses)
+        : 0;
+
+    int studentsTaught = ViewBag.StudentsTaught != null
+        ? Convert.ToInt32(ViewBag.StudentsTaught)
+        : 0;
+
+    int unassignedLecturers = ViewBag.UnassignedLecturers != null
+        ? Convert.ToInt32(ViewBag.UnassignedLecturers)
+        : 0;
+}
+
+<div class="admin-page admin-lecturers-page">
+
+    <section class="admin-inner-header">
+        <div class="admin-inner-header-content">
+
+            <div class="admin-inner-heading">
+                <div class="admin-page-icon admin-page-icon-orange">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+
+                <div>
+                    <span class="admin-page-label">ADMIN PORTAL</span>
+                    <h1>Manage Lecturers</h1>
+                    <p>
+                        Review real lecturer accounts, assigned courses
+                        and enrolled students across APULMS.
+                    </p>
+                </div>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Dashboard"
+               class="admin-back-button">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+
+        </div>
+    </section>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @TempData["Error"]
+        </div>
+    }
+
+    <section class="admin-inner-stats">
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-lecturers">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Total Lecturers</span>
+                <strong>@totalLecturers</strong>
+                <small>Registered lecturer accounts</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-courses">
+                <i class="bi bi-book-half"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Assigned Courses</span>
+                <strong>@assignedCourses</strong>
+                <small>Courses linked to lecturers</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-book-half"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-students">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Students Taught</span>
+                <strong>@studentsTaught</strong>
+                <small>Course enrolment connections</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+        </article>
+
+        <article class="admin-inner-stat-card">
+            <div class="admin-inner-stat-icon stat-rating">
+                <i class="bi bi-person-dash-fill"></i>
+            </div>
+
+            <div class="admin-inner-stat-content">
+                <span>Unassigned Lecturers</span>
+                <strong>@unassignedLecturers</strong>
+                <small>Lecturers without a course</small>
+            </div>
+
+            <div class="admin-stat-decoration">
+                <i class="bi bi-person-dash-fill"></i>
+            </div>
+        </article>
+
+    </section>
+
+    <section class="admin-inner-panel">
+
+        <div class="admin-inner-panel-header">
+
+            <div class="admin-panel-title">
+                <div class="admin-panel-title-icon">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
+
+                <div>
+                    <h2>Lecturer Overview</h2>
+                    <p>
+                        Review lecturer accounts and their current
+                        course assignments.
+                    </p>
+                </div>
+            </div>
+
+            <div class="admin-user-tools">
+
+                <div class="admin-table-search">
+                    <i class="bi bi-search"></i>
+
+                    <input type="search"
+                           id="lecturerSearch"
+                           placeholder="Search lecturers or courses..."
+                           autocomplete="off"
+                           aria-label="Search lecturers or courses" />
+                </div>
+
+                <div class="admin-record-count">
+                    <i class="bi bi-person-workspace"></i>
+                    <span id="lecturerRecordCount">@lecturers.Count displayed</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="admin-table-container">
+
+            <table class="admin-data-table"
+                   id="lecturerTable">
+
+                <thead>
+                    <tr>
+                        <th>Lecturer</th>
+                        <th>Email Address</th>
+                        <th>Assigned Course</th>
+                        <th>Students</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (lecturers.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5">
+                                <div style="padding: 32px; text-align: center;">
+                                    <i class="bi bi-person-workspace"
+                                       style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                    <strong>No lecturer records found</strong>
+                                    <div>
+                                        Lecturer accounts will appear here after they are created.
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var lecturer in lecturers)
+                        {
+                            var initial = !string.IsNullOrWhiteSpace(lecturer.LecturerName)
+                                ? lecturer.LecturerName.Substring(0, 1).ToUpperInvariant()
+                                : "L";
+
+                            bool assigned = lecturer.CourseId.HasValue;
+
+                            <tr class="lecturer-row"
+                                data-search="@($"{lecturer.LecturerName} {lecturer.LecturerEmail} {lecturer.CourseTitle}".ToLowerInvariant())">
+
+                                <td>
+                                    <div class="admin-table-user">
+                                        <div class="admin-table-avatar lecturer-avatar">
+                                            @initial
+                                        </div>
+
+                                        <div class="admin-table-user-info">
+                                            <strong>@lecturer.LecturerName</strong>
+                                            <span>Lecturer</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="admin-email-cell">
+                                        <i class="bi bi-envelope"></i>
+                                        <span>@lecturer.LecturerEmail</span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="admin-course-assignment">
+                                        <div class="admin-assignment-icon">
+                                            <i class="bi @(assigned ? "bi-book-half" : "bi-dash-circle")"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>@lecturer.CourseTitle</strong>
+                                            <span>
+                                                @(assigned ? "Assigned course" : "No current assignment")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (assigned)
+                                    {
+                                        <div class="admin-student-count">
+                                            <i class="bi bi-people"></i>
+                                            <strong>@lecturer.StudentCount</strong>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>—</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (assigned)
+                                    {
+                                        <span class="admin-status-badge">
+                                            <span class="admin-status-indicator"></span>
+                                            Assigned
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="admin-status-badge admin-status-warning">
+                                            <span class="admin-status-indicator"></span>
+                                            Unassigned
+                                        </span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+            <div class="admin-search-empty"
+                 id="lecturerSearchEmpty"
+                 style="display:none;">
+
+                <div class="admin-empty-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+
+                <strong>No matching lecturers</strong>
+
+                <span>
+                    Try another lecturer name, email address
+                    or assigned course.
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="admin-panel-footer">
+
+            <div class="admin-panel-footer-info">
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    Lecturer information is loaded from the APULMS database.
+                </span>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Courses"
+               class="admin-panel-footer-link">
+
+                Manage Courses
+
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const searchInput =
+                    document.getElementById("lecturerSearch");
+
+                const table =
+                    document.getElementById("lecturerTable");
+
+                const emptyState =
+                    document.getElementById("lecturerSearchEmpty");
+
+                const recordCount =
+                    document.getElementById("lecturerRecordCount");
+
+                if (!searchInput || !table) {
+                    return;
+                }
+
+                const rows =
+                    Array.from(
+                        table.querySelectorAll(
+                            "tbody .lecturer-row"
+                        )
+                    );
+
+                searchInput.addEventListener(
+                    "input",
+                    function () {
+
+                        const query =
+                            this.value
+                                .trim()
+                                .toLowerCase();
+
+                        let visibleRows = 0;
+
+                        rows.forEach(
+                            function (row) {
+
+                                const content =
+                                    row.dataset.search ||
+                                    row.textContent.toLowerCase();
+
+                                const matches =
+                                    content.includes(query);
+
+                                row.style.display =
+                                    matches ? "" : "none";
+
+                                if (matches) {
+                                    visibleRows++;
+                                }
+                            }
+                        );
+
+                        if (recordCount) {
+                            recordCount.textContent =
+                                visibleRows + " displayed";
+                        }
+
+                        if (emptyState) {
+                            emptyState.style.display =
+                                rows.length > 0 &&
+                                visibleRows === 0
+                                    ? "flex"
+                                    : "none";
+                        }
+                    }
+                );
+
+            }
+        );
+    </script>
+
+}

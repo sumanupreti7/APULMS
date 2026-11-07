@@ -1,0 +1,111 @@
+@{
+    string activePage = ViewData["ActivePage"]?.ToString() ?? "Dashboard";
+}
+
+<aside class="lecturer-sidebar">
+
+    <!-- LOGO -->
+    <div class="lecturer-logo">
+        <span class="logo-cap">🎓</span>
+        <span>APULMS</span>
+    </div>
+
+
+    <!-- PROFILE -->
+    <div class="lecturer-profile">
+
+        <div class="profile-circle">
+            👨‍🏫
+        </div>
+
+        <h4>
+            @ViewBag.Name
+        </h4>
+
+        <span>
+            Lecturer
+        </span>
+
+    </div>
+
+
+    <!-- NAVIGATION -->
+    <nav class="lecturer-menu">
+
+        <a asp-controller="Lecturer"
+           asp-action="Dashboard"
+           class="@(activePage == "Dashboard" ? "active" : "")">
+
+            <span class="menu-icon">🏠</span>
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a asp-controller="Lecturer"
+           asp-action="Courses"
+           class="@(activePage == "Courses" ? "active" : "")">
+
+            <span class="menu-icon">📚</span>
+            <span>Courses</span>
+
+        </a>
+
+
+        <a asp-controller="Lecturer"
+           asp-action="Students"
+           class="@(activePage == "Students" ? "active" : "")">
+
+            <span class="menu-icon">👨‍🎓</span>
+            <span>Students</span>
+
+        </a>
+
+
+        <a asp-controller="Lecturer"
+           asp-action="Assignments"
+           class="@(activePage == "Assignments" ? "active" : "")">
+
+            <span class="menu-icon">📝</span>
+            <span>Assignments</span>
+
+        </a>
+
+
+        <a asp-controller="Lecturer"
+           asp-action="Grades"
+           class="@(activePage == "Grades" ? "active" : "")">
+
+            <span class="menu-icon">📊</span>
+            <span>Grades</span>
+
+        </a>
+
+
+        <a asp-controller="Lecturer"
+           asp-action="Profile"
+           class="@(activePage == "Profile" ? "active" : "")">
+
+            <span class="menu-icon">👤</span>
+            <span>Profile</span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- LOGOUT -->
+    <div class="lecturer-sidebar-bottom">
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="logout-btn">
+
+            <span class="menu-icon">🚪</span>
+            <span>Logout</span>
+
+        </a>
+
+    </div>
+
+</aside>

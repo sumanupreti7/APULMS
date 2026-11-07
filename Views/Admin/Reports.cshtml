@@ -1,0 +1,268 @@
+@{
+    ViewData["Title"] = "Reports & Analytics";
+
+    int totalUsers = ViewBag.ReportTotalUsers != null
+        ? Convert.ToInt32(ViewBag.ReportTotalUsers)
+        : 0;
+
+    int totalCourses = ViewBag.ReportTotalCourses != null
+        ? Convert.ToInt32(ViewBag.ReportTotalCourses)
+        : 0;
+
+    int totalLecturers = ViewBag.ReportTotalLecturers != null
+        ? Convert.ToInt32(ViewBag.ReportTotalLecturers)
+        : 0;
+
+    int totalStudents = ViewBag.ReportTotalStudents != null
+        ? Convert.ToInt32(ViewBag.ReportTotalStudents)
+        : 0;
+
+    int totalEnrollments = ViewBag.ReportTotalEnrollments != null
+        ? Convert.ToInt32(ViewBag.ReportTotalEnrollments)
+        : 0;
+
+    int quizAttempts = ViewBag.ReportQuizAttempts != null
+        ? Convert.ToInt32(ViewBag.ReportQuizAttempts)
+        : 0;
+}
+
+<div class="admin-page admin-reports-page">
+
+    <!-- PAGE HEADER -->
+    <div class="admin-page-header">
+        <div>
+            <span class="admin-eyebrow">ADMIN PORTAL</span>
+            <h1>
+                <i class="bi bi-bar-chart-fill"></i>
+                Reports & Analytics
+            </h1>
+            <p>
+                Review real APULMS account, course, enrolment and quiz activity.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="admin-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Dashboard
+        </a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- PRIMARY REPORT SUMMARY -->
+    <div class="admin-stats">
+
+        <div class="admin-stat-card">
+            <i class="bi bi-people-fill"></i>
+            <div>
+                <strong>@totalUsers</strong>
+                <span>Users</span>
+                <small>Registered accounts</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <i class="bi bi-book-half"></i>
+            <div>
+                <strong>@totalCourses</strong>
+                <span>Courses</span>
+                <small>Available course records</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <i class="bi bi-person-workspace"></i>
+            <div>
+                <strong>@totalLecturers</strong>
+                <span>Lecturers</span>
+                <small>Registered lecturer accounts</small>
+            </div>
+        </div>
+
+        <div class="admin-stat-card">
+            <i class="bi bi-mortarboard-fill"></i>
+            <div>
+                <strong>@totalStudents</strong>
+                <span>Students</span>
+                <small>Registered student accounts</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LEARNING ACTIVITY -->
+    <section class="admin-panel">
+
+        <div class="admin-panel-heading">
+            <div>
+                <span class="admin-eyebrow">DATABASE SUMMARY</span>
+                <h2>Learning Activity</h2>
+                <p>
+                    Current activity recorded by the APULMS database.
+                </p>
+            </div>
+        </div>
+
+        <div class="admin-report-grid">
+
+            <div class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-journal-check"></i>
+                </div>
+
+                <h3>@totalEnrollments Total Enrolments</h3>
+
+                <p>
+                    Course enrolment records currently stored
+                    across all student accounts.
+                </p>
+
+                <a asp-controller="Admin"
+                   asp-action="Students">
+                    View Student Enrolments
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+            <div class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-ui-checks-grid"></i>
+                </div>
+
+                <h3>@quizAttempts Quiz Attempts</h3>
+
+                <p>
+                    Completed quiz result records currently stored
+                    across APULMS courses.
+                </p>
+
+                <span>
+                    Recorded Assessment Activity
+                    <i class="bi bi-check-circle"></i>
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ACADEMIC OVERVIEW -->
+    <section class="admin-panel">
+
+        <div class="admin-panel-heading">
+            <div>
+                <span class="admin-eyebrow">MANAGEMENT</span>
+                <h2>Academic Overview</h2>
+                <p>
+                    Open the database-backed APULMS management areas.
+                </p>
+            </div>
+        </div>
+
+        <div class="admin-report-grid">
+
+            <a asp-controller="Admin"
+               asp-action="Students"
+               class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+
+                <h3>Student Activity</h3>
+
+                <p>
+                    Review real student accounts, enrolments
+                    and recorded course progress.
+                </p>
+
+                <span>
+                    View Students
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Lecturers"
+               class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+
+                <h3>Lecturer Activity</h3>
+
+                <p>
+                    Review lecturer accounts, assigned courses
+                    and student connections.
+                </p>
+
+                <span>
+                    View Lecturers
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Courses"
+               class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-book-half"></i>
+                </div>
+
+                <h3>Course Management</h3>
+
+                <p>
+                    Review and manage the courses available
+                    through APULMS.
+                </p>
+
+                <span>
+                    View Courses
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Users"
+               class="admin-report-card">
+
+                <div class="admin-report-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <h3>User Management</h3>
+
+                <p>
+                    Review registered student, lecturer
+                    and administrator accounts.
+                </p>
+
+                <span>
+                    View Users
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
