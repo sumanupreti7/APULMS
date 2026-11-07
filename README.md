@@ -164,3 +164,19 @@ Developed by [sumanupreti7](https://github.com/sumanupreti7).
 ---
 
 *APULMS is a learning-management project demonstrating server-rendered ASP.NET Core MVC and a role-based MySQL-backed application.*
+
+---
+
+## Copyright & Usage
+
+**Copyright (c) 2026 Suman Upreti. All Rights Reserved.**
+
+APULMS is a publicly accessible portfolio and educational reference project.
+
+You may study its architecture and evaluate the application locally for personal, non-commercial educational purposes.
+
+Unauthorized redistribution, substantial source-code reuse, commercial exploitation, or claiming the original implementation as your own is not permitted, subject to applicable law and GitHub's Terms of Service.
+
+**This project is not released under an open-source license.**
+
+See [COPYRIGHT.md](COPYRIGHT.md) for the full copyright and usage notice.
